@@ -13,6 +13,8 @@ class Advogado extends Authenticatable
 {
     use Notifiable, SoftDeletes;
 
+    protected $table = 'advogados';
+
     /**
      * Primary key de Advogado
      * 
