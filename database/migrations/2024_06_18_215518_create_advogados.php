@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('advogados', function (Blueprint $table) {
             $table->id();
-            $table->string('xid', 20)->storedAs('xid()')->unique('uc_adv_xid');
+            $table->string('xid', 20)->default('xid()')->unique('uc_adv_xid');
             $table->timestamps();
             $table->string('cpf', 11)->unique('uc_adv_cpf');
             $table->string('nome', 60);
