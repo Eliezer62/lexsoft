@@ -19,7 +19,7 @@ return new class extends Migration
                 ->unique('uc_processos_xid');
             $table->timestamps();
             $table->softDeletes();
-            $table->varchar('numero', 20)
+            $table->string('numero', 20)
                     ->unique('uc_processos_numero');
             $table->decimal('valor_causa', 15, 2)->nullable();
             $table->decimal('valor_condenacao', 15, 2)->nullable();
@@ -83,20 +83,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('processos');
-
-        DB::statement('
-        ALTER TABLE processos
-            DROP CONSTRAINT ck_valor_causa;
-        ');
-
-        DB::statement('
-        ALTER TABLE processos
-        DROP CONSTRAINT ck_valor_condenacao;
-        ');
-
-        DB::statement('
-            ALTER TABLE processos
-            DROP CONSTRAINT ck_valor_cond_menor;
-        ');
     }
 };
