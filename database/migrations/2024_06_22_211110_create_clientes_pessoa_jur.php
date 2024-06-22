@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('razao_social');
             $table->char('cnpj',14)
                 ->unique('uc_cliente_jur_cnpj');
-            $table->string('nome_fantasia');
+            $table->string('nome_fantasia')->nullable();
             $table->string('email')->nullable();
             $table->integer('administrador');
 
