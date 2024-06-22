@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grupo_usuarios', function (Blueprint $table) {
-            $table->string('grupo', 60)->primary();
-            $table->string('descricao');
-
-            //Constraints
-
-            //Indexes
+        Schema::create('estados', function (Blueprint $table) {
+            $table->char('uf', 2)->primary();
+            $table->string('nome', 60);
         });
     }
 
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('grupo_usuario');
+        Schema::dropIfExists('estados');
     }
 };

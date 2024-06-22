@@ -9,10 +9,11 @@ class GrupoUsuario extends Model
 {
     /**
      * Primary key de grupo
-     * 
      * @var string
      */
     protected $primaryKey = 'grupo';
+
+    public $incrementing = false;
 
     /**
      * Atributos de Grupo de Usuario
@@ -26,7 +27,7 @@ class GrupoUsuario extends Model
 
     /**
      * Obtem todos os advogados do Grupo de usuario
-     * 
+     *
      * @return Array<int, Advogado::class>
      */
     public function advogados()

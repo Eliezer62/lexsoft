@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grupo_usuarios', function (Blueprint $table) {
-            $table->string('grupo', 60)->primary();
-            $table->string('descricao');
+        Schema::create('comarcas', function (Blueprint $table) {
+            $table->id();
+            $table->string('nome', 60)
+                    ->index('index_comarca_nome');
+            $table->char('tribunal', 2);
 
             //Constraints
+            $table->foreign('tribunal')->references('id')->on('tribunais');
 
-            //Indexes
+
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('grupo_usuario');
+        Schema::dropIfExists('comarcas');
     }
 };

@@ -28,7 +28,6 @@ class Prazo extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'nome',
         'descricao',
         'inicio',
         'fim',
@@ -42,7 +41,6 @@ class Prazo extends Model
         return [
             'inicio'=>'datetime:d/m/Y HH:MM:SS',
             'fim'=>'datetime:d/m/Y HH:MM:SS',
-            'nome'=>'string',
             'descricao'=>'string'
         ];
     }

@@ -11,13 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grupo_usuarios', function (Blueprint $table) {
-            $table->string('grupo', 60)->primary();
+        Schema::create('prazos', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
             $table->string('descricao');
+            $table->datetime('inicio');
+            $table->datetime('fim');
+            $table->bigInteger('evento');
+            $table->bigInteger('tarefa');
 
-            //Constraints
+            //constraint
 
-            //Indexes
+            //index
         });
     }
 
@@ -26,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('grupo_usuario');
+        Schema::dropIfExists('prazos');
     }
 };

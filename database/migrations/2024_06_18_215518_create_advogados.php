@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('advogados', function (Blueprint $table) {
             $table->id();
-            $table->string('xid', 20)->default('xid()')->unique('uc_adv_xid');
+            $table->char('xid', 20)->default('xid()')->unique('uc_adv_xid');
             $table->timestamps();
-            $table->string('cpf', 11)->unique('uc_adv_cpf');
+            $table->char('cpf', 11)->unique('uc_adv_cpf');
             $table->string('nome', 60);
             $table->string('oab', 6);
-            $table->string('uf_oab', 2);
+            $table->char('uf_oab', 2);
             $table->string('email')->unique('uc_adv_email');
             $table->string('password');
             $table->string('grupo', 60);
             $table->softDeletes();
-            
+          
             //constraints
             $table->unique(['oab', 'uf_oab'], 'uc_adv_oab');
 
