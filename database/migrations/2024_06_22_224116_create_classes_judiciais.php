@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grupo_usuarios', function (Blueprint $table) {
-            $table->string('grupo', 60)->primary();
+        Schema::create('classes_judiciais', function (Blueprint $table) {
+            $table->smallInteger('id')->primary();
             $table->string('descricao');
-
-            //Constraints
-
-            //Indexes
         });
     }
 
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('grupo_usuarios');
+        Schema::dropIfExists('classes_judiciais');
     }
 };

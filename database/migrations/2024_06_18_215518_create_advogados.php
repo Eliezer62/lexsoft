@@ -23,13 +23,13 @@ return new class extends Migration
             $table->string('password');
             $table->string('grupo', 60);
             $table->softDeletes();
-          
+
             //constraints
             $table->unique(['oab', 'uf_oab'], 'uc_adv_oab');
 
             $table->foreign('grupo')
                 ->references('grupo')
-                ->on('grupo_usuario');
+                ->on('grupo_usuarios');
 
             $table->foreign('uf_oab')
                 ->references('uf')

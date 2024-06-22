@@ -17,7 +17,7 @@ return new class extends Migration
             $table->char('estado',2);
 
             //Constraint
-            $table->foreing('estado')
+            $table->foreign('estado')
                 ->references('uf')
                 ->on('estados');
 

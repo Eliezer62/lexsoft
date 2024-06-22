@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tribunais', function (Blueprint $table) {
-            $table->string('id', 2)->primary();
-            $table->string('nome', 60)->unique();
-            $table->char('ramo_tribunal', 1);
+        Schema::create('estados_civis', function (Blueprint $table) {
+            $table->id();
+            $table->string('estado_civil', 60);
         });
     }
 
@@ -23,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tribunais');
+        Schema::dropIfExists('estados_civis');
     }
 };
