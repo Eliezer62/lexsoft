@@ -11,7 +11,7 @@ class Tribunal extends Model
      * Tabela de tribunal
      * @var string
      */
-    protected $table = 'tribunals';
+    protected $table = 'tribunais';
 
     /**
      * Primary key
