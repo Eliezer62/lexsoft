@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grupo_usuarios', function (Blueprint $table) {
-            $table->string('grupo', 60)->primary();
-            $table->string('descricao');
-
-            //Constraints
-
-            //Indexes
+        Schema::create('tribunais', function (Blueprint $table) {
+            $table->string('id', 2)->primary();
+            $table->string('nome', 60)->unique();
+            $table->char('ramo_tribunal', 1);
         });
     }
 
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('grupo_usuario');
+        Schema::dropIfExists('tribunais');
     }
 };

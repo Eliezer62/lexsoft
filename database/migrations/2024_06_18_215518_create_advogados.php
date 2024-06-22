@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('grupo', 60);
             $table->softDeletes();
-
+          
             //constraints
             $table->unique(['oab', 'uf_oab'], 'uc_adv_oab');
 

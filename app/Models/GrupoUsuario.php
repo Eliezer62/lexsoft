@@ -9,7 +9,6 @@ class GrupoUsuario extends Model
 {
     /**
      * Primary key de grupo
-     *
      * @var string
      */
     protected $primaryKey = 'grupo';
@@ -18,7 +17,7 @@ class GrupoUsuario extends Model
 
     /**
      * Atributos de Grupo de Usuario
-     *
+     * 
      * @var array<int, string>
      */
     protected $fillable = [
