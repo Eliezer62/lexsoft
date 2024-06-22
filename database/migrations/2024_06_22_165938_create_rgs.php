@@ -21,7 +21,7 @@ return new class extends Migration
             $table->char('estado', 2);
 
             //constraint
-            $table->foreigin('estado')->references('uf')->on('estados');
+            $table->foreign('estado')->references('uf')->on('estados');
             $table->unique(['emissor','numero', 'estado']);
         });
     }
