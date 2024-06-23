@@ -11,8 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('prazos', function (Blueprint $table) {
-            //constraints
+        Schema::create('prazos', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->string('descricao');
+            $table->datetime('inicio');
+            $table->datetime('fim');
+            $table->bigInteger('evento');
+            $table->bigInteger('tarefa');
+
+            //constraint
             $table->foreign('evento', 'fk_prazo_evento')
                 ->references('id')
                 ->on('eventos');
@@ -20,6 +28,7 @@ return new class extends Migration
             $table->foreign('tarefa', 'fk_prazo_tarefa')
                 ->references('id')
                 ->on('tarefas');
+            //index
         });
     }
 
@@ -28,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-
+        Schema::dropIfExists('prazos');
     }
 };
