@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('telefones', function (Blueprint $table) {
             $table->id();
             $table->char('xid')
+                ->default('xid()')
                 ->unique('uc_telefones_xid');
             $table->char('ddi', 4)->default('+55');
             $table->char('ddd');

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('clientes_pessoa_jur', function (Blueprint $table) {
             $table->id();
             $table->char('xid',20)
+                ->default('xid()')
                 ->unique('uc_cliente_jur_xid');
             $table->timestamps();
             $table->softDeletes();
