@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estados_civis', function (Blueprint $table) {
+        Schema::create('qualificacoes', function (Blueprint $table) {
             $table->smallIncrements('id')->primary();
-            $table->string('estado_civil', 60);
+            $table->string('descricao', 60);
         });
     }
 
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estados_civis');
+        Schema::dropIfExists('qualificacoes');
     }
 };

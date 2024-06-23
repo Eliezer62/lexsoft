@@ -24,8 +24,8 @@ return new class extends Migration
                 ->unique('uc_cliente_cpf');
             $table->integer('rg');
             $table->string('email')->nullable();
-            $table->integer('sexo');
-            $table->integer('estado_civil');
+            $table->smallInteger('sexo');
+            $table->smallInteger('estado_civil');
             $table->string('nome_pai', 60)->nullable();
             $table->string('nome_mae', 60)->nullable();
             $table->integer('naturalidade');

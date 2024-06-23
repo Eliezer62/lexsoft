@@ -21,7 +21,13 @@ return new class extends Migration
             $table->bigInteger('tarefa');
 
             //constraint
+            $table->foreign('evento', 'fk_prazo_evento')
+                ->references('id')
+                ->on('eventos');
 
+            $table->foreign('tarefa', 'fk_prazo_tarefa')
+                ->references('id')
+                ->on('tarefas');
             //index
         });
     }
