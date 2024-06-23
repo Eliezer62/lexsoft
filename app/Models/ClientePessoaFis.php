@@ -47,4 +47,12 @@ class ClientePessoaFis extends Model
     protected $hidden = [
         'id'
     ];
+
+
+    public function processos()
+    {
+        return $this->belongsToMany(Processo::class)
+            ->as('partes')
+            ->withPivot('qualificacao');
+    }
 }

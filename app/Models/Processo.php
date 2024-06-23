@@ -42,4 +42,12 @@ class Processo extends Model
         return $this->belongsToMany(Advogado::class)
             ->as('representa');
     }
+
+
+    public function partes()
+    {
+        return $this->belongsToMany(ClientePessoaFis::class)
+            ->as('partes')
+            ->withPivot('qualificacao');
+    }
 }
