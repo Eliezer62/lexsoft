@@ -4,6 +4,7 @@ namespace App\Models;
 namespace App\Casts;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Processo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,18 +18,18 @@ class Advogado extends Authenticatable
 
     /**
      * Primary key de Advogado
-     * 
+     *
      * @var string
      */
     protected $primaryKey = 'id';
 
     /**
      * Ativa criado em e atualizado na tabela
-     * 
+     *
      * @var bool
      */
     public $timestamps = true;
-    
+
     /**
      * Os atributos do model Advogado.
      *
@@ -59,7 +60,7 @@ class Advogado extends Authenticatable
 
     /**
      * Serializacao dos Accessors
-     * 
+     *
      * @var array<int, string>
      */
     protected $appends = [
@@ -92,5 +93,13 @@ class Advogado extends Authenticatable
     public function grupo()
     {
         return $this->belongsTo(Advogado::class);
+    }
+
+
+    public function processos()
+    {
+        return $this->belongsToMany(Processo::class)
+            ->as('partes')
+            ->withPivot('qualificacao');
     }
 }
