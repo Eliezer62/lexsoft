@@ -1,9 +1,13 @@
 import React from "react";
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-const app = ReactDOM.createRoot(document.getElementById('app'));
-app.render(
-    <>
-        Ola
-    </>
+ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+        <BrowserRouter>
+            <Routes>
+                <Route path='/'/>
+            </Routes>
+        </BrowserRouter>
+    </React.StrictMode>
 );
