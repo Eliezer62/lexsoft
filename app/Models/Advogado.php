@@ -99,7 +99,6 @@ class Advogado extends Authenticatable
     public function processos()
     {
         return $this->belongsToMany(Processo::class)
-            ->as('partes')
-            ->withPivot('qualificacao');
+            ->as('representa');
     }
 }

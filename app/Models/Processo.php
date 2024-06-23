@@ -40,7 +40,6 @@ class Processo extends Model
     public function advogados()
     {
         return $this->belongsToMany(Advogado::class)
-            ->as('partes')
-            ->withPivot('qualificacao');
+            ->as('representa');
     }
 }
