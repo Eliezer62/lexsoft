@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('classes_judiciais', function (Blueprint $table) {
-            $table->smallInteger('id')->primary();
+            $table->smallIncrements('id')->primary();
             $table->string('descricao');
         });
     }
