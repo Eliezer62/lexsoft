@@ -43,11 +43,25 @@ class Processo extends Model
             ->as('representa');
     }
 
-
+    /**
+     * Retorna as partes pessoa física de um processo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function partes()
     {
         return $this->belongsToMany(ClientePessoaFis::class)
             ->as('partes')
+            ->withPivot('qualificacao');
+    }
+
+    /**
+     * Retorna as partes pessoa juridica do processo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function partes_jur()
+    {
+        return $this->belongsToMany(ClientePessoaJur::class)
+            ->as('partes_jur')
             ->withPivot('qualificacao');
     }
 }
