@@ -74,6 +74,7 @@ const LayoutBasico = (props) => {
                         style={{
                             background: '#f5f5f5',
                             border: '5px solid #f9f9f9',
+                            fontFamily: 'Roboto'
                         }}
                     >
                         <Flex
@@ -88,7 +89,7 @@ const LayoutBasico = (props) => {
                         </Flex>
                         <Menu
                             mode="inline"
-                            defaultSelectedKeys={props.menu}
+                            defaultSelectedKeys={[props.menu]}
                             style={{
                                 height: '70%',
                                 borderRight: 0,
