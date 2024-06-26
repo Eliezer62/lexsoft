@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import Erro404 from "@/Erro404.jsx";
+import Advogados from '@/Advogados.jsx';
 import '../css/app.css';
 import 'bootstrap';
 
@@ -12,6 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Routes>
                 <Route path='*' element={<Erro404 />} />
                 <Route path='/' Component={LayoutBasico}/>
+                <Route path='/advogados' Component={Advogados}/>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>
