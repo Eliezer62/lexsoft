@@ -127,4 +127,28 @@ class AdvogadoController extends Controller
         $adv->delete();
         return \response()->json([], 200);
     }
+
+    /**
+     * Atualiza a senha do advogado
+     * @param Request $request
+     * @param $xid
+     * @return \Illuminate\Http\JsonResponse|void
+     */
+    public function updatePassword(Request $request, $xid)
+    {
+        try {
+            $adv = Advogado::firstWhere('xid', $xid);
+            if (is_null($adv)) return response()->json([], 404);
+            $validado = $request->validate(['password' => 'required|min:8']);
+            $adv->update($validado);
+        }
+        catch (ValidationException $e)
+        {
+            return response()->json(['msg'=>'Dados obrigatórios não fornecidos ou inválidos'], 422);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json(['msg'=>'Erro interno'], 500);
+        }
+    }
 }

@@ -42,4 +42,7 @@ Route::controller(AdvogadoController::class)
 
         Route::delete('/{xid}', 'delete')
             ->name('advogados.delete');
+
+        Route::post('/{xid}/update/password', 'updatePassword')
+            ->name('advogados.update.password');
     });
