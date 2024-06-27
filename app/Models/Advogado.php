@@ -35,7 +35,6 @@ class Advogado extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'xid',
         'cpf',
         'nome',
         'email',
@@ -45,6 +44,7 @@ class Advogado extends Authenticatable
         'grupo',
         'primeiro_login'
     ];
+    protected $attributes = ['xid'];
 
     /**
      * The attributes that should be hidden for serialization.
