@@ -95,9 +95,9 @@ class AdvogadoController extends Controller
             if (is_null($adv)) return response()->json([],404);
             $validado = $request->validate([
                 'nome'=>'max:60|string',
-                'oab'=>'max:6|string',
-                'uf_oab'=>'max:2',
-                'grupo'=>''
+                'oab'=>'sometimes|max:6|string',
+                'uf_oab'=>'sometimes|max:2',
+                'grupo'=>'sometimes'
             ]);
 
             $adv->update($validado);

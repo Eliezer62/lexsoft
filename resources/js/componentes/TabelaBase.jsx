@@ -16,8 +16,9 @@ export default function TabelaBase(props)
             <Row
                 style={{padding:25}}
             >
-                <Col span={8} offset={7}><Input placeholder={'Pesquisar'}/></Col>
-                <Col span={1}><Button><IoSearch/></Button></Col>
+                <Col span={8} offset={7}>
+                    <Input.Search placeholder={'Pesquisar'} onSearch={(valor)=>{props.pesquisa(valor)}} onChange={(e)=>{props.pesquisa(e.target.value)}}/>
+                </Col>
                 <Col span={1} offset={6}><Button type={'primary'} onClick={props.adicionar}>Adicionar</Button></Col>
             </Row>
             <Table
