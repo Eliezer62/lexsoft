@@ -30,13 +30,28 @@ const Advogados = () => {
             title:'CPF',
             dataIndex: 'cpf',
             key:'cpf',
-            sorter: (a, b) => parseInt(a) - parseInt(b),
+            sorter: (a, b) => parseInt(a.cpf) - parseInt(b.cpf),
             sortDirections: ['descend', 'ascend'],
         },
         {
             title:'Grupo',
             dataIndex: 'grupo',
-            key:'grupo'
+            key:'grupo',
+            filters:[
+                {
+                    text:'Administrador',
+                    value:'administrador'
+                },
+                {
+                    text:'Estagiário',
+                    value:'estagiario'
+                },
+                {
+                    text:'Advogado',
+                    value:'advogado'
+                }
+            ],
+            onFilter: (value, record) => record.grupo.includes(value),
         },
         {
             title:'Ações',
