@@ -22,8 +22,8 @@ return new class extends Migration
             $table->timestamps();
             $table->char('cpf', 11)->unique('uc_adv_cpf');
             $table->string('nome', 60);
-            $table->string('oab', 6);
-            $table->char('uf_oab', 2);
+            $table->string('oab', 6)->nullable();
+            $table->char('uf_oab', 2)->nullable();
             $table->string('email')->unique('uc_adv_email');
             $table->string('password');
             $table->string('grupo', 60);
