@@ -45,6 +45,9 @@ const NovoAdvogado = (props) => {
           {contextHolder}
         <Form
             layout={'vertical'}
+            autoComplete={true}
+            onFinish={()=>console.log('finalizado')}
+            form={props.form}
         >
             <Form.Item
                 label={'Nome Completo'}
@@ -54,7 +57,10 @@ const NovoAdvogado = (props) => {
                     {max: 60, message:'Tamanho máximo é de 60 caracteres'}
                 ]}
             >
-                <Input placeholder={'Nome Completo'}/>
+                <Input placeholder={'Nome Completo'} onChange={(e)=>{
+                    props.advogado.nome = e.target.value;
+                    props.setAdvogado(props.advogado);
+                }}/>
             </Form.Item>
 
             <Form.Item
@@ -62,7 +68,10 @@ const NovoAdvogado = (props) => {
                 name={'cpf'}
                 rules={[{ required: true, message: 'CPF é obrigatório',type:'regexp', pattern:new RegExp('/^\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$/\n') }]}
             >
-                <MaskedInput mask={'000.000.000-00'}/>
+                <MaskedInput mask={'000.000.000-00'} onChange={e=>{
+                    props.advogado.cpf = e.target.value.replace(/(\d{3})\.(\d{3})\.(\d{3})\-(\d{2})/, '$1$2$3$4');
+                    props.setAdvogado(props.advogado);
+                }}/>
             </Form.Item>
 
             <Form.Item
@@ -73,21 +82,30 @@ const NovoAdvogado = (props) => {
                     {max: 255, message:'Tamanho máximo é de 255 caracteres'}
                 ]}
             >
-                <Input placeholder={'exemplo@email.com'}/>
+                <Input placeholder={'exemplo@email.com'} onChange={e=>{
+                    props.advogado.email = e.target.value;
+                    props.setAdvogado(props.advogado);
+                }}/>
             </Form.Item>
 
                 <Form.Item
                     label={'OAB'}
                     name={'oab'}
                 >
-                    <InputNumber size={6} max={999999} min={1}/>
+                    <InputNumber size={6} max={999999} min={1} onChange={e=>{
+                        props.advogado.oab = e.toString();
+                        props.setAdvogado(props.advogado);
+                    }}/>
                 </Form.Item>
 
                 <Form.Item
                     label={'Estado do OAB'}
                     name={'uf_oab'}
                 >
-                    <Select options={estados}/>
+                    <Select options={estados} onChange={e=>{
+                        props.advogado.uf_oab = e;
+                        props.setAdvogado(props.advogado);
+                    }}/>
                 </Form.Item>
 
                 <Form.Item
@@ -97,9 +115,11 @@ const NovoAdvogado = (props) => {
                         {required:true, message:'Grupo é obrigatório'}
                     ]}
                 >
-                    <Select options={grupousuarios}/>
+                    <Select options={grupousuarios} onChange={e=>{
+                        props.advogado.grupo = e;
+                        props.setAdvogado(props.advogado);
+                    }}/>
                 </Form.Item>
-
         </Form>
       </Modal>
     );
