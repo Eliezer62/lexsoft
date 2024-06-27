@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-namespace App\Casts;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Processo;
@@ -10,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Adv extends Authenticatable
+class Advogado extends Authenticatable
 {
     use Notifiable, SoftDeletes;
 
