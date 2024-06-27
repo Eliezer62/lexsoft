@@ -15,9 +15,6 @@ return new class extends Migration
             $table->bigIncrements('id')->primary();
             $table->timestamps();
             $table->softDeletes();
-            $table->char('xid', 20)
-                ->default('xid()')
-                ->unique('uc_eventos_xid');
             $table->string('descricao');
             $table->integer('ordem');
             $table->date('data');
@@ -28,6 +25,8 @@ return new class extends Migration
                 ->references('id')
                 ->on('processos');
         });
+        DB::statement('ALTER TABLE eventos ADD COLUMN xid public.xid DEFAULT xid()');
+        DB::statement('ALTER TABLE eventos ADD CONSTRAINT uc_eventos_xid UNIQUE (xid)');
     }
 
     /**

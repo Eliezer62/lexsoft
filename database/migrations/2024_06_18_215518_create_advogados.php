@@ -1,7 +1,9 @@
 <?php
 
+use Illuminate\Database\Grammar;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,9 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Grammar::macro('typeXid', function () {
+            return 'xid';
+        });
+
         Schema::create('advogados', function (Blueprint $table) {
             $table->id();
-            $table->char('xid', 20)->default('xid()')->unique('uc_adv_xid');
             $table->timestamps();
             $table->char('cpf', 11)->unique('uc_adv_cpf');
             $table->string('nome', 60);
@@ -23,7 +28,6 @@ return new class extends Migration
             $table->string('password');
             $table->string('grupo', 60);
             $table->softDeletes();
-
             //constraints
             $table->unique(['oab', 'uf_oab'], 'uc_adv_oab');
 
@@ -40,6 +44,9 @@ return new class extends Migration
             $table->index('email', 'index_adv_email');
             $table->index('oab', 'index_oab_email');
         });
+        DB::statement('ALTER TABLE advogados ADD COLUMN xid public.xid DEFAULT xid()');
+        DB::statement('ALTER TABLE advogados ADD CONSTRAINT uc_adv_xid UNIQUE (xid)');
+
     }
 
     /**

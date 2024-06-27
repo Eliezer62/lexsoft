@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Advogado extends Authenticatable
+class Adv extends Authenticatable
 {
     use Notifiable, SoftDeletes;
 
@@ -92,7 +92,7 @@ class Advogado extends Authenticatable
 
     public function grupo()
     {
-        return $this->belongsTo(Advogado::class);
+        return $this->belongsTo(Adv::class);
     }
 
 
