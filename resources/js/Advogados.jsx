@@ -8,43 +8,6 @@ import NovoAdvogado from './componentes/advogados/NovoAdvogado';
 import axios from "axios";
 
 
-const colunas = [
-    {
-        title:'Nome',
-        dataIndex:'nome',
-        key:'nome',
-        sorter: (a, b) => a.nome.localeCompare(b.nome),
-        sortDirections: ['descend', 'ascend'],
-    },
-    {
-        title:'CPF',
-        dataIndex: 'cpf',
-        key:'cpf',
-        sorter: (a, b) => parseInt(a) - parseInt(b),
-        sortDirections: ['descend', 'ascend'],
-    },
-    {
-        title:'Grupo',
-        dataIndex: 'grupo',
-        key:'grupo'
-    },
-    {
-        title:'Ações',
-        key:'acoes',
-        fixed:'right',
-        render: (_, record) => {
-
-            return (
-                <>
-                    <Button><GrView/></Button>&nbsp;
-                    <Button><GrEdit /></Button>&nbsp;
-                    <Button danger><IoIosRemoveCircleOutline /></Button>
-                </>
-            );
-        }
-    }
-]
-
 const Advogados = () => {
     const [time, setTime] = useState(Date.now());
     const [openNovoAdv, setOpenNovoAdv] = useState(false);
@@ -54,6 +17,49 @@ const Advogados = () => {
     const [advogado, setAdvogado] = useState({});
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
+
+    const colunas = [
+        {
+            title:'Nome',
+            dataIndex:'nome',
+            key:'nome',
+            sorter: (a, b) => a.nome.localeCompare(b.nome),
+            sortDirections: ['descend', 'ascend'],
+        },
+        {
+            title:'CPF',
+            dataIndex: 'cpf',
+            key:'cpf',
+            sorter: (a, b) => parseInt(a) - parseInt(b),
+            sortDirections: ['descend', 'ascend'],
+        },
+        {
+            title:'Grupo',
+            dataIndex: 'grupo',
+            key:'grupo'
+        },
+        {
+            title:'Ações',
+            key:'acoes',
+            fixed:'right',
+            render: (_, record) => {
+
+                return (
+                    <>
+                        <Button><GrView/></Button>&nbsp;
+                        <Button><GrEdit /></Button>&nbsp;
+                        <Button danger onClick={async ()=>{
+                            const response = await axios.delete('/api/advogados/'+record.xid)
+                                .catch(()=>{
+                                    messageApi.error('Não foi possível remover o advogado, erro interno');
+                                });
+                            if(response.status==200) messageApi.success('Advogado removido com sucesso');
+                        }}><IoIosRemoveCircleOutline /></Button>
+                    </>
+                );
+            }
+        }
+    ]
 
     const adicionar = () =>
     {
@@ -70,7 +76,6 @@ const Advogados = () => {
     const enviarNovoAdv =  () => {
         setConfirmNovoAdv(true);
         form.validateFields().then(async ()=>{
-            console.log(advogado);
             const response = await axios({
                 method:'POST',
                 url:'/api/advogados/',
@@ -106,6 +111,7 @@ const Advogados = () => {
 
     return (
       <LayoutBasico titulo={'Advogados'} menu={'advogados'}>
+          {contextHolder}
           <TabelaBase
               coluna={colunas}
               dados={advogados}
