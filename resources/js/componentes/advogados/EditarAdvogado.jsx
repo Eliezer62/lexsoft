@@ -3,7 +3,7 @@ import {Form, Input, InputNumber, Modal, message, Select} from "antd";
 import {MaskedInput} from 'antd-mask-input';
 import axios from 'axios';
 
-const NovoAdvogado = (props) => {
+const EditarAdvogado = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
     const [estados, setEstados] = useState([]);
     const [grupousuarios, setGrupoUsuarios] = useState([]);
@@ -35,7 +35,7 @@ const NovoAdvogado = (props) => {
     }, props.open);
     return (
       <Modal
-          title={'Novo Advogado'}
+          title={'Editar Advogado'}
           open={props.open}
           onOk={props.handleOk}
           onCancel={props.handleCancel}
@@ -46,8 +46,8 @@ const NovoAdvogado = (props) => {
         <Form
             layout={'vertical'}
             autoComplete={true}
-            onFinish={()=>console.log('finalizado')}
             form={props.form}
+            preserve={false}
         >
             <Form.Item
                 label={'Nome Completo'}
@@ -56,6 +56,7 @@ const NovoAdvogado = (props) => {
                     { required: true, message: 'Nome é obrigatório' },
                     {max: 60, message:'Tamanho máximo é de 60 caracteres'}
                 ]}
+                initialValue={props.advogado.nome}
             >
                 <Input placeholder={'Nome Completo'} onChange={(e)=>{
                     props.advogado.nome = e.target.value;
@@ -67,11 +68,12 @@ const NovoAdvogado = (props) => {
                 label={'CPF'}
                 name={'cpf'}
                 rules={[{ required: true, message: 'CPF é obrigatório',type:'regexp', pattern:new RegExp('/^\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$/\n') }]}
+                initialValue={props.advogado.cpf}
             >
                 <MaskedInput mask={'000.000.000-00'} onChange={e=>{
                     props.advogado.cpf = e.target.value.replace(/(\d{3})\.(\d{3})\.(\d{3})\-(\d{2})/, '$1$2$3$4');
                     props.setAdvogado(props.advogado);
-                }}/>
+                }} disabled={true}/>
             </Form.Item>
 
             <Form.Item
@@ -81,16 +83,18 @@ const NovoAdvogado = (props) => {
                     { required: true, message: 'E-mail é obrigatório' , type:'email'},
                     {max: 255, message:'Tamanho máximo é de 255 caracteres'}
                 ]}
+                initialValue={props.advogado.email}
             >
                 <Input placeholder={'exemplo@email.com'} onChange={e=>{
                     props.advogado.email = e.target.value;
                     props.setAdvogado(props.advogado);
-                }}/>
+                }} disabled={true}/>
             </Form.Item>
 
                 <Form.Item
                     label={'OAB'}
                     name={'oab'}
+                    initialValue={props.advogado.oab}
                 >
                     <InputNumber size={6} max={999999} min={1} onChange={e=>{
                         props.advogado.oab = e.toString();
@@ -101,6 +105,7 @@ const NovoAdvogado = (props) => {
                 <Form.Item
                     label={'Estado do OAB'}
                     name={'uf_oab'}
+                    initialValue={props.advogado.uf_oab}
                 >
                     <Select options={estados} onChange={e=>{
                         props.advogado.uf_oab = e;
@@ -114,6 +119,7 @@ const NovoAdvogado = (props) => {
                     rules={[
                         {required:true, message:'Grupo é obrigatório'}
                     ]}
+                    initialValue={props.advogado.grupo}
                 >
                     <Select options={grupousuarios} onChange={e=>{
                         props.advogado.grupo = e;
@@ -125,4 +131,4 @@ const NovoAdvogado = (props) => {
     );
 }
 
-export default NovoAdvogado;
+export default EditarAdvogado;
