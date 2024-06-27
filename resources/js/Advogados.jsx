@@ -5,6 +5,7 @@ import {GrEdit, GrFormClose, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import {Button, Form, message, Modal} from "antd";
 import NovoAdvogado from './componentes/advogados/NovoAdvogado';
+import EditarAdvogado from "@/componentes/advogados/EditarAdvogado.jsx";
 import axios from "axios";
 
 
@@ -17,6 +18,9 @@ const Advogados = () => {
     const [advogado, setAdvogado] = useState({});
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
+    const [openEditAdv, setOpenEditAdv] = useState(false);
+    const [confirmEditAdv, setConfirmEditAdv] = useState(false);
+    const [pesquisa, setPesquisa] = useState('');
 
     const colunas = [
         {
@@ -37,21 +41,8 @@ const Advogados = () => {
             title:'Grupo',
             dataIndex: 'grupo',
             key:'grupo',
-            filters:[
-                {
-                    text:'Administrador',
-                    value:'administrador'
-                },
-                {
-                    text:'Estagiário',
-                    value:'estagiario'
-                },
-                {
-                    text:'Advogado',
-                    value:'advogado'
-                }
-            ],
-            onFilter: (value, record) => record.grupo.includes(value),
+            filteredValue: [pesquisa],
+            onFilter: (value, record) => record.grupo.includes(value) ||  record.nome.toLowerCase().includes(value.toLowerCase()) || record.cpf === value,
         },
         {
             title:'Ações',
@@ -61,8 +52,10 @@ const Advogados = () => {
 
                 return (
                     <>
-                        <Button><GrView/></Button>&nbsp;
-                        <Button><GrEdit /></Button>&nbsp;
+                        <Button onClick={()=>{
+                            setAdvogado(record);
+                            setOpenEditAdv(true);
+                        }}><GrEdit /></Button>&nbsp;
                         <Button danger onClick={async ()=>{
                             const response = await axios.delete('/api/advogados/'+record.xid)
                                 .catch(()=>{
@@ -85,6 +78,7 @@ const Advogados = () => {
     const cancelar = () =>{
         if(!confirmNovoAdv) {
             setOpenNovoAdv(false);
+            setOpenEditAdv(false);
         }
     }
 
@@ -104,6 +98,28 @@ const Advogados = () => {
             setOpenNovoAdv(false);
         }).catch(e=>{
             setConfirmNovoAdv(false);
+        });
+    }
+
+    const updateAdv =  () => {
+        setConfirmEditAdv(true);
+        form.validateFields().then(async ()=>{
+            if(advogado.oab==null){
+                delete advogado.oab;
+                delete advogado.uf_oab;
+            }
+            const response = await axios({
+                method:'PUT',
+                url:'/api/advogados/'+advogado.xid,
+                data:advogado
+            }).catch((e)=>{
+                messageApi.error('Erro em atualizar o advogado: '+e.response.data.msg);
+            })
+            if(response.status==200) messageApi.success('Advogado atualizado com sucesso');
+            setConfirmEditAdv(false);
+            setOpenEditAdv(false);
+        }).catch(e=>{
+            setConfirmEditAdv(false);
         });
     }
 
@@ -133,6 +149,7 @@ const Advogados = () => {
               titulo={'Advogados'}
               adicionar={adicionar}
               loading={loadingTable}
+              pesquisa={setPesquisa}
           />{contextHolder}
           <NovoAdvogado
             open={openNovoAdv}
@@ -142,6 +159,15 @@ const Advogados = () => {
             advogado={advogado}
             setAdvogado={setAdvogado}
             form={form}
+          />
+          <EditarAdvogado
+              open={openEditAdv}
+              handleCancel={cancelar}
+              confirmLoading={confirmEditAdv}
+              handleOk={updateAdv}
+              advogado={advogado}
+              setAdvogado={setAdvogado}
+              form={form}
           />
       </LayoutBasico>
     );
