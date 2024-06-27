@@ -30,6 +30,9 @@ class Estado extends Model
      * @var array
      */
     protected $fillable = [
+        'uf',
         'nome'
     ];
+
+    public $timestamps = false;
 }

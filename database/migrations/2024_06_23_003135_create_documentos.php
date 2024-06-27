@@ -15,9 +15,6 @@ return new class extends Migration
             $table->bigIncrements('id')->primary();
             $table->timestamps();
             $table->softDeletes();
-            $table->char('xid', 20)
-                ->default('xid()')
-                ->unique('uc_docs_xid');
             $table->char('tipo_arquivo', 3);
             $table->string('descricao');
             $table->string('src');
@@ -27,6 +24,8 @@ return new class extends Migration
             $table->integer('pessoajur')->nullable();
             $table->bigInteger('processo')->nullable();
         });
+        DB::statement('ALTER TABLE documentos ADD COLUMN xid public.xid DEFAULT xid()');
+        DB::statement('ALTER TABLE documentos ADD CONSTRAINT uc_doc_xid UNIQUE (xid)');
     }
 
     /**

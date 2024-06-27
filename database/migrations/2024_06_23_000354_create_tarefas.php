@@ -15,9 +15,6 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-            $table->char('xid', 20)
-                ->default('xid()')
-                ->unique('uc_tarefas_xid');
             $table->text('descricao');
             $table->integer('responsavel');
             $table->enum('status', ['nova', 'em progresso', 'confirmar', 'resolvido', 'sem solução']);
@@ -27,6 +24,8 @@ return new class extends Migration
                 ->references('id')
                 ->on('advogados');
         });
+        DB::statement('ALTER TABLE tarefas ADD COLUMN xid public.xid DEFAULT xid()');
+        DB::statement('ALTER TABLE tarefas ADD CONSTRAINT uc_tarefas_xid UNIQUE (xid)');
     }
 
     /**

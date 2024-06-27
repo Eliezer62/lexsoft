@@ -13,11 +13,13 @@ class GrupoUsuario extends Model
      */
     protected $primaryKey = 'grupo';
 
+    public $timestamps = false;
+
     public $incrementing = false;
 
     /**
      * Atributos de Grupo de Usuario
-     * 
+     *
      * @var array<int, string>
      */
     protected $fillable = [

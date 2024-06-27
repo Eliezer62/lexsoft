@@ -13,9 +13,6 @@ return new class extends Migration
     {
         Schema::create('clientes_pessoa_fis', function (Blueprint $table) {
             $table->id();
-            $table->char('xid', 20)
-                ->default('xid()')
-                ->unique('uc_cliente_xid');
             $table->timestamps();
             $table->softDeletes();
             $table->string('nome', 60);
@@ -60,6 +57,8 @@ return new class extends Migration
             $table->index('nome_social','index_cliente_nome_social');
             $table->index('nome','index_cliente_nome');
         });
+        DB::statement('ALTER TABLE clientes_pessoa_fis ADD COLUMN xid public.xid DEFAULT xid()');
+        DB::statement('ALTER TABLE clientes_pessoa_fis ADD CONSTRAINT uc_cliente_xid UNIQUE (xid)');
     }
 
     /**

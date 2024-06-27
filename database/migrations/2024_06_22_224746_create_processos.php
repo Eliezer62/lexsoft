@@ -14,9 +14,6 @@ return new class extends Migration
     {
         Schema::create('processos', function (Blueprint $table) {
             $table->bigIncrements('id')->primary();
-            $table->char('xid', 20)
-                ->default('xid()')
-                ->unique('uc_processos_xid');
             $table->timestamps();
             $table->softDeletes();
             $table->string('numero', 20)
@@ -57,6 +54,8 @@ return new class extends Migration
             $table->index('numCNJ', 'index_processos_numcnj');
 
         });
+        DB::statement('ALTER TABLE processos ADD COLUMN xid public.xid DEFAULT xid()');
+        DB::statement('ALTER TABLE processos ADD CONSTRAINT uc_processos_xid UNIQUE (xid)');
 
         DB::statement('
         ALTER TABLE processos
