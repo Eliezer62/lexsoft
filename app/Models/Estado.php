@@ -35,4 +35,9 @@ class Estado extends Model
     ];
 
     public $timestamps = false;
+
+    public function cidades()
+    {
+        return $this->hasMany(Cidade::class, 'estado', 'uf');
+    }
 }
