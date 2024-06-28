@@ -14,7 +14,7 @@ class EstadoCivilSeeder extends Seeder
     public static function run(): void
     {
         EstadoCivil::firstOrCreate([
-            'estado_civil'=>'Solteriro'
+            'estado_civil'=>'Solteiro'
         ]);
 
         EstadoCivil::firstOrCreate([

@@ -28,7 +28,6 @@ class ClientePessoaFis extends Model
      * @var array
      */
     protected $fillable = [
-        'xid',
         'nome',
         'nome_social',
         'cpf',
@@ -46,6 +45,11 @@ class ClientePessoaFis extends Model
 
     protected $hidden = [
         'id'
+    ];
+
+
+    protected $guarded = [
+        'xid'
     ];
 
 
