@@ -30,6 +30,9 @@ return new class extends Migration
                 ->on('tarefas');
             //index
         });
+
+        DB::statement('ALTER TABLE prazos ADD COLUMN xid public.xid DEFAULT xid()');
+        DB::statement('ALTER TABLE prazos ADD CONSTRAINT uc_prazos_xid UNIQUE (xid)');
     }
 
     /**
