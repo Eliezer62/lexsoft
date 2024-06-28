@@ -18,7 +18,7 @@ class Prazo extends Model
 
     /**
      * Chave primaria do codigo
-     * 
+     *
      * @var string
      */
     protected $primarykey = 'id';
@@ -35,6 +35,10 @@ class Prazo extends Model
         'tarefa'
     ];
 
+    protected $guarded = [
+        'xid'
+    ];
+
 
     protected function casts():array
     {
@@ -47,7 +51,7 @@ class Prazo extends Model
 
     public function tarefa()
     {
-        
+
     }
 
 

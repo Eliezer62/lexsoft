@@ -14,5 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         EstadoSeeder::run();
         GrupoUsuarioSeeder::run();
+        SexoSeeder::run();
+        EstadoCivilSeeder::run();
     }
 }

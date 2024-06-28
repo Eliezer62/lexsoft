@@ -46,3 +46,26 @@ Route::controller(AdvogadoController::class)
         Route::post('/{xid}/update/password', 'updatePassword')
             ->name('advogados.update.password');
     });
+
+//Cliente Pessoa Física
+Route::controller(ClientePessoaFisController::class)
+    ->prefix('/clientesfis')
+    ->group(function(){
+        Route::get('/', 'index')
+                ->name('clientesfis.index');
+
+        Route::get('/{xid}', 'show')
+                ->name('clientesfis.show');
+
+        Route::post('/', 'store')
+                ->name('clientesfis.store');
+    });
+
+
+//Controller cidades
+Route::controller(CidadeController::class)
+    ->prefix('/cidades')
+    ->group(function (){
+        Route::get('/{estado}/', 'getCidadesByEstado')
+            ->name('cidades.getByEstado');
+    });
