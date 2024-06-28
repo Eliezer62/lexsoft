@@ -7,6 +7,7 @@ import Advogados from '@/Advogados.jsx';
 import Tarefas from '@/Tarefas.jsx';
 import '../css/app.css';
 import 'bootstrap';
+import Clientes from "@/Clientes.jsx";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Route path='*' element={<Erro404 />} />
                 <Route path='/' Component={LayoutBasico}/>
                 <Route path='/advogados' Component={Advogados}/>
+                <Route path={'/clientes'} Component={Clientes}/>
                 <Route path='/tarefas' Component={Tarefas}/>
             </Routes>
         </BrowserRouter>
