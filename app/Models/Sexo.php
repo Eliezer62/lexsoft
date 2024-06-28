@@ -13,6 +13,8 @@ class Sexo extends Model
      */
     protected $table = 'sexos';
 
+    public $timestamps = false;
+
     /**
      * ID da tabela sexo
      * @var string
