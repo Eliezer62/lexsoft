@@ -60,3 +60,12 @@ Route::controller(ClientePessoaFisController::class)
         Route::post('/', 'store')
                 ->name('clientesfis.store');
     });
+
+
+//Controller cidades
+Route::controller(CidadeController::class)
+    ->prefix('/cidades')
+    ->group(function (){
+        Route::get('/{estado}/', 'getCidadesByEstado')
+            ->name('cidades.getByEstado');
+    });
