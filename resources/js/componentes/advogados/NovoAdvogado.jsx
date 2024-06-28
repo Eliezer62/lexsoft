@@ -48,6 +48,7 @@ const NovoAdvogado = (props) => {
             autoComplete={true}
             onFinish={()=>console.log('finalizado')}
             form={props.form}
+            preserve={false}
         >
             <Form.Item
                 label={'Nome Completo'}
