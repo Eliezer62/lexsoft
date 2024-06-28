@@ -3,7 +3,7 @@ import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
 import {GrEdit, GrFormClose, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
-import {Button, Form, message, Modal} from "antd";
+import { Button, Form, message, Modal, Popconfirm } from "antd";
 import NovoAdvogado from './componentes/advogados/NovoAdvogado';
 import EditarAdvogado from "@/componentes/advogados/EditarAdvogado.jsx";
 import axios from "axios";
@@ -56,13 +56,21 @@ const Advogados = () => {
                             setAdvogado(record);
                             setOpenEditAdv(true);
                         }}><GrEdit /></Button>&nbsp;
-                        <Button danger onClick={async ()=>{
-                            const response = await axios.delete('/api/advogados/'+record.xid)
-                                .catch(()=>{
-                                    messageApi.error('Não foi possível remover o advogado, erro interno');
-                                });
-                            if(response.status==200) messageApi.success('Advogado removido com sucesso');
-                        }}><IoIosRemoveCircleOutline /></Button>
+                        <Popconfirm
+                            title="Remover o advogado"
+                            description="Você tem certeza que deseja remover o advogado?"
+                            okText="Sim"
+                            cancelText="Não"
+                            onConfirm={async ()=>{
+                                const response = await axios.delete('/api/advogados/'+record.xid)
+                                    .catch(()=>{
+                                        messageApi.error('Não foi possível remover o advogado, erro interno');
+                                    });
+                                if(response.status==200) messageApi.success('Advogado removido com sucesso');
+                            }}
+                        >
+                            <Button danger><IoIosRemoveCircleOutline /></Button>
+                        </Popconfirm>
                     </>
                 );
             }

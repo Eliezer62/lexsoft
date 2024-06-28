@@ -44,7 +44,14 @@ class Advogado extends Authenticatable
         'grupo',
         'primeiro_login'
     ];
-    protected $attributes = ['xid'];
+
+    /**
+     * Atributos que não podem ser modificados
+     * @var string[]
+     */
+    protected $guarded  = [
+        'xid'
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
