@@ -6,13 +6,18 @@ import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import DescricaoItem from "@/componentes/DescricaoItem.jsx";
 import axios from "axios";
+import CamposPessoaFisica from "@/componentes/clientes/CamposPessoaFisica.jsx";
+import camposPessoaFisica from "@/componentes/clientes/CamposPessoaFisica.jsx";
+import CamposPessoaJur from "@/componentes/clientes/CamposPessoaJur.jsx";
 
 const Clientes = () => {
     const [pesquisa, setPesquisa] = useState('');
     const [clientes, setClientes] = useState([]);
     const [loadingTable, setLoadingTable] = useState(false);
     const [visualizarClienteState, setVisualizarClienteState] = useState(false);
+    const [loadingView, setLoadingView] = useState(true);
     const [cliente, setCliente] = useState({});
+    const [tipo, setTipo] = useState('fisico');
 
     const colunas = [
         {
@@ -45,9 +50,18 @@ const Clientes = () => {
             render:(_, record) => {
                 return (
                     <>
-                        <Button onClick={()=>{
-                            setCliente(record);
+                        <Button onClick={async ()=>{
+                            setTipo(record.tipo);
+                            let rota;
                             setVisualizarClienteState(true);
+                            setLoadingView(true);
+                            if(record.tipo==='fisico') rota = '/api/clientesfis/'+record.xid;
+                            else rota = '/api/clientesjur/'+record.xid;
+                            const response = await axios.get(rota).catch(e=>{
+                                console.log('erro');
+                            });
+                            setCliente(await response.data);
+                            setLoadingView(false);
                         }}
                         ><GrView/></Button>&nbsp;
                         <Button><GrEdit/></Button>&nbsp;
@@ -90,25 +104,14 @@ const Clientes = () => {
               title={'Visualizar Cliente'}
               placement="right"
               open={visualizarClienteState}
-              loading={false}
+              loading={loadingView}
               size={'large'}
               onClose={() => setVisualizarClienteState(false)}
           >
-              <Row>
-                  <Col span={12}>
-                      <DescricaoItem titulo={'Nome'} conteudo={cliente.nome}/>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span={12}>
-                      <DescricaoItem titulo={'CPF/CNPJ'} conteudo={cliente.documento}/>
-                  </Col>
-              </Row>
-              <Row>
-                  <Col span={12}>
-                      <DescricaoItem titulo={'email'} conteudo={cliente.email}/>
-                  </Col>
-              </Row>
+              {tipo==='fisico'?
+                  (<CamposPessoaFisica cliente={cliente}/>):
+                  (<CamposPessoaJur cliente={cliente}/>)
+              }
           </Drawer>
       </LayoutBasico>
     );

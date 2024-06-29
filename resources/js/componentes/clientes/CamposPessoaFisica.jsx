@@ -14,7 +14,7 @@ const CamposPessoaFisica = (props) => {
             </Row>
             <Row>
                 <Col span={12}>
-                    <DescricaoItem titulo={'CPF/CNPJ'} conteudo={props.cliente.cpf}/>
+                    <DescricaoItem titulo={'CPF'} conteudo={props.cliente.cpf}/>
                 </Col>
             </Row>
             <Row>
