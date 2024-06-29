@@ -29,7 +29,4 @@ class Sexo extends Model
         'sexo'
     ];
 
-    protected  $hidden = [
-        'id'
-    ];
 }
