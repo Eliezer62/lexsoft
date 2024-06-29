@@ -94,3 +94,10 @@ Route::controller(CidadeController::class)
         Route::get('/{estado}/', 'getCidadesByEstado')
             ->name('cidades.getByEstado');
     });
+
+
+//Controller Sexos
+Route::get('/sexos', [SexoController::class, 'index']);
+
+//Controller Estado Civil
+Route::get('/estados-civis', [EstadoCivilController::class, 'index']);
