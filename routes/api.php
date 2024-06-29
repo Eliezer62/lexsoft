@@ -47,6 +47,14 @@ Route::controller(AdvogadoController::class)
             ->name('advogados.update.password');
     });
 
+//Cliente
+Route::controller(ClienteController::class)
+    ->prefix('/clientes')
+    ->group(function (){
+       Route::get('/', 'index')
+            ->name('clientes.index');
+    });
+
 //Cliente Pessoa Física
 Route::controller(ClientePessoaFisController::class)
     ->prefix('/clientesfis')
