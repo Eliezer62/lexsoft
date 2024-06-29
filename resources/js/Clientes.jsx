@@ -61,14 +61,8 @@ const Clientes = () => {
 
     useEffect(() => {
         const getClientes = async () => {
-            const response = await axios.get('/api/clientesfis');
-            let clientes = [];
-            await response.data.forEach(c => {
-                c.documento = c.cpf;
-                c.tipo = 'fisico';
-                clientes.push(c);
-            })
-            setClientes(clientes);
+            const response = await axios.get('/api/clientes');
+            setClientes(response.data);
         }
 
         const interval = setInterval(() => {

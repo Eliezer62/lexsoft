@@ -47,6 +47,14 @@ Route::controller(AdvogadoController::class)
             ->name('advogados.update.password');
     });
 
+//Cliente
+Route::controller(ClienteController::class)
+    ->prefix('/clientes')
+    ->group(function (){
+       Route::get('/', 'index')
+            ->name('clientes.index');
+    });
+
 //Cliente Pessoa Física
 Route::controller(ClientePessoaFisController::class)
     ->prefix('/clientesfis')
@@ -70,6 +78,9 @@ Route::controller(ClientePessoaJurController::class)
     ->group(function(){
        Route::get('/', 'index')
             ->name('clientesjur.index');
+
+       Route::get('/{xid}', 'show')
+            ->name('clientesjur.show');
 
        Route::post('/', 'store')
            ->name('clientesjur.store');

@@ -104,4 +104,29 @@ class ClientePessoaFisController extends Controller
             return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
+
+
+    public function show(string $xid)
+    {
+        $cliente = DB::table('clientes_pessoa_fis')
+            ->select([
+                'xid',
+                'nome','nome_social','cpf',
+                'email','nome_mae','nome_pai',
+                'profissao','data_nascimento',
+                DB::raw('(SELECT nome FROM cidades c WHERE c.id=clientes_pessoa_fis.naturalidade) AS naturalidade'),
+                DB::raw('(SELECT nome FROM estados e WHERE e.uf=clientes_pessoa_fis.naturalidade_uf) AS naturalidade_uf'),
+                DB::raw('(SELECT sexo FROM sexos s WHERE s.id = clientes_pessoa_fis.sexo) AS sexo'),
+                DB::raw('(SELECT estado_civil FROM estados_civis e WHERE clientes_pessoa_fis.estado_civil = e.id) AS estado_civil'),
+                DB::raw("(SELECT json_build_object('numero',numero,'data_emissao', data_emissao, 'emissor', emissor, 'estado', e.nome)
+                                FROM rgs, estados e WHERE rgs.id = clientes_pessoa_fis.rg AND rgs.estado=e.uf
+                                ) AS rg")
+            ])
+            ->where('deleted_at', '=', null)
+            ->where('xid', $xid)
+            ->first();
+        if(is_null($xid)) return response()->json([], 404);
+        $cliente->rg = json_decode($cliente->rg);
+        return response()->json($cliente, 200);
+    }
 }

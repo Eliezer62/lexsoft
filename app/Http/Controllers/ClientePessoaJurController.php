@@ -53,4 +53,21 @@ class ClientePessoaJurController extends Controller
             return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
+
+
+    public function show(string $xid)
+    {
+        $cliente = ClientePessoaJur::select([
+            'xid',
+            'cnpj',
+            'email',
+            'razao_social',
+            'nome_fantasia',
+            'administrador'
+        ])
+            ->with('administrador')
+            ->first();
+
+        return $cliente;
+    }
 }
