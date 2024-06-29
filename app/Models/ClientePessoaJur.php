@@ -45,4 +45,10 @@ class ClientePessoaJur extends Model
             ->as('partes_jur')
             ->withPivot('qualificacao');
     }
+
+
+    public function administrador()
+    {
+        return $this->belongsTo(ClientePessoaFis::class, 'administrador', 'id');
+    }
 }

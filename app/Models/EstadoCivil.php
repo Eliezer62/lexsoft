@@ -25,4 +25,8 @@ class EstadoCivil extends Model
     protected $fillable = [
         'estado_civil'
     ];
+
+    protected $hidden = [
+        'id'
+    ];
 }

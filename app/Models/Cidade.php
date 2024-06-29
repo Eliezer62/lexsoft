@@ -28,6 +28,10 @@ class Cidade extends Model
         'estado'
     ];
 
+    protected $hidden = [
+        'id'
+    ];
+
     /**
      * Retorna o estado do model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

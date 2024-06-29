@@ -44,7 +44,10 @@ class ClientePessoaFis extends Model
     ];
 
     protected $hidden = [
-        'id'
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
 
@@ -53,10 +56,55 @@ class ClientePessoaFis extends Model
     ];
 
 
+    protected $with = [
+        'sexo',
+        'estado_civil',
+        'naturalidade',
+        'naturalidadeUf',
+        'rg'
+    ];
+
+
+    public function sexo()
+    {
+        return $this->belongsTo(Sexo::class, 'sexo', 'id');
+    }
+
+
+    public function estado_civil()
+    {
+        return $this->belongsTo(EstadoCivil::class, 'estado_civil', 'id');
+    }
+
+
+    public function naturalidade()
+    {
+        return $this->belongsTo(Cidade::class, 'naturalidade', 'id');
+    }
+
+
+    public function naturalidadeUf()
+    {
+        return $this->belongsTo(Estado::class, 'naturalidade_uf', 'uf');
+    }
+
+
+    public function rg()
+    {
+        return $this->hasOne(RG::class, 'id', 'rg');
+    }
+
+
     public function processos()
     {
         return $this->belongsToMany(Processo::class)
             ->as('partes')
             ->withPivot('qualificacao');
+    }
+
+
+    public function empresas()
+    {
+        return $this->hasMany(ClientePessoaJur::class, 'id', 'administrador');
     }
 }

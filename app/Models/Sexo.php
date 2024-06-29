@@ -28,4 +28,8 @@ class Sexo extends Model
     protected  $fillable = [
         'sexo'
     ];
+
+    protected  $hidden = [
+        'id'
+    ];
 }
