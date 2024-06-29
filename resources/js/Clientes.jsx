@@ -1,10 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
 import {Button, Col, Drawer, Row} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import DescricaoItem from "@/componentes/DescricaoItem.jsx";
+import axios from "axios";
 
 const Clientes = () => {
     const [pesquisa, setPesquisa] = useState('');
@@ -58,24 +59,34 @@ const Clientes = () => {
     ];
 
 
-    const data = [
-        {
-            nome:'eliezer',
-            documento:'11312199962',
-            email:"eliezerdealmeida62@gmail.com"
-        },
-        {
-            nome:'Gnoatto Advocacia',
-            documento:'04361527000100',
-            email:"eliezerdealmeida62@gmail.com"
-        },
-    ];
+    useEffect(() => {
+        const getClientes = async () => {
+            const response = await axios.get('/api/clientesfis');
+            let clientes = [];
+            await response.data.forEach(c => {
+                c.documento = c.cpf;
+                c.tipo = 'fisico';
+                clientes.push(c);
+            })
+            setClientes(clientes);
+        }
+
+        const interval = setInterval(() => {
+            getClientes();
+            setLoadingTable(false);
+
+        }, 3000);
+
+        return () => {
+            clearInterval(interval);
+        }
+    });
 
     return (
       <LayoutBasico titulo={'Clientes'} menu={'clientes'}>
         <TabelaBase
             coluna={colunas}
-            dados={data}
+            dados={clientes}
             loading={loadingTable}
             pesquisa={setPesquisa}
         />
