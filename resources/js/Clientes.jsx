@@ -9,15 +9,17 @@ import axios from "axios";
 import CamposPessoaFisica from "@/componentes/clientes/CamposPessoaFisica.jsx";
 import camposPessoaFisica from "@/componentes/clientes/CamposPessoaFisica.jsx";
 import CamposPessoaJur from "@/componentes/clientes/CamposPessoaJur.jsx";
+import NovoCliente from "@/componentes/clientes/NovoCliente.jsx";
 
 const Clientes = () => {
     const [pesquisa, setPesquisa] = useState('');
     const [clientes, setClientes] = useState([]);
-    const [loadingTable, setLoadingTable] = useState(false);
+    const [loadingTable, setLoadingTable] = useState(true);
     const [visualizarClienteState, setVisualizarClienteState] = useState(false);
     const [loadingView, setLoadingView] = useState(true);
     const [cliente, setCliente] = useState({});
     const [tipo, setTipo] = useState('fisico');
+    const [openNovoCliente, setOpenNovoCliente] = useState(false);
 
     const colunas = [
         {
@@ -90,6 +92,16 @@ const Clientes = () => {
         }
     });
 
+    const cancelar = () => {
+        setOpenNovoCliente(false);
+    }
+
+    const adicionar = () =>
+    {
+        setCliente({});
+        setOpenNovoCliente(true);
+    }
+
     return (
       <LayoutBasico titulo={'Clientes'} menu={'clientes'}>
         <TabelaBase
@@ -97,6 +109,7 @@ const Clientes = () => {
             dados={clientes}
             loading={loadingTable}
             pesquisa={setPesquisa}
+            adicionar={adicionar}
         />
           <Drawer
               closable={true}
@@ -113,6 +126,10 @@ const Clientes = () => {
                   (<CamposPessoaJur cliente={cliente}/>)
               }
           </Drawer>
+          <NovoCliente
+            open={openNovoCliente}
+            handleCancel={cancelar}
+          />
       </LayoutBasico>
     );
 }
