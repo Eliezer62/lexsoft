@@ -79,6 +79,9 @@ Route::controller(ClientePessoaJurController::class)
        Route::get('/', 'index')
             ->name('clientesjur.index');
 
+       Route::get('/{xid}', 'show')
+            ->name('clientesjur.show');
+
        Route::post('/', 'store')
            ->name('clientesjur.store');
     });
