@@ -126,7 +126,7 @@ class ClientePessoaFisController extends Controller
             ->where('xid', $xid)
             ->first();
         if(is_null($xid)) return response()->json([], 404);
-
+        $cliente->rg = json_decode($cliente->rg);
         return response()->json($cliente, 200);
     }
 }
