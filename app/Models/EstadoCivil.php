@@ -26,7 +26,4 @@ class EstadoCivil extends Model
         'estado_civil'
     ];
 
-    protected $hidden = [
-        'id'
-    ];
 }
