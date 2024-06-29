@@ -64,6 +64,17 @@ Route::controller(ClientePessoaFisController::class)
                 ->name('clientesfis.storeRG');
     });
 
+//Cliente Pessoa Jur
+Route::controller(ClientePessoaJurController::class)
+    ->prefix('/clientesjur')
+    ->group(function(){
+       Route::get('/', 'index')
+            ->name('clientesjur.index');
+
+       Route::post('/', 'store')
+           ->name('clientesjur.store');
+    });
+
 
 //Controller cidades
 Route::controller(CidadeController::class)

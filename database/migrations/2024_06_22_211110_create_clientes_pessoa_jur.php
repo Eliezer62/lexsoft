@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-            $table->string('razao_social');
+            $table->string('razao_social')
+                ->unique('uc_clientes_jur_razao');
             $table->char('cnpj',14)
                 ->unique('uc_cliente_jur_cnpj');
             $table->string('nome_fantasia')->nullable();

@@ -41,22 +41,38 @@ class ClientePessoaFisController extends Controller
 
     public function store(Request $request)
     {
-        $validado = $request->validate([
-            'nome' => 'required|max:60|min:3',
-            'nome_social' => 'max:60|min:3',
-            'cpf'=>'required|max:11|min:11',
-            'rg'=>'required',
-            'email'=>'required|max:255|email',
-            'sexo'=>'required',
-            'estado_civil'=>'required',
-            'naturalidade'=>'required',
-            'naturalidade_uf'=>'required',
-            'profissao'=>'required',
-            'data_nascimento'=>'required|date',
-        ]);
+        try {
+            $validado = $request->validate([
+                'nome' => 'required|max:60|min:3',
+                'nome_social' => 'max:60|min:3',
+                'cpf' => 'required|max:11|min:11',
+                'rg' => 'required',
+                'email' => 'required|max:255|email',
+                'sexo' => 'required',
+                'estado_civil' => 'required',
+                'naturalidade' => 'required',
+                'naturalidade_uf' => 'required',
+                'profissao' => 'required',
+                'data_nascimento' => 'required|date',
+            ]);
 
-        $cliente = ClientePessoaFis::create($validado);
-        return response()->json($cliente, 201);
+            $cliente = ClientePessoaFis::create($validado);
+            return response()->json($cliente, 201);
+        }
+        catch (ValidationException $e)
+        {
+            return response()->json(['msg'=>'Dados obrigatórios não fornecidos ou inválidos'], 422);
+        }
+        catch (QueryException $e)
+        {
+            if($e->getCode()==23505)
+                return response()->json(['msg'=>'Valores duplicados: cpf, email e rg devem ser únicos'], 500);
+            return response()->json($e->getMessage(), 500);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json(['msg'=>'Erro interno'], 500);
+        }
     }
 
 
@@ -85,7 +101,6 @@ class ClientePessoaFisController extends Controller
         }
         catch (\Exception $e)
         {
-            echo $e;
             return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
