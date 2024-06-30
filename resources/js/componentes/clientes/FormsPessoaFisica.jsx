@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {DatePicker, Form, Input, InputNumber, Select} from "antd";
 import {MaskedInput} from "antd-mask-input";
 import axios from "axios";
+import dayjs from "dayjs";
 
 
 const FormsPessoaFisica = (props) => {
@@ -65,6 +66,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                     label={'Nome Completo'}
                     name={'nome'}
+                    initialValue={props.cliente?.nome}
                     rules={[
                         {required:true, message:'Nome é obrigatório'},
                         {max:60, message:'Tamanho máximo é 60 caracteres'}
@@ -76,6 +78,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                     label={'Nome Social'}
                     name={'nome_social'}
+                    initialValue={props.cliente?.nome_social}
                     rules={[
                         {max:60, message:'Tamanho máximo é 60 caracteres'}
                     ]}
@@ -86,6 +89,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                     label={'CPF'}
                     name={'cpf'}
+                    initialValue={props.cliente?.cpf}
                     rules={[
                         {required:true, message:'CPF é obrigatório'}
                     ]}
@@ -96,6 +100,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                     label={'email'}
                     name={'email'}
+                    initialValue={props.cliente?.email}
                     rules={[
                         {required:true, message:'email é obrigatório'},
                         {type:'email', message:'Insira um email válido'}
@@ -107,6 +112,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                     label={'Data de Nascimento'}
                     name={'data_nascimento'}
+                    initialValue={props.cliente?.data_nascimento?dayjs(props.cliente?.data_nascimento?.toString(), 'YYYY-MM-DD'):''}
                     rules={[
                         {required:true, message:'Data de nascimento é obrigatório'}
                     ]}
@@ -120,6 +126,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                     label={'Nome Pai'}
                     name={'nome_pai'}
+                    initialValue={props.cliente?.nome_pai?.toString()}
                     rules={[
                         {max:60, message:'Tamanho máximo é 60 caracteres'}
                     ]}
@@ -130,6 +137,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                     label={'Nome Mãe'}
                     name={'nome_mae'}
+                    initialValue={props.cliente?.nome_mae?.toString()}
                     rules={[
                         {max:60, message:'Tamanho máximo é 60 caracteres'}
                     ]}
@@ -140,6 +148,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                     label={'Profissão'}
                     name={'profissao'}
+                    initialValue={props.cliente?.profissao}
                     rules={[
                         {required:true, message:'Profissão é obrigatório'},
                         {max:60, message:'Tamanho máximo é 60 caracteres'}
@@ -151,6 +160,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                     label={'Sexo'}
                     name={'sexo'}
+                    initialValue={props.cliente?.sexo}
                     rules={[
                         {required:true, message:'Sexo é obrigatório'}
                     ]}
@@ -164,6 +174,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                     label={'Estado Civil'}
                     name={'estado_civil'}
+                    initialValue={props.cliente?.estado_civil}
                     rules={[
                         {required:true, message:'Estado Civil é obrigatório'}
                     ]}
@@ -177,6 +188,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                     label={'Naturalidade Estado'}
                     name={'naturalidade_uf'}
+                    initialValue={props.cliente?.naturalidade_uf}
                     rules={[
                         {required:true, message:'Estado é obrigatório'}
                     ]}
@@ -195,6 +207,7 @@ const FormsPessoaFisica = (props) => {
                 <Form.Item
                 label={'Naturalidade'}
                 name={'naturalidade'}
+                initialValue={props.cliente?.naturalidade}
                 rules={[
                     {required:true, message:'Naturalidade é obrigatório'}
                 ]}
@@ -215,6 +228,7 @@ const FormsPessoaFisica = (props) => {
                     <Form.Item
                         label={'Número'}
                         name={'rg_numero'}
+                        initialValue={props.cliente?.rg.numero}
                         rules={[
                             {required:true, message:'Número é obrigatório'}
                         ]}
@@ -225,6 +239,7 @@ const FormsPessoaFisica = (props) => {
                     <Form.Item
                         label={'Emissor (SSP/DETRAN/etc)'}
                         name={'rg_emissor'}
+                        initialValue={props.cliente?.rg.emissor}
                         rules={[
                             {required:true, message:'Emissor é obrigatório'}
                         ]}
@@ -235,6 +250,7 @@ const FormsPessoaFisica = (props) => {
                     <Form.Item
                         label={'Data de emissão'}
                         name={'rg_data_emissor'}
+                        initialValue={props.cliente?.rg.data_emissao?dayjs(props.cliente.rg.data_emissao, 'YYYY-MM-DD'):''}
                         rules={[
                             {required:true, message:'Data de emissão é obrigatório'}
                         ]}
@@ -248,6 +264,7 @@ const FormsPessoaFisica = (props) => {
                     <Form.Item
                         label={'Estado'}
                         name={'rg_estado'}
+                        initialValue={props.cliente?.rg.estado}
                         rules={[
                             {required:true, message:'Estado é obrigatório'}
                         ]}
