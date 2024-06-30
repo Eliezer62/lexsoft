@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClientePessoaFis;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,9 +32,11 @@ class ClientePessoaJurController extends Controller
                 'razao_social'=>'required|max:255',
                 'nome_fantasia'=>'max:255',
                 'email'=>'email',
-                'administrador'=>''
+                'administrador'=>'required'
             ]);
-
+            $adm = ClientePessoaFis::firstWhere('xid', $validados['administrador']);
+            if(is_null($adm)) throw new \Exception();
+            $validados['administrador'] = $adm->id;
             $cliente = ClientePessoaJur::create($validados);
             return response()->json($cliente, 201);
         }
@@ -49,7 +52,6 @@ class ClientePessoaJurController extends Controller
         }
         catch (\Exception $e)
         {
-            echo $e;
             return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
