@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {DatePicker, Form, Input, Select} from "antd";
+import {DatePicker, Form, Input, InputNumber, Select} from "antd";
 import {MaskedInput} from "antd-mask-input";
 import axios from "axios";
 
@@ -206,6 +206,62 @@ const FormsPessoaFisica = (props) => {
                         showSearch
                         optionFilterProp={'label'}
                     />
+                </Form.Item>
+
+                <Form.Item
+                    label={'Registro Geral'}
+                    style={{backgroundColor: '#fbfbfb', padding:25, borderRadius:20}}
+                >
+                    <Form.Item
+                        label={'Número'}
+                        name={'rg_numero'}
+                        rules={[
+                            {required:true, message:'Número é obrigatório'}
+                        ]}
+                    >
+                        <InputNumber style={{width:'300px'}} min={1}/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label={'Emissor (SSP/DETRAN/etc)'}
+                        name={'rg_emissor'}
+                        rules={[
+                            {required:true, message:'Emissor é obrigatório'}
+                        ]}
+                    >
+                        <Input/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label={'Data de emissão'}
+                        name={'rg_data_emissor'}
+                        rules={[
+                            {required:true, message:'Data de emissão é obrigatório'}
+                        ]}
+                    >
+                        <DatePicker
+                            placeholder={'Data de emissão'}
+                            format={'DD/MM/YYYY'}
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        label={'Estado'}
+                        name={'rg_estado'}
+                        rules={[
+                            {required:true, message:'Estado é obrigatório'}
+                        ]}
+                    >
+                        <Select
+                            placeholder={'Selecione o Estado'}
+                            options={naturalidadeUF}
+                            showSearch
+                            optionFilterProp={'label'}
+                            onSelect={(e)=>{
+                                getCidades(e);
+                            }}
+                        />
+                    </Form.Item>
                 </Form.Item>
             </Form>
         </>
