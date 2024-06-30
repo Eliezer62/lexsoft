@@ -127,7 +127,7 @@ class ClientePessoaFisController extends Controller
             ->where('deleted_at', '=', null)
             ->where('xid', $xid)
             ->first();
-        if(is_null($xid)) return response()->json([], 404);
+        if(is_null($cliente)) return response()->json([], 404);
         $cliente->rg = json_decode($cliente->rg);
         return response()->json($cliente, 200);
     }
