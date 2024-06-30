@@ -54,6 +54,8 @@ class ClientePessoaFisController extends Controller
                 'naturalidade_uf' => 'required',
                 'profissao' => 'required',
                 'data_nascimento' => 'required|date',
+                'nome_pai'=>'sometimes',
+                'nome_mae'=>'sometimes'
             ]);
 
             $cliente = ClientePessoaFis::create($validado);

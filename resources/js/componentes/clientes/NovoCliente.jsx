@@ -25,10 +25,10 @@ const NovoCliente = (props) => {
                 cliente.email = form.getFieldValue('email');
                 cliente.sexo = form.getFieldValue('sexo');
                 cliente.estado_civil = form.getFieldValue('estado_civil');
-                if(form.getFieldValue('nome_pai'))
+                if(form.getFieldValue('nome_pai')!==undefined)
                     cliente.nome_pai = form.getFieldValue('nome_pai');
 
-                if(form.getFieldValue('nome_mae'))
+                if(form.getFieldValue('nome_mae')!==undefined)
                     cliente.nome_mae = form.getFieldValue('nome_mae');
 
                 cliente.naturalidade = form.getFieldValue('naturalidade');
