@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from "react";
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
-import {Button, Col, Drawer, Row} from "antd";
+import {Button, Col, Drawer, message, Row} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
-import DescricaoItem from "@/componentes/DescricaoItem.jsx";
 import axios from "axios";
 import CamposPessoaFisica from "@/componentes/clientes/CamposPessoaFisica.jsx";
-import camposPessoaFisica from "@/componentes/clientes/CamposPessoaFisica.jsx";
 import CamposPessoaJur from "@/componentes/clientes/CamposPessoaJur.jsx";
 import NovoCliente from "@/componentes/clientes/NovoCliente.jsx";
 
@@ -20,6 +18,7 @@ const Clientes = () => {
     const [cliente, setCliente] = useState({});
     const [tipo, setTipo] = useState('fisico');
     const [openNovoCliente, setOpenNovoCliente] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
 
     const colunas = [
         {
@@ -102,6 +101,14 @@ const Clientes = () => {
         setOpenNovoCliente(true);
     }
 
+    const exibirErro = (e)=>{
+        messageApi.error('Erro em criar cliente: '+e);
+    }
+
+    const exibirSucesso = () => {
+        messageApi.success('Cliente criado com sucesso');
+    }
+
     return (
       <LayoutBasico titulo={'Clientes'} menu={'clientes'}>
         <TabelaBase
@@ -111,6 +118,7 @@ const Clientes = () => {
             pesquisa={setPesquisa}
             adicionar={adicionar}
         />
+          {contextHolder}
           <Drawer
               closable={true}
               destroyOnClose={true}
@@ -129,6 +137,8 @@ const Clientes = () => {
           <NovoCliente
             open={openNovoCliente}
             handleCancel={cancelar}
+            erroMsg={exibirErro}
+            sucessoMsg={exibirSucesso}
           />
       </LayoutBasico>
     );
