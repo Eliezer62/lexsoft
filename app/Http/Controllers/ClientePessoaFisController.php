@@ -115,6 +115,72 @@ class ClientePessoaFisController extends Controller
                 'xid',
                 'nome','nome_social','cpf',
                 'email','nome_mae','nome_pai',
+                'profissao','data_nascimento','naturalidade',
+                'naturalidade_uf','sexo','estado_civil',
+                DB::raw("(SELECT json_build_object('numero',numero,'data_emissao', data_emissao, 'emissor', emissor, 'estado', estado)
+                                FROM rgs WHERE rgs.id = clientes_pessoa_fis.rg
+                                ) AS rg")
+            ])
+            ->where('deleted_at', '=', null)
+            ->where('xid', $xid)
+            ->first();
+        if(is_null($cliente)) return response()->json([], 404);
+        $cliente->rg = json_decode($cliente->rg);
+        return response()->json($cliente, 200);
+    }
+
+
+    public function update(Request $request, $xid)
+    {
+        try{
+            $cliente = ClientePessoaFis::firstWhere('xid', $xid);
+            if (is_null($cliente)) return response()->json([], 404);
+            $validado = $request->validate([
+                'nome' => 'max:60|string',
+                'nome_social' => 'max:60',
+                'cpf' => 'max:11|min:11',
+                'email' => 'max:255|email',
+                'data_nascimento' => 'date',
+                'nome_pai' => 'max:60',
+                'nome_mae' => 'max:60',
+                'profissao' => 'max:60|string',
+                'sexo' => 'sometimes',
+                'estado_civil' => 'sometimes',
+                'naturalidade' => 'sometimes',
+                'naturalidade_uf' => 'sometimes',
+                'rg' => 'sometimes'
+            ]);
+
+            $cliente->rg()->first()->update($validado['rg']);
+            $validado['rg'] = $cliente->rg;
+            $cliente->update($validado);
+
+            return response()->json($cliente, 200);
+        }
+        catch (ValidationException $e)
+        {
+            return response()->json(['msg'=>'Dados obrigatórios não fornecidos ou inválidos'], 422);
+        }
+        catch (QueryException $e)
+        {
+            if($e->getCode()==23505)
+                return response()->json(['msg'=>'Valores duplicados: somente é permitido um único RG com mesmo número e Estado'], 500);
+            return response()->json($e->getMessage(), 500);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json(['msg'=>'Erro interno'], 500);
+        }
+    }
+
+
+    public function showFormatado($xid)
+    {
+        $cliente = DB::table('clientes_pessoa_fis')
+            ->select([
+                'xid',
+                'nome','nome_social','cpf',
+                'email','nome_mae','nome_pai',
                 'profissao','data_nascimento',
                 DB::raw('(SELECT nome FROM cidades c WHERE c.id=clientes_pessoa_fis.naturalidade) AS naturalidade'),
                 DB::raw('(SELECT nome FROM estados e WHERE e.uf=clientes_pessoa_fis.naturalidade_uf) AS naturalidade_uf'),
@@ -127,7 +193,7 @@ class ClientePessoaFisController extends Controller
             ->where('deleted_at', '=', null)
             ->where('xid', $xid)
             ->first();
-        if(is_null($cliente)) return response()->json([], 404);
+        if(is_null($xid)) return response()->json([], 404);
         $cliente->rg = json_decode($cliente->rg);
         return response()->json($cliente, 200);
     }
