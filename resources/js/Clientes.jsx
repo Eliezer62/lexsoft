@@ -59,7 +59,7 @@ const Clientes = () => {
                             let rota;
                             setVisualizarClienteState(true);
                             setLoadingView(true);
-                            if(record.tipo==='fisico') rota = '/api/clientesfis/'+record.xid;
+                            if(record.tipo==='fisico') rota = '/api/clientesfis/'+record.xid+"/formatado";
                             else rota = '/api/clientesjur/'+record.xid;
                             const response = await axios.get(rota).catch(e=>{
                                 messageApi.error('Erro em obter os dados');
@@ -127,8 +127,8 @@ const Clientes = () => {
         messageApi.error('Erro em criar cliente: '+e);
     }
 
-    const exibirSucesso = () => {
-        messageApi.success('Cliente criado com sucesso');
+    const exibirSucesso = (msg = 'Cliente criado com sucesso') => {
+        messageApi.success(msg);
     }
 
     return (
