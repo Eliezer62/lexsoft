@@ -1,21 +1,20 @@
-import React, {useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Form, message, Modal, Radio} from 'antd';
 import FormsPessoaFisica from "@/componentes/clientes/FormsPessoaFisica.jsx";
 import FormsPessoaJuridica from "@/componentes/clientes/FormsPessoaJuridica.jsx";
 import axios from "axios";
 import dayjs from "dayjs";
 
-const NovoCliente = (props) => {
-    const [tipo, setTipo] = useState('fisico');
+const EditarCliente = (props) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
 
-    const enviarNovoCliente =  () => {
+    const enviarCliente =  () => {
         form.validateFields().then(async ()=>{
             setLoading(true);
             let url;
             let cliente = {};
-            if(tipo==='fisico')
+            if(props.cliente.cpf)
             {
                 cliente.nome = form.getFieldValue('nome');
                 if(form.getFieldValue('nome_social'))
@@ -35,32 +34,26 @@ const NovoCliente = (props) => {
                 cliente.naturalidade_uf = form.getFieldValue('naturalidade_uf');
                 cliente.profissao = form.getFieldValue('profissao');
                 cliente.data_nascimento = dayjs(form.getFieldValue('data_nascimento')).format('YYYY-MM-DD');
-                let rg = {};
-                rg.numero = form.getFieldValue('rg_numero');
-                rg.data_emissao = dayjs(form.getFieldValue('rg_data_emissao')).format('YYYY-MM-DD');
-                rg.emissor = form.getFieldValue('rg_emissor');
-                rg.estado = form.getFieldValue('rg_estado');
-                const responseRG = await axios({
-                    method:'POST',
-                    url:'/api/clientesfis/rg',
-                    data:rg
-                }).then(response => {
-                    rg = response.data;
-                });
-                if(!rg.id) return;
-                cliente.rg = rg.id;
+                cliente.rg = {};
+                cliente.rg.numero = form.getFieldValue('rg_numero');
+                cliente.rg.data_emissao = dayjs(form.getFieldValue('rg_data_emissao')).format('YYYY-MM-DD');
+                cliente.rg.emissor = form.getFieldValue('rg_emissor');
+                cliente.rg.estado = form.getFieldValue('rg_estado');
                 const response = await axios({
-                    method:'POST',
-                    url:'/api/clientesfis',
-                    data:cliente
-                }).catch((error)=>{
-                    props.erroMsg(error.response.msg);
+                        method:'PUT',
+                        url:'/api/clientesfis/'+props.cliente.xid,
+                        data:cliente
+                    }).then((response)=>{
+                        setLoading(false);
+                        if(response.status===200){
+                            props.handleCancel();
+                            props.sucessoMsg('Sucesso em atualizar o cliente');
+                        }
+                    })
+                        .catch((error)=>{
+                            props.erroMsg(error.response.msg);
+                            setLoading(false);
                 });
-                setLoading(false);
-                if(response.status===201){
-                    props.handleCancel();
-                    props.sucessoMsg();
-                }
             }
             else
             {
@@ -72,43 +65,38 @@ const NovoCliente = (props) => {
 
                 cliente.administrador = form.getFieldValue('administrador');
                 const response = await axios({
-                    method:'POST',
-                    url:'/api/clientesjur',
+                    method:'PUT',
+                    url:'/api/clientesjur/'+props.cliente.xid,
                     data:cliente
-                }).catch((error)=>{
-                    props.erroMsg(error.response.msg);
-                });
-                setLoading(false);
-                if(response.status===201){
-                    props.handleCancel();
-                    props.sucessoMsg();
-                }
+                }).then((response)=>{
+                    setLoading(false);
+                    if(response.status===200){
+                        props.handleCancel();
+                        props.sucessoMsg('Sucesso em atualizar o cliente');
+                    }
+                })
+                    .catch((error)=>{
+                        props.erroMsg(error.response.msg);
+                        setLoading(false);
+                    });
             }
-
         });
     }
+
 
     return (
         <Modal
             open={props.open}
-            title={'Novo Cliente'}
-            onOk={enviarNovoCliente}
+            title={'Editar Cliente'}
+            onOk={enviarCliente}
             onCancel={props.handleCancel}
             destroyOnClose={true}
             confirmLoading={loading}
+            loading={props.loadingModal}
         >
-            <Radio.Group
-                style={{margin:10}}
-                options={[
-                    {label:'Pessoa Física', value:'fisico'},
-                    {label:'Pessoa Jurídica', value:'juridica'}
-                ]}
-                optionType="button"
-                onChange={(v)=>setTipo(v.target.value)}
-            />
-            {tipo=="fisico"?(<FormsPessoaFisica form={form}/>):(<FormsPessoaJuridica form={form}/>)}
+            {props.cliente === "fisico"||props.cliente.cpf?(<FormsPessoaFisica form={form} cliente={props.cliente}/>):(<FormsPessoaJuridica form={form} cliente={props.cliente}/>)}
         </Modal>
     );
 }
 
-export default NovoCliente;
+export default EditarCliente;

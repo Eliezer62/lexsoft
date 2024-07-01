@@ -72,4 +72,38 @@ class ClientePessoaJurController extends Controller
 
         return $cliente;
     }
+
+
+    public function update(Request $request, string $xid)
+    {
+        try{
+            $validados = $request->validate([
+                'cnpj'=>'max:14|min:14',
+                'razao_social'=>'max:255',
+                'nome_fantasia'=>'max:255',
+                'email'=>'email',
+                'administrador'=>'sometimes'
+            ]);
+            $adm = ClientePessoaFis::firstWhere('xid', $validados['administrador']);
+            $cliente = ClientePessoaJur::firstWhere('xid', $xid);
+            if(is_null($adm) or is_null($cliente)) return response()->json([], 404);
+            $validados['administrador'] = $adm->id;
+            $cliente->update($validados);
+            return response()->json($cliente, 200);
+        }
+        catch (ValidationException $e)
+        {
+            return response()->json(['msg'=>'Dados obrigatórios não fornecidos ou inválidos'], 422);
+        }
+        catch (QueryException $e)
+        {
+            if($e->getCode()==23505)
+                return response()->json(['msg'=>'Valores duplicados: cnpj ou razão social devem ser únicos'], 500);
+            return response()->json($e->getMessage(), 500);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json(['msg'=>'Erro interno'], 500);
+        }
+    }
 }

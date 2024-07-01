@@ -65,11 +65,17 @@ Route::controller(ClientePessoaFisController::class)
         Route::get('/{xid}', 'show')
                 ->name('clientesfis.show');
 
+        Route::get('/{xid}/formatado', 'showFormatado')
+            ->name('clientesfis.show.formatado');
+
         Route::post('/', 'store')
                 ->name('clientesfis.store');
 
         Route::post('/rg', 'storeRG')
                 ->name('clientesfis.storeRG');
+
+        Route::put('/{xid}', 'update')
+                ->name('clientesfis.update');
     });
 
 //Cliente Pessoa Jur
@@ -84,6 +90,9 @@ Route::controller(ClientePessoaJurController::class)
 
        Route::post('/', 'store')
            ->name('clientesjur.store');
+
+       Route::put('/{xid}', 'update')
+            ->name('clientesjur.update');
     });
 
 

@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from "react";
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
-import {Button, Col, Drawer, message, Row} from "antd";
+import {Button, Col, Drawer, Form, message, Row} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import axios from "axios";
 import CamposPessoaFisica from "@/componentes/clientes/CamposPessoaFisica.jsx";
 import CamposPessoaJur from "@/componentes/clientes/CamposPessoaJur.jsx";
 import NovoCliente from "@/componentes/clientes/NovoCliente.jsx";
+import EditarCliente from "@/componentes/clientes/EditarCliente.jsx";
 
 const Clientes = () => {
     const [pesquisa, setPesquisa] = useState('');
@@ -18,7 +19,9 @@ const Clientes = () => {
     const [cliente, setCliente] = useState({});
     const [tipo, setTipo] = useState('fisico');
     const [openNovoCliente, setOpenNovoCliente] = useState(false);
+    const [openEditarCliente, setOpenEditarCliente] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
+    const [loadingEditar, setLoadingEditar] = useState(false);
 
     const colunas = [
         {
@@ -56,16 +59,34 @@ const Clientes = () => {
                             let rota;
                             setVisualizarClienteState(true);
                             setLoadingView(true);
-                            if(record.tipo==='fisico') rota = '/api/clientesfis/'+record.xid;
+                            if(record.tipo==='fisico') rota = '/api/clientesfis/'+record.xid+"/formatado";
                             else rota = '/api/clientesjur/'+record.xid;
                             const response = await axios.get(rota).catch(e=>{
-                                console.log('erro');
+                                messageApi.error('Erro em obter os dados');
                             });
                             setCliente(await response.data);
                             setLoadingView(false);
                         }}
                         ><GrView/></Button>&nbsp;
-                        <Button><GrEdit/></Button>&nbsp;
+                        <Button onClick={ async ()=>{
+                            setLoadingEditar(true);
+                            setOpenEditarCliente(true);
+                            let rota;
+                            if(record.tipo==='fisico') rota = '/api/clientesfis/'+record.xid;
+                            else rota = '/api/clientesjur/'+record.xid;
+                            const response = await axios.get(rota).catch(e=>{
+                                messageApi.error('Erro em obter os dados');
+                            });
+                            if(response.data.cpf || response.data.cnpj)
+                            {
+                                setCliente(await response.data);
+                                setLoadingEditar(false);
+                            }
+                            else {
+                                messageApi.error('Erro em obter os dados');
+                                setOpenEditarCliente(false);
+                            }
+                        }}><GrEdit/></Button>&nbsp;
                         <Button danger={true}><IoIosRemoveCircleOutline/></Button>
                     </>
                 )
@@ -93,6 +114,7 @@ const Clientes = () => {
 
     const cancelar = () => {
         setOpenNovoCliente(false);
+        setOpenEditarCliente(false);
     }
 
     const adicionar = () =>
@@ -105,8 +127,8 @@ const Clientes = () => {
         messageApi.error('Erro em criar cliente: '+e);
     }
 
-    const exibirSucesso = () => {
-        messageApi.success('Cliente criado com sucesso');
+    const exibirSucesso = (msg = 'Cliente criado com sucesso') => {
+        messageApi.success(msg);
     }
 
     return (
@@ -139,6 +161,14 @@ const Clientes = () => {
             handleCancel={cancelar}
             erroMsg={exibirErro}
             sucessoMsg={exibirSucesso}
+          />
+          <EditarCliente
+              open={openEditarCliente}
+              handleCancel={cancelar}
+              erroMsg={exibirErro}
+              sucessoMsg={exibirSucesso}
+              cliente={cliente}
+              loadingModal={loadingEditar}
           />
       </LayoutBasico>
     );

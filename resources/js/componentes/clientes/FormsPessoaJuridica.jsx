@@ -30,6 +30,7 @@ const FormsPessoaJuridica = (props) => {
             <Form.Item
                 label={'Razão Social'}
                 name={'razao_social'}
+                initialValue={props.cliente?.razao_social}
                 rules={[
                     {required:true, message:'Razão é obrigatório'},
                     {max:255, message:'Tamanho máximo é 255 caracteres'}
@@ -41,6 +42,7 @@ const FormsPessoaJuridica = (props) => {
             <Form.Item
                 label={'CNPJ'}
                 name={'cnpj'}
+                initialValue={props.cliente?.cnpj}
                 rules={[
                     {required:true, message:'CPF é obrigatório'}
                 ]}
@@ -51,6 +53,7 @@ const FormsPessoaJuridica = (props) => {
             <Form.Item
                 label={'email'}
                 name={'email'}
+                initialValue={props.cliente?.email}
                 rules={[
                     {required:true, message:'email é obrigatório'},
                     {type:'email', message:'Insira um email válido'}
@@ -62,6 +65,7 @@ const FormsPessoaJuridica = (props) => {
             <Form.Item
                 label={'Nome Fantasia'}
                 name={'nome_fantasia'}
+                initialValue={props.cliente?.nome_fantasia}
                 rules={[
                     {max:255, message:'Tamanho máximo é 255 caracteres'}
                 ]}
@@ -72,6 +76,7 @@ const FormsPessoaJuridica = (props) => {
             <Form.Item
                 label={'Administrador'}
                 name={'administrador'}
+                initialValue={props.cliente?.administrador.xid}
                 rules={[
                     {required:true, message:'Administrador é obrigatório'}
                 ]}
