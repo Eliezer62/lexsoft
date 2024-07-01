@@ -106,4 +106,11 @@ class ClientePessoaJurController extends Controller
             return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
+
+    public function  delete($xid)
+    {
+        $cliente = ClientePessoaJur::firstWhere('xid', $xid);
+        if(!is_null($cliente)) $cliente->delete();
+        return response(status: 200);
+    }
 }

@@ -76,6 +76,9 @@ Route::controller(ClientePessoaFisController::class)
 
         Route::put('/{xid}', 'update')
                 ->name('clientesfis.update');
+
+        Route::delete('/{xid}', 'delete')
+                ->name('clientesfis.delete');
     });
 
 //Cliente Pessoa Jur
@@ -93,6 +96,9 @@ Route::controller(ClientePessoaJurController::class)
 
        Route::put('/{xid}', 'update')
             ->name('clientesjur.update');
+
+       Route::delete('/{xid}', 'delete')
+            ->name('clientesjur.delete');
     });
 
 

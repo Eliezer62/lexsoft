@@ -197,4 +197,12 @@ class ClientePessoaFisController extends Controller
         $cliente->rg = json_decode($cliente->rg);
         return response()->json($cliente, 200);
     }
+
+
+    public function delete($xid)
+    {
+        $cliente = ClientePessoaFis::firstWhere('xid', $xid);
+        if(!is_null($cliente)) $cliente->delete();
+        return response(status: 200);
+    }
 }
