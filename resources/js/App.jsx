@@ -8,6 +8,7 @@ import Tarefas from '@/Tarefas.jsx';
 import '../css/app.css';
 import 'bootstrap';
 import Clientes from "@/Clientes.jsx";
+import Atendimentos from "@/Atendimentos.jsx";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
@@ -18,6 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Route path='/advogados' Component={Advogados}/>
                 <Route path={'/clientes'} Component={Clientes}/>
                 <Route path='/tarefas' Component={Tarefas}/>
+                <Route path={'/atendimentos'} Component={Atendimentos}/>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>
