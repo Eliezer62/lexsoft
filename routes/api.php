@@ -116,3 +116,11 @@ Route::get('/sexos', [SexoController::class, 'index']);
 
 //Controller Estado Civil
 Route::get('/estados-civis', [EstadoCivilController::class, 'index']);
+
+//Tarefas Controller
+Route::controller(TarefaController::class)
+    ->prefix('/tarefas')
+    ->group(function (){
+       Route::get('/{xid}', 'index')
+            ->name('tarefas.index');
+    });
