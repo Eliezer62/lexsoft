@@ -27,6 +27,7 @@ const NovoAtendimento = (props) => {
            onOk={enviar}
            loading={loading}
            confirmLoading={loadingEnviar}
+           destroyOnClose={true}
     >
             <Form
                 title={'Atendimento'}
