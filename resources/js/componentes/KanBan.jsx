@@ -1,149 +1,138 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Card, Col, List, Row} from "antd";
 import '../../css/app.css';
 import axios from "axios";
 import { GrEdit } from "react-icons/gr";
 import { DeleteOutlined } from '@ant-design/icons';
+import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
+
 
 const KanBan = () => {
     const [tarefas, setTarefas] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
+    const [items, setItems] = useState([]);
+    const [time, setTime] = useState(0);
+    const [nova, setNova] = useState([]);
 
     useEffect(() => {
         const getTarefas = async () => {
             const response = await axios.get('/api/tarefas/cq0c33u65k27610tibeg');
+            let xid = [];
+            await  response.data.forEach(tarefa => xid.push(tarefa.xid));
+            setItems(xid);
             setTarefas(response.data);
         }
 
         const interval = setInterval(() => {
             getTarefas();
             setLoading(false);
+            setTime(30000);
 
-        }, 3000);
+        }, time);
 
         return () => {
             clearInterval(interval);
         }
     });
 
+    const getListStyle = isDraggingOver => ({
+        background: isDraggingOver ? "lightblue" : "lightgrey",
+        padding: 8,
+        width: 250
+    });
+
+    const getItemStyle = (isDragging, draggableStyle) => ({
+        // some basic styles to make the items look a bit nicer
+        userSelect: "none",
+        padding: 8 * 2,
+        margin: `0 0 ${8}px 0`,
+
+        // change background colour if dragging
+        background: isDragging ? "lightgreen" : "grey",
+
+        // styles we need to apply on draggables
+        ...draggableStyle
+    });
+
 
     const status = ['nova', 'em progresso', 'confirmar', 'resolvido', 'sem solução']
 
-
     return (
-        <Row justify={'center'} style={{width:'100%'}}>
-            <Col span={5}>
-                <Card title={status[0]} className={'.card-kanban'} loading={loading}>
-                    <List dataSource={tarefas} className={'drag-parent'} renderItem={(item)=>{
-                        if(item.status==='nova'){
-                            return (
-                            <List.Item>
-                                <Card
-                                    style={{ width: 300, marginTop: 16 }}
-                                    actions={[
-                                        <GrEdit />,
-                                        <DeleteOutlined  />
-                                    ]}
-                                >
-                                    {item.descricao}
-                                </Card>
-                            </List.Item>
-                            );
-                        }
-                    }}>
-                    </List>
-                </Card>
-            </Col>
-            <Col span={5}>
-                <Card title={status[1]} className={'.card-kanban'} loading={loading}>
-                    <List dataSource={tarefas} renderItem={(item)=>{
-                        if(item.status==='em progresso'){
-                            return (
-                                <List.Item>
+        <DragDropContext>
+            <Droppable droppableId={status[0]}>
+                {(provided, snapshot) => (
+                    <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        style={getListStyle(snapshot.isDraggingOver)}
+                    >
+                        {tarefas?.map((item, index) => (
+                            <Draggable key={item.xid} draggableId={item.xid} index={index}>
+                                {(provided, snapshot) => (
                                     <Card
                                         style={{ width: 300, marginTop: 16 }}
                                         actions={[
-                                            <GrEdit />,
-                                            <DeleteOutlined  />
+                                            <GrEdit/>,
+                                            <DeleteOutlined/>,
                                         ]}
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
                                     >
                                         {item.descricao}
                                     </Card>
-                                </List.Item>
-                            );
-                        }
-                    }}>
-                    </List>
-                </Card>
-            </Col>
-            <Col span={5}>
-                <Card title={status[2]} className={'.card-kanban'} loading={loading}>
-                    <List dataSource={tarefas} renderItem={(item)=>{
-                        if(item.status==='confirmar'){
-                            return (
-                                <List.Item>
+                                )}
+                            </Draggable>
+                        ))}
+                        {provided.placeholder}
+                    </div>
+                    )}
+            </Droppable>
+            <Droppable droppableId={status[1]}>
+                {(provided, snapshot) => (
+                    <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                        style={getListStyle(snapshot.isDraggingOver)}
+                    >
+                        {tarefas?.map((item, index) => (
+                            <Draggable key={item.xid} draggableId={item.xid} index={index}>
+                                {(provided, snapshot) => (
                                     <Card
                                         style={{ width: 300, marginTop: 16 }}
                                         actions={[
-                                            <GrEdit />,
-                                            <DeleteOutlined  />
+                                            <GrEdit/>,
+                                            <DeleteOutlined/>,
                                         ]}
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
                                     >
                                         {item.descricao}
                                     </Card>
-                                </List.Item>
-                            );
-                        }
-                    }}>
-                    </List>
-                </Card>
-            </Col>
-            <Col span={5}>
-                <Card title={status[3]} className={'.card-kanban'} loading={loading}>
-                    <List dataSource={tarefas} renderItem={(item)=>{
-                        if(item.status==='resolvido'){
-                            return (
-                                <List.Item>
-                                    <Card
-                                        style={{ width: 300, marginTop: 16 }}
-                                        actions={[
-                                            <GrEdit />,
-                                            <DeleteOutlined  />
-                                        ]}
-                                    >
-                                        {item.descricao}
-                                    </Card>
-                                </List.Item>
-                            );
-                        }
-                    }}>
-                    </List>
-                </Card>
-            </Col>
-            <Col span={4}>
-                <Card title={status[4]} className={'.card-kanban'} loading={loading} style={{padding:0}}>
-                    <List dataSource={tarefas} renderItem={(item)=>{
-                        if(item.status==='sem solução'){
-                            return (
-                                <List.Item>
-                                    <Card
-                                        style={{ width: 300, marginTop: 16 }}
-                                        actions={[
-                                            <GrEdit />,
-                                            <DeleteOutlined  />
-                                        ]}
-                                    >
-                                        {item.descricao}
-                                    </Card>
-                                </List.Item>
-                            );
-                        }
-                    }}>
-                    </List>
-                </Card>
-            </Col>
-        </Row>
+                                )}
+                            </Draggable>
+                        ))}
+                        {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>
+        </DragDropContext>
     );
+
+    function handleDragEnd(event) {
+        const {active, over} = event;
+
+        if (active.id !== over.id) {
+            setItems((items) => {
+                const oldIndex = items.indexOf(active.id);
+                const newIndex = items.indexOf(over.id);
+                console.log(newIndex);
+
+                return arrayMove(items, oldIndex, newIndex);
+            });
+        }
+    }
 
 }
 
