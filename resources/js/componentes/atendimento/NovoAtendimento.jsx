@@ -55,7 +55,8 @@ const NovoAtendimento = (props) => {
                     initialValue={dayjs()}
                 >
                     <DatePicker
-                        format={'DD/MM/YYYY'}
+                        showTime={true}
+                        format={'DD/MM/YYYY HH:mm'}
                     />
                 </Form.Item>
 
