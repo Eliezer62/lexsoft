@@ -5,9 +5,11 @@ import dayjs from "dayjs";
 import {Button} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
+import NovoAtendimento from "@/componentes/atendimento/NovoAtendimento.jsx";
 
 const Atendimentos = () => {
     const [loadingTable, setLoadingTable] = useState(true);
+    const [openNovo, setOpenNovo] = useState(true);
 
     const coluna = [
         {
@@ -46,11 +48,23 @@ const Atendimentos = () => {
         }
     ];
 
+    const cancelar = () => {
+        setOpenNovo(false);
+    }
+
+
     return (
         <LayoutBasico titulo={'Atendimentos'} menu={'atendimentos'}>
             <TabelaBase
                 loading={loadingTable}
                 coluna={coluna}
+                adicionar={()=>{
+                    setOpenNovo(true);
+                }}
+            />
+            <NovoAtendimento
+                open={openNovo}
+                cancelar={cancelar}
             />
         </LayoutBasico>
     );
