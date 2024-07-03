@@ -51,7 +51,7 @@ const Clientes = () => {
             title:'Ações',
             key:'acoes',
             fixed:'center',
-            render:(_, record) => {
+            render:(bt, record) => {
                 return (
                     <>
                         <Button onClick={async ()=>{
@@ -87,7 +87,16 @@ const Clientes = () => {
                                 setOpenEditarCliente(false);
                             }
                         }}><GrEdit/></Button>&nbsp;
-                        <Button danger={true}><IoIosRemoveCircleOutline/></Button>
+                        <Button danger={true} onClick={(event)=>{
+                            messageApi.loading('Removendo cliente...', 1);
+                            let url = (record.tipo==='fisico')?'/api/clientesfis/':'/api/clientesjur/';
+                            url += record.xid;
+                            const response = axios.delete(url).then((response)=>{
+                                messageApi.success('Cliente Removido com sucesso');
+                            }).catch(e=>{
+                                messageApi.error('Não foi possível remover o cliente');
+                            });
+                        }}><IoIosRemoveCircleOutline/></Button>
                     </>
                 )
             }
