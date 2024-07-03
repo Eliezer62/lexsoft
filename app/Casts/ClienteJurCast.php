@@ -2,11 +2,11 @@
 
 namespace App\Casts;
 
-use App\Models\ClientePessoaFis;
+use App\Models\ClientePessoaJur;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
-class ClienteFisico implements CastsAttributes
+class ClienteJurCast implements CastsAttributes
 {
     /**
      * Cast the given value.
@@ -25,6 +25,6 @@ class ClienteFisico implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        return ClientePessoaFis::firstWhere('xid', $value)->id;
+        return ClientePessoaJur::firstWhere('xid', $value)->id;
     }
 }
