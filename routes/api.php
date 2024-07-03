@@ -124,3 +124,11 @@ Route::controller(TarefaController::class)
        Route::get('/{xid}', 'index')
             ->name('tarefas.index');
     });
+
+//Atendimento Controller
+Route::controller(AtendimentoController::class)
+    ->prefix('/atendimentos')
+    ->group(function (){
+        Route::post('/', 'store')
+            ->name('atendimentos.store');
+    });

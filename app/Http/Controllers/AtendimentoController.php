@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Atendimento;
-use App\Models\ClientePessoaFis;
-use App\Models\ClientePessoaJur;
-use App\Models\Processo;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -30,11 +27,6 @@ class AtendimentoController extends Controller
                 'processo'=>'sometimes',
                 'descricao'=>'sometimes',
             ]);
-
-            //resolvendo as fks
-            $validado['clientefis'] = ClientePessoaFis::firstWhere('xid', $validado['clientefis']);
-            $validado['clientejur'] = ClientePessoaJur::firstWhere('xid', $validado['clientejur']);
-            $validado['processo'] = Processo::firstWhere('xid', $validado['processo']);
 
             $atendimento = Atendimento::create($validado);
 
