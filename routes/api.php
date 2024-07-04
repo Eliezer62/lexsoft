@@ -124,3 +124,23 @@ Route::controller(TarefaController::class)
        Route::get('/{xid}', 'index')
             ->name('tarefas.index');
     });
+
+//Atendimento Controller
+Route::controller(AtendimentoController::class)
+    ->prefix('/atendimentos')
+    ->group(function (){
+        Route::get('/', 'index')
+            ->name('atendimentos.index');
+
+        Route::get('/{xid}', 'show')
+            ->name('atendimentos.show');
+
+        Route::post('/', 'store')
+            ->name('atendimentos.store');
+
+        Route::put('/{xid}', 'update')
+            ->name('atendimentos.update');
+
+        Route::delete('/{xid}', 'delete')
+            ->name('atendimentos.delete');
+    });
