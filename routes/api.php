@@ -140,4 +140,7 @@ Route::controller(AtendimentoController::class)
 
         Route::put('/{xid}', 'update')
             ->name('atendimentos.update');
+
+        Route::delete('/{xid}', 'delete')
+            ->name('atendimentos.delete');
     });

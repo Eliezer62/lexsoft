@@ -93,4 +93,17 @@ class AtendimentoController extends Controller
             return response(status: 500);
         }
     }
+
+    /**
+     * Remover atendimento
+     * @param string $xid
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
+     */
+    public function delete(string $xid)
+    {
+        $atendimento = Atendimento::firstWhere('xid', $xid);
+        if(!is_null($atendimento)) $atendimento->delete();
+
+        return response(status: 200);
+    }
 }
