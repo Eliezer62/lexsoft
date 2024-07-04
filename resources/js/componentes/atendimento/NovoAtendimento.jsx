@@ -19,6 +19,12 @@ const NovoAtendimento = (props) => {
            atendimento.assunto = form.getFieldValue('assunto');
            atendimento.data = dayjs(form.getFieldValue('data'), 'DD/MM/YYYY').format('YYYY-MM-DD HH:mm');
            atendimento.descricao = form.getFieldValue('descricao');
+           let cliente = clientes.find(e => e.value === form.getFieldValue('cliente'));
+           if(cliente?.tipo==='fisico')
+               atendimento.clientefis = cliente.value;
+
+           else if(cliente?.tipo==='juridico')
+               atendimento.clientejur = cliente.value;
 
            const response = await axios({
                method:'POST',
@@ -40,7 +46,7 @@ const NovoAtendimento = (props) => {
             await axios.get('/api/clientes').then((response)=> {
                 let clientes = [];
                 response.data.forEach(cliente => {
-                    clientes.push({label: cliente.nome + ' ' + cliente.documento, value: cliente.xid})
+                    clientes.push({label: cliente.nome + ' ' + cliente.documento, value: cliente.xid, tipo:cliente.tipo})
                 });
                 setClientes(clientes);
             });
