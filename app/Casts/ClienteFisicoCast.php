@@ -25,6 +25,11 @@ class ClienteFisicoCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        return ClientePessoaFis::firstWhere('xid', $value)->id;
+        $cliente = ClientePessoaFis::firstWhere('xid', $value);
+        if(is_null($cliente))
+        {
+            return null;
+        }
+        return $cliente->id;
     }
 }

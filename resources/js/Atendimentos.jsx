@@ -58,7 +58,13 @@ const Atendimentos = () => {
                                     setLoadingView(false);
                                 }).catch((error)=>mensagemErro('Erro em obter atendimento'))
                         }}><GrView/></Button>&nbsp;
-                        <Button><GrEdit/></Button>&nbsp;
+                        <Button onClick={ async ()=>{
+                            setOpenViewAtendimento(true);
+                            const response = await axios.get('/api/atendimentos/'+record.xid)
+                                .then((resp)=>{
+                                    setAtendimento(resp.data);
+                                }).catch((error)=>mensagemErro('Erro em obter atendimento'))
+                        }}><GrEdit/></Button>&nbsp;
                         <Button danger><IoIosRemoveCircleOutline/></Button>
                     </>
                 )
@@ -80,16 +86,16 @@ const Atendimentos = () => {
         const getAtendimentos = async () => {
             const response = await axios.get('/api/atendimentos')
                     .then((response)=>{
+                        setLoadingTable(false);
                         setAtendimentos(response.data);
                     }).catch((error)=>{
-                        mensagemErro('Erro em obter os atendimento');
+                        mensagemErro('Erro em obter os atendimentos');
                 });
         }
 
         const interval = setInterval(() => {
             getAtendimentos();
             setTimeOut(3000);
-            setLoadingTable(false);
 
         }, timeOut);
 
