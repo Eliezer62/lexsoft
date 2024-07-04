@@ -31,7 +31,7 @@ const NovoAtendimento = (props) => {
                setLoadingEnviar(false);
                props.mensagemErro('Erro em salvar o atendimento');
            });
-        });
+        }).catch(()=>setLoadingEnviar(false));
     }
 
 
