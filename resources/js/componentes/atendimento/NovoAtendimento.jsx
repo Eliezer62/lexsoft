@@ -10,6 +10,7 @@ const NovoAtendimento = (props) => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [loadingEnviar, setLoadingEnviar] = useState(false);
+    const [clientes, setClientes] = useState([]);
 
     const enviar = () => {
         setLoadingEnviar(true);
@@ -33,6 +34,19 @@ const NovoAtendimento = (props) => {
            });
         }).catch(()=>setLoadingEnviar(false));
     }
+
+    useEffect(()=>{
+        const getClientes = async () =>{
+            await axios.get('/api/clientes').then((response)=> {
+                let clientes = [];
+                response.data.forEach(cliente => {
+                    clientes.push({label: cliente.nome + ' ' + cliente.documento, value: cliente.xid})
+                });
+                setClientes(clientes);
+            });
+        }
+        getClientes();
+    }, [props.open]);
 
 
     return (
@@ -81,7 +95,10 @@ const NovoAtendimento = (props) => {
                     name={'cliente'}
                 >
                     <Select
-
+                        placeholder={'Selecione o cliente'}
+                        options={clientes}
+                        showSearch
+                        optionFilterProp={'label'}
                     />
                 </Form.Item>
 
