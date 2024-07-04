@@ -38,6 +38,9 @@ class Atendimento extends Model
         'descricao'
     ];
 
+    protected $guarded = [
+        'xid'
+    ];
 
     protected $casts = [
         'clientefis'=>ClienteFisicoCast::class,

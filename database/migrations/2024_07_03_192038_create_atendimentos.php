@@ -36,6 +36,8 @@ return new class extends Migration
                 ->references('id')
                 ->on('processos');
         });
+        DB::statement('ALTER TABLE atendimentos ADD COLUMN xid public.xid DEFAULT xid()');
+        DB::statement('ALTER TABLE atendimentos ADD CONSTRAINT uc_atendimentos_xid UNIQUE (xid)');
     }
 
     /**
