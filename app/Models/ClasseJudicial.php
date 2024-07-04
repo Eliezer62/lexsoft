@@ -12,6 +12,7 @@ class ClasseJudicial extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
+        'id',
         'descricao'
     ];
 }
