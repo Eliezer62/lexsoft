@@ -67,7 +67,19 @@ const Atendimentos = () => {
                                     setOpenEditAtendimento(true);
                                 }).catch((error)=>mensagemErro('Erro em obter atendimento'))
                         }}><GrEdit/></Button>&nbsp;
-                        <Button danger><IoIosRemoveCircleOutline/></Button>
+                        <Button danger
+                                onClick={async ()=>{
+                                    messageApi.loading('Removendo atendimento...');
+                                    const response = axios.delete('/api/atendimentos/'+record.xid)
+                                        .then(resp =>{
+                                            mensagemSucesso('Atendimento removido com sucesso');
+                                        }).catch(error=>{
+                                            mensagemErro('Erro em remover atendimento');
+                                        });
+                                }}
+                        >
+                            <IoIosRemoveCircleOutline/>
+                        </Button>
                     </>
                 )
             }
