@@ -38,6 +38,7 @@ return new class extends Migration
         });
         DB::statement('ALTER TABLE atendimentos ADD COLUMN xid public.xid DEFAULT xid()');
         DB::statement('ALTER TABLE atendimentos ADD CONSTRAINT uc_atendimentos_xid UNIQUE (xid)');
+        DB::statement('ALTER TABLE atendimentos ADD CONSTRAINT chk_atendimentos_u_cliente CHECK ((clientefis  IS NULL) != (clientejur  IS NULL))');
     }
 
     /**
