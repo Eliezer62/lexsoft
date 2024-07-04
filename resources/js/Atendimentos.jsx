@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
 import dayjs from "dayjs";
-import {Button} from "antd";
+import {Button, message} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import NovoAtendimento from "@/componentes/atendimento/NovoAtendimento.jsx";
@@ -10,6 +10,7 @@ import NovoAtendimento from "@/componentes/atendimento/NovoAtendimento.jsx";
 const Atendimentos = () => {
     const [loadingTable, setLoadingTable] = useState(true);
     const [openNovo, setOpenNovo] = useState(true);
+    const [messageApi, contextHolder] = message.useMessage();
 
     const coluna = [
         {
@@ -53,6 +54,10 @@ const Atendimentos = () => {
     }
 
 
+    const mensagemSucesso = (msg) => messageApi.success(msg);
+    const mensagemErro = (msg) => messageApi.error(msg);
+
+
     return (
         <LayoutBasico titulo={'Atendimentos'} menu={'atendimentos'}>
             <TabelaBase
@@ -62,9 +67,12 @@ const Atendimentos = () => {
                     setOpenNovo(true);
                 }}
             />
+            {contextHolder}
             <NovoAtendimento
                 open={openNovo}
                 cancelar={cancelar}
+                mensagemSucesso={mensagemSucesso}
+                mensagemErro={mensagemErro}
             />
         </LayoutBasico>
     );

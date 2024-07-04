@@ -5,7 +5,6 @@ import axios from "axios";
 import dayjs from "dayjs";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import Editor from "@/componentes/Editor.jsx";
 
 const NovoAtendimento = (props) => {
     const [form] = Form.useForm();
@@ -14,8 +13,24 @@ const NovoAtendimento = (props) => {
 
     const enviar = () => {
         setLoadingEnviar(true);
-        form.validateFields().then(()=>{
-           console.log('valido');
+        form.validateFields().then( async ()=>{
+           let atendimento = {};
+           atendimento.assunto = form.getFieldValue('assunto');
+           atendimento.data = dayjs(form.getFieldValue('data'), 'DD/MM/YYYY').format('YYYY-MM-DD HH:mm');
+           atendimento.descricao = form.getFieldValue('descricao');
+
+           const response = await axios({
+               method:'POST',
+               url:'/api/atendimentos',
+               data:atendimento
+           }).then((response)=>{
+               setLoadingEnviar(false);
+               props.mensagemSucesso('Atendimento salvo com sucesso');
+               props.cancelar();
+           }).catch((error)=>{
+               setLoadingEnviar(false);
+               props.mensagemErro('Erro em salvar o atendimento');
+           });
         });
     }
 
