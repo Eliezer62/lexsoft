@@ -12,12 +12,12 @@ class AtendimentoController extends Controller
 {
     public function index()
     {
-        $atendimento = DB::select('SELECT assunto,
+        $atendimento = DB::select("SELECT assunto,
         COALESCE((SELECT nome FROM clientes_pessoa_fis cf WHERE cf.id=ate.clientefis),
         (SELECT razao_social FROM clientes_pessoa_jur cj WHERE cj.id=ate.clientejur)) AS cliente,
-        data, COALESCE((SELECT cpf FROM clientes_pessoa_fis cf WHERE cf.id=ate.clientefis),
+        TO_CHAR(data, 'DD/MM/YYYY HH24:MI') AS data, COALESCE((SELECT cpf FROM clientes_pessoa_fis cf WHERE cf.id=ate.clientefis),
         (SELECT cnpj FROM clientes_pessoa_jur cj WHERE cj.id=ate.clientejur)) AS documento
-        FROM atendimentos ate;');
+        FROM atendimentos ate;");
 
         return response()->json($atendimento, 200);
     }
