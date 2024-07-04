@@ -8,6 +8,7 @@ import {IoIosRemoveCircleOutline} from "react-icons/io";
 import NovoAtendimento from "@/componentes/atendimento/NovoAtendimento.jsx";
 import axios from "axios";
 import ViewAtendimento from "@/componentes/atendimento/ViewAtendimento.jsx";
+import EditAtendimento from "@/componentes/atendimento/EditAtendimento.jsx";
 
 const Atendimentos = () => {
     const [loadingTable, setLoadingTable] = useState(true);
@@ -19,6 +20,7 @@ const Atendimentos = () => {
     const [openViewAtendimento, setOpenViewAtendimento] = useState(false);
     const [atendimento, setAtendimento] = useState({});
     const [loadingView, setLoadingView] = useState(true);
+    const [openEditAtendimento, setOpenEditAtendimento] = useState(false);
 
     const coluna = [
         {
@@ -59,10 +61,10 @@ const Atendimentos = () => {
                                 }).catch((error)=>mensagemErro('Erro em obter atendimento'))
                         }}><GrView/></Button>&nbsp;
                         <Button onClick={ async ()=>{
-                            setOpenViewAtendimento(true);
                             const response = await axios.get('/api/atendimentos/'+record.xid)
                                 .then((resp)=>{
                                     setAtendimento(resp.data);
+                                    setOpenEditAtendimento(true);
                                 }).catch((error)=>mensagemErro('Erro em obter atendimento'))
                         }}><GrEdit/></Button>&nbsp;
                         <Button danger><IoIosRemoveCircleOutline/></Button>
@@ -75,6 +77,7 @@ const Atendimentos = () => {
     const cancelar = () => {
         setOpenNovo(false);
         setOpenViewAtendimento(false);
+        setOpenEditAtendimento(false);
         setLoadingView(true);
     }
 
@@ -127,6 +130,13 @@ const Atendimentos = () => {
                 atendimento={atendimento}
                 close={cancelar}
                 loading={loadingView}
+            />
+            <EditAtendimento
+                open={openEditAtendimento}
+                cancelar={cancelar}
+                mensagemSucesso={mensagemSucesso}
+                mensagemErro={mensagemErro}
+                atendimento={atendimento}
             />
         </LayoutBasico>
     );
