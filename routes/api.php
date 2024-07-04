@@ -129,6 +129,9 @@ Route::controller(TarefaController::class)
 Route::controller(AtendimentoController::class)
     ->prefix('/atendimentos')
     ->group(function (){
+        Route::get('/', 'index')
+            ->name('atendimentos.index');
+
         Route::post('/', 'store')
             ->name('atendimentos.store');
     });
