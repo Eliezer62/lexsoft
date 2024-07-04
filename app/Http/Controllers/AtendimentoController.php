@@ -75,4 +75,22 @@ class AtendimentoController extends Controller
         }
 
     }
+
+    public function update(Request $request, $xid)
+    {
+        try {
+            $atendimento = Atendimento::firstWhere('xid', $xid);
+            if (is_null($atendimento)) return response()->json([], 404);
+            if ($request->input('clientefis') || $request->input('clientejur')) {
+                $atendimento->clientefis = null;
+                $atendimento->clientejur = null;
+            }
+            $atendimento->update($request->all());
+            return response()->json($atendimento, 200);
+        }
+        catch (\Exception $e)
+        {
+            return response(status: 500);
+        }
+    }
 }
