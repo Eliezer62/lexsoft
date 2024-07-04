@@ -24,6 +24,18 @@ class AtendimentoController extends Controller
         return response()->json($atendimento, 200);
     }
 
+    public function show($xid)
+    {
+        $atendimento = DB::select('SELECT xid, data, assunto, descricao,
+        COALESCE((SELECT nome FROM clientes_pessoa_fis cf WHERE att.clientefis = cf.id),
+        (SELECT razao_social FROM clientes_pessoa_jur cj WHERE att.clientejur = cj.id)) AS cliente,
+        (SELECT numero FROM processos WHERE att.processo = id) AS processo
+        FROM atendimentos att WHERE att.xid = :xid;
+        ', ['xid'=>$xid]);
+        if($atendimento == []) return response()->json([], 404);
+        return response()->json($atendimento[0], 200);
+    }
+
     /**
      * Salva um novo Atendimento
      * @param Request $request

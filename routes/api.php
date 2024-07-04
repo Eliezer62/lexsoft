@@ -132,6 +132,9 @@ Route::controller(AtendimentoController::class)
         Route::get('/', 'index')
             ->name('atendimentos.index');
 
+        Route::get('/{xid}', 'show')
+            ->name('atendimentos.show');
+
         Route::post('/', 'store')
             ->name('atendimentos.store');
     });
