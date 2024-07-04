@@ -16,7 +16,8 @@ class AtendimentoController extends Controller
         COALESCE((SELECT nome FROM clientes_pessoa_fis cf WHERE cf.id=ate.clientefis),
         (SELECT razao_social FROM clientes_pessoa_jur cj WHERE cj.id=ate.clientejur)) AS cliente,
         TO_CHAR(data, 'DD/MM/YYYY HH24:MI') AS data, COALESCE((SELECT cpf FROM clientes_pessoa_fis cf WHERE cf.id=ate.clientefis),
-        (SELECT cnpj FROM clientes_pessoa_jur cj WHERE cj.id=ate.clientejur)) AS documento
+        (SELECT cnpj FROM clientes_pessoa_jur cj WHERE cj.id=ate.clientejur)) AS documento,
+        (CASE WHEN ate.clientefis IS NOT NULL THEN 'fisico' WHEN ate.clientejur IS NOT NULL THEN 'juridico' END) AS tipo
         FROM atendimentos ate WHERE deleted_at IS NULL
         ORDER BY data DESC;");
 
