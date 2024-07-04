@@ -37,7 +37,7 @@ const Atendimentos = () => {
             title:'Data',
             key:'data',
             dataIndex: 'data',
-            sorter: (a,b) => dayjs(a.data, 'YYYY-MM-DD HH:MM') - dayjs(b.data, 'YYYY-MM-DD HH:MM'),
+            sorter: (a,b) => dayjs(a.data, 'DD/MM/YYYY HH:MM') - dayjs(b.data, 'DD/MM/YYYY HH:MM'),
             sortDirections: ['descend', 'ascend']
         },
         {
