@@ -17,7 +17,8 @@ class AtendimentoController extends Controller
         (SELECT razao_social FROM clientes_pessoa_jur cj WHERE cj.id=ate.clientejur)) AS cliente,
         TO_CHAR(data, 'DD/MM/YYYY HH24:MI') AS data, COALESCE((SELECT cpf FROM clientes_pessoa_fis cf WHERE cf.id=ate.clientefis),
         (SELECT cnpj FROM clientes_pessoa_jur cj WHERE cj.id=ate.clientejur)) AS documento
-        FROM atendimentos ate ORDER BY data DESC;");
+        FROM atendimentos ate WHERE deleted_at = null
+        ORDER BY data DESC;");
 
         return response()->json($atendimento, 200);
     }
