@@ -30,7 +30,7 @@ const Atendimentos = () => {
             title:'Cliente',
             key:'cliente',
             dataIndex:'cliente',
-            sorter: (a, b) => a.cliente.localeCompare(b.cliente),
+            sorter: (a, b) => a.cliente?.localeCompare(b.cliente),
             sortDirections: ['descend', 'ascend']
         },
         {
