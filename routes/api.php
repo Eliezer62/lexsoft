@@ -137,4 +137,7 @@ Route::controller(AtendimentoController::class)
 
         Route::post('/', 'store')
             ->name('atendimentos.store');
+
+        Route::put('/{xid}', 'update')
+            ->name('atendimentos.update');
     });
