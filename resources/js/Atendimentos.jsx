@@ -7,6 +7,7 @@ import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import NovoAtendimento from "@/componentes/atendimento/NovoAtendimento.jsx";
 import axios from "axios";
+import ViewAtendimento from "@/componentes/atendimento/ViewAtendimento.jsx";
 
 const Atendimentos = () => {
     const [loadingTable, setLoadingTable] = useState(true);
@@ -15,6 +16,9 @@ const Atendimentos = () => {
     const [timeOut, setTimeOut] = useState(0);
     const [atendimentos, setAtendimentos] = useState([]);
     const [pesquisa, setPesquisa] = useState('');
+    const [openViewAtendimento, setOpenViewAtendimento] = useState(false);
+    const [atendimento, setAtendimento] = useState({});
+    const [loadingView, setLoadingView] = useState(true);
 
     const coluna = [
         {
@@ -46,7 +50,14 @@ const Atendimentos = () => {
             render: (_, record) => {
                 return (
                     <>
-                        <Button><GrView/></Button>&nbsp;
+                        <Button onClick={ async ()=>{
+                            setOpenViewAtendimento(true);
+                            const response = await axios.get('/api/atendimentos/'+record.xid)
+                                .then((resp)=>{
+                                    setAtendimento(resp.data);
+                                    setLoadingView(false);
+                                }).catch((error)=>mensagemErro('Erro em obter atendimento'))
+                        }}><GrView/></Button>&nbsp;
                         <Button><GrEdit/></Button>&nbsp;
                         <Button danger><IoIosRemoveCircleOutline/></Button>
                     </>
@@ -57,6 +68,8 @@ const Atendimentos = () => {
 
     const cancelar = () => {
         setOpenNovo(false);
+        setOpenViewAtendimento(false);
+        setLoadingView(true);
     }
 
 
@@ -102,6 +115,12 @@ const Atendimentos = () => {
                 cancelar={cancelar}
                 mensagemSucesso={mensagemSucesso}
                 mensagemErro={mensagemErro}
+            />
+            <ViewAtendimento
+                open={openViewAtendimento}
+                atendimento={atendimento}
+                close={cancelar}
+                loading={loadingView}
             />
         </LayoutBasico>
     );
