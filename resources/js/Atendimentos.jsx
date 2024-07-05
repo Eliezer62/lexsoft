@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
 import dayjs from "dayjs";
-import {Button, message} from "antd";
+import {Button, message, Popconfirm} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import NovoAtendimento from "@/componentes/atendimento/NovoAtendimento.jsx";
@@ -67,19 +67,23 @@ const Atendimentos = () => {
                                     setOpenEditAtendimento(true);
                                 }).catch((error)=>mensagemErro('Erro em obter atendimento'))
                         }}><GrEdit/></Button>&nbsp;
-                        <Button danger
-                                onClick={async ()=>{
-                                    messageApi.loading('Removendo atendimento...');
-                                    const response = axios.delete('/api/atendimentos/'+record.xid)
-                                        .then(resp =>{
-                                            mensagemSucesso('Atendimento removido com sucesso');
-                                        }).catch(error=>{
-                                            mensagemErro('Erro em remover atendimento');
-                                        });
-                                }}
+                        <Popconfirm
+                            title={'Remover atendimento'}
+                            description={'Você tem certeza que deseja remover o atendimento?'}
+                            okText={'Sim'}
+                            cancelText={'Não'}
+                            onConfirm={async ()=>{
+                                messageApi.loading('Removendo atendimento...');
+                                const response = axios.delete('/api/atendimentos/'+record.xid)
+                                    .then(resp =>{
+                                        mensagemSucesso('Atendimento removido com sucesso');
+                                    }).catch(error=>{
+                                        mensagemErro('Erro em remover atendimento');
+                                    });
+                            }}
                         >
-                            <IoIosRemoveCircleOutline/>
-                        </Button>
+                            <Button danger><IoIosRemoveCircleOutline/></Button>
+                        </Popconfirm>
                     </>
                 )
             }

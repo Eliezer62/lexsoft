@@ -44,6 +44,7 @@ describe('Teste funcional atendimentos', ()=>{
     it('Testar remoção', ()=>{
         cy.visit('http://127.0.0.1/atendimentos');
         cy.get('.ant-btn-dangerous').eq(0).click();
+        cy.get('.ant-popconfirm-buttons .ant-btn-primary').click();
         cy.wait(2000);
         cy.get('.ant-message-success');
     });
