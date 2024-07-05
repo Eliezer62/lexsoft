@@ -23,7 +23,6 @@ class Documento extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'xid',
         'tipo_arquivo',
         'descricao',
         'src',
@@ -32,5 +31,9 @@ class Documento extends Model
         'pessoafis',
         'pessoajur',
         'processo'
+    ];
+
+    protected $guarded = [
+        'xid',
     ];
 }
