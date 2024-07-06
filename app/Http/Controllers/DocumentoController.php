@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Exception;
+use PhpParser\Comment\Doc;
 
 class DocumentoController extends Controller
 {
@@ -59,7 +60,7 @@ class DocumentoController extends Controller
             $documento = DB::table('view_documentos')
                 ->whereRaw('to_tsvector(cliente) @@ to_tsquery(:q) OR
                             to_tsvector(descricao) @@ to_tsquery(:q) OR
-                             to_tsvector(documento) @@ to_tsquery(:q)')
+                             to_tsvector(documento) @@ to_tsquery(:q)')->limit(10)
                 ->setBindings(['q' => $q])->get();
 
             return $documento;
@@ -70,11 +71,28 @@ class DocumentoController extends Controller
             {
                 return response()->json(['msg'=>'Caracteres não permitido na query'], 500);
             }
-            else return response(status: 500);
+            else return response($e->getMessage(), status: 500);
         }
         catch (Exception $e)
         {
             return response(status: 500);
         }
+    }
+
+
+    public function show($xid)
+    {
+        $documento = Documento::firstWhere('xid', $xid);
+        if(is_null($documento)) return response(status:404);
+
+        return Storage::disk('local')->response($documento->src);
+    }
+
+    public function delete($xid)
+    {
+        $documento = Documento::firstWhere('xid', $xid);
+        if(!is_null($documento)) $documento->delete();
+
+        return response(status: 200);
     }
 }

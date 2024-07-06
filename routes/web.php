@@ -11,7 +11,5 @@ Route::get('/{path?}', function () {
 Route::controller(DocumentoController::class)
     ->prefix('/storage')
     ->group(function (){
-        Route::get('/content/{nome}');
-
         Route::post('/upload', 'store');
     });

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Documento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -146,3 +147,7 @@ Route::controller(AtendimentoController::class)
     });
 
 Route::get('/documentos/pesquisa', [DocumentoController::class, 'search']);
+
+Route::get('/storage/content/{xid}', [DocumentoController::class, 'show']);
+
+Route::delete('/storage/content/{xid}', [DocumentoController::class, 'delete']);
