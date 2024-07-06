@@ -15,10 +15,9 @@ return new class extends Migration
             $table->bigIncrements('id')->primary();
             $table->timestamps();
             $table->softDeletes();
-            $table->char('tipo_arquivo', 3);
+            $table->char('tipo_arquivo', 5);
             $table->string('descricao');
             $table->string('src');
-            $table->dateTime('data_modificado')->nullable();
             $table->dateTime('data_criacao')->nullable();
             $table->integer('pessoafis')->nullable();
             $table->integer('pessoajur')->nullable();

@@ -18,7 +18,7 @@ const ViewAtendimento = (props) => {
           onClose={()=>props.close()}
       >
           <DescricaoItem titulo={'Assunto'} conteudo={props.atendimento?.assunto}/>
-          <DescricaoItem titulo={'Data'} conteudo={dayjs(props.atendimento?.data, 'YYYY-MM-YY HH:MM').format('DD/MM/YYYY HH:MM')}/>
+          <DescricaoItem titulo={'Data'} conteudo={dayjs(props.atendimento?.data, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY HH:mm')}/>
           <DescricaoItem titulo={'Cliente'} conteudo={props.atendimento?.cliente}/>
           <DescricaoItem titulo={'Processo'} conteudo={props.atendimento?.processo}/>
           <p>Descrição</p>

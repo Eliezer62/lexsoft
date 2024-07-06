@@ -9,6 +9,7 @@ import '../css/app.css';
 import 'bootstrap';
 import Clientes from "@/Clientes.jsx";
 import Atendimentos from "@/Atendimentos.jsx";
+import Documentos from "@/Documentos.jsx";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Route path={'/clientes'} Component={Clientes}/>
                 <Route path='/tarefas' Component={Tarefas}/>
                 <Route path={'/atendimentos'} Component={Atendimentos}/>
+                <Route path={'/documentos'} Component={Documentos}/>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>

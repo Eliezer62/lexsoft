@@ -89,7 +89,7 @@ const EditAtendimento = (props) => {
                         {required:true, message:'Data é obrigatório'},
                         {type:'date', message:'Formato inválido'}
                     ]}
-                    initialValue={(dayjs(props.atendimento.data))}
+                    initialValue={(dayjs(props.atendimento.data, 'YYYY-MM-DD HH:mm'))}
                 >
                     <DatePicker
                         showTime={true}
