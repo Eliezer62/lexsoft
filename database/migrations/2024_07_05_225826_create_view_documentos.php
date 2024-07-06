@@ -17,7 +17,8 @@ return new class extends Migration
             AS cliente,
             COALESCE((SELECT cpf FROM clientes_pessoa_fis cf WHERE cf.id = doc.pessoafis),(SELECT cnpj FROM clientes_pessoa_jur cj WHERE cj.id=doc.pessoajur))
             AS documento
-            FROM documentos doc;");
+            FROM documentos doc
+            WHERE deleted_at IS NULL;");
     }
 
     /**
