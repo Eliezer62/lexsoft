@@ -69,7 +69,7 @@ class ClientePessoaFisController extends Controller
         {
             if($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: cpf, email e rg devem ser únicos'], 500);
-            return response()->json($e->getMessage(), 500);
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
         {
