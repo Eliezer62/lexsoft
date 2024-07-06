@@ -144,3 +144,5 @@ Route::controller(AtendimentoController::class)
         Route::delete('/{xid}', 'delete')
             ->name('atendimentos.delete');
     });
+
+Route::get('/documentos/pesquisa', [DocumentoController::class, 'search']);
