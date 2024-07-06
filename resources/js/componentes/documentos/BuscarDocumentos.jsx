@@ -55,7 +55,7 @@ const BuscarDocumentos = (props) => {
                 renderItem={(item) => (
                     <List.Item
                         actions={[
-                            <Button type={'primary'} onClick={()=>location.href='/api/storage/content/'+item.xid}><IoCloudDownloadOutline /></Button>,
+                            <Button type={'primary'} onClick={()=>{window.open('/api/storage/content/'+item.xid, '_blank').focus()}}><IoCloudDownloadOutline /></Button>,
                             <Button danger={true} onClick={async ()=>{
                                 messageApi.loading('Removendo...', 1);
                                 await axios.delete('/api/storage/content/'+item.xid)
