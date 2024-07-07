@@ -71,11 +71,11 @@ class DocumentoController extends Controller
             {
                 return response()->json(['msg'=>'Caracteres não permitido na query'], 500);
             }
-            else return response($e->getMessage(), status: 500);
+            else return response(['msg'=>'Erro interno'], status: 500);
         }
         catch (Exception $e)
         {
-            return response(status: 500);
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
 

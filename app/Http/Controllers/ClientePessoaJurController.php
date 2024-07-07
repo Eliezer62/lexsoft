@@ -48,7 +48,7 @@ class ClientePessoaJurController extends Controller
         {
             if($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: cnpj ou razão social devem ser únicos'], 500);
-            return response()->json($e->getMessage(), 500);
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
         {

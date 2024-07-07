@@ -72,9 +72,6 @@ Route::controller(ClientePessoaFisController::class)
         Route::post('/', 'store')
                 ->name('clientesfis.store');
 
-        Route::post('/rg', 'storeRG')
-                ->name('clientesfis.storeRG');
-
         Route::put('/{xid}', 'update')
                 ->name('clientesfis.update');
 
