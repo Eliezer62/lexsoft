@@ -1,0 +1,104 @@
+import React, {useState} from 'react';
+import {Button, Col, Input, Layout, Row, Table} from 'antd';
+import {TbStatusChange} from "react-icons/tb";
+import {GrEdit} from "react-icons/gr";
+import {IoIosRemoveCircleOutline} from "react-icons/io";
+
+
+export default function TabelaTarefas(props)
+{
+    const [pesquisa, setPesquisa] = useState('');
+
+    const coluna = [
+        {
+            title: 'Assunto',
+            key:'assunto',
+            dataIndex: 'assunto',
+            sorter: (a,b) => a.assunto.localeCompare(b.assunto),
+            sortDirections: ['descend', 'ascend'],
+            filteredValue:[pesquisa],
+            onFilter: (value, record) => (
+                record.assunto.toLowerCase().includes(value.toLowerCase()) || record.status.toLowerCase().includes(value.toLowerCase())
+            )
+        },
+        {
+            title: 'Status',
+            key:'status',
+            dataIndex: 'status',
+            sorter: (a,b) => a.assunto.localeCompare(b.assunto),
+            sortDirections: ['descend', 'ascend'],
+        },
+        {
+            title: 'Prazo',
+            children: [
+                {
+                    title:'Início',
+                    key:'inicio',
+                    dataIndex:'prazo',
+                    render: item => item.inicio,
+                },
+                {
+                    title: 'Fim',
+                    key:'fim',
+                    dataIndex: 'prazo',
+                    render: item => item.fim
+                }
+            ]
+        },
+        {
+            title: 'Ações',
+            key: 'acoes',
+            fixed: 'right',
+            render: (text, record) => {
+                return (
+                    <>
+                        <Button title={'Alterar Status'}><TbStatusChange/></Button>&nbsp;
+                        <Button title={'Editar'}><GrEdit/></Button>&nbsp;
+                        <Button title={'Remover'} danger><IoIosRemoveCircleOutline/></Button>
+                    </>
+                );
+            }
+        }
+    ]
+
+    return (
+        <Layout
+            style={{
+                borderRadius: 10,
+                height:'90%'
+            }}
+        >
+            <Row
+                style={{padding:25}}
+            >
+                <Col span={8} offset={7}>
+                    <Input.Search placeholder={'Pesquisar'} onSearch={(valor)=>{setPesquisa(valor)}} onChange={(e)=>{setPesquisa(e.target.value)}}/>
+                </Col>
+                <Col span={1} offset={6}><Button type={'primary'} onClick={props.adicionar}>Adicionar</Button></Col>
+            </Row>
+            <Table
+                columns={coluna}
+                dataSource={props.dados}
+                size={'small'}
+                pagination={
+                    {
+                        pageSize: 7
+                    }
+                }
+                loading={props.loading}
+                expandable={{
+                    expandedRowRender: (record) => (
+                        <p
+                            style={{
+                                margin: 0,
+                            }}
+                        >
+                            {record.descricao}
+                        </p>
+                    ),
+                    rowExpandable: (record) => record.name !== 'Not Expandable',
+                }}
+            />
+        </Layout>
+    );
+}
