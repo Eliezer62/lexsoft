@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('prazos', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('descricao');
+            $table->string('descricao')->nullable();
             $table->datetime('inicio');
             $table->datetime('fim');
             $table->bigInteger('evento');
