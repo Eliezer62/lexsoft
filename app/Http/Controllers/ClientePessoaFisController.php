@@ -46,7 +46,6 @@ class ClientePessoaFisController extends Controller
                 'nome' => 'required|max:60|min:3',
                 'nome_social' => 'max:60|min:3',
                 'cpf' => 'required|max:11|min:11',
-                'rg' => 'required',
                 'email' => 'required|max:255|email',
                 'sexo' => 'required',
                 'estado_civil' => 'required',
@@ -55,10 +54,34 @@ class ClientePessoaFisController extends Controller
                 'profissao' => 'required',
                 'data_nascimento' => 'required|date',
                 'nome_pai'=>'sometimes',
-                'nome_mae'=>'sometimes'
+                'nome_mae'=>'sometimes',
+                'numero' => 'integer|required',
+                'data_emissao' => 'required',
+                'emissor' => 'required|string|max:10',
+                'estado' => 'required|string|max:2|min:2'
             ]);
 
-            $cliente = ClientePessoaFis::create($validado);
+            $cliente = new ClientePessoaFis();
+            $rg = new RG();
+            DB::transaction(function () use ($cliente, $rg, $validado){
+                $rg->fill($validado);
+                if($rg->saveOrFail())
+                {
+                    $cliente->fill($validado);
+                    $cliente->rg = $rg->id;
+                    if($cliente->saveOrFail()) DB::commit();
+                    else{
+                        DB::rollBack();
+                        return response()->json(['msg'=>'Erro interno'], 500);
+                    }
+                }
+                else
+                {
+                    DB::rollBack();
+                    return response()->json(['msg'=>'erro interno'], 500);
+                }
+            });
+
             return response()->json($cliente, 201);
         }
         catch (ValidationException $e)
@@ -82,10 +105,7 @@ class ClientePessoaFisController extends Controller
     {
         try {
             $validado = $request->validate([
-                'numero' => 'integer|required',
-                'data_emissao' => 'required',
-                'emissor' => 'required|string|max:10',
-                'estado' => 'required|string|max:2|min:2'
+
             ]);
 
             $rg = RG::create($validado);

@@ -35,32 +35,25 @@ const NovoCliente = (props) => {
                 cliente.naturalidade_uf = form.getFieldValue('naturalidade_uf');
                 cliente.profissao = form.getFieldValue('profissao');
                 cliente.data_nascimento = dayjs(form.getFieldValue('data_nascimento')).format('YYYY-MM-DD');
-                let rg = {};
-                rg.numero = form.getFieldValue('rg_numero');
-                rg.data_emissao = dayjs(form.getFieldValue('rg_data_emissao')).format('YYYY-MM-DD');
-                rg.emissor = form.getFieldValue('rg_emissor');
-                rg.estado = form.getFieldValue('rg_estado');
-                const responseRG = await axios({
-                    method:'POST',
-                    url:'/api/clientesfis/rg',
-                    data:rg
-                }).then(response => {
-                    rg = response.data;
-                });
-                if(!rg.id) return;
-                cliente.rg = rg.id;
+                //RG
+                cliente.numero = form.getFieldValue('rg_numero');
+                cliente.data_emissao = dayjs(form.getFieldValue('rg_data_emissao')).format('YYYY-MM-DD');
+                cliente.emissor = form.getFieldValue('rg_emissor');
+                cliente.estado = form.getFieldValue('rg_estado');
+
                 const response = await axios({
                     method:'POST',
                     url:'/api/clientesfis',
                     data:cliente
-                }).catch((error)=>{
+                })
+                    .then((resp)=>{
+                        props.handleCancel();
+                        props.sucessoMsg();
+                    })
+                    .catch((error)=>{
                     props.erroMsg(error.response.msg);
                 });
                 setLoading(false);
-                if(response.status===201){
-                    props.handleCancel();
-                    props.sucessoMsg();
-                }
             }
             else
             {
