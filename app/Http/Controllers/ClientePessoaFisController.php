@@ -101,33 +101,6 @@ class ClientePessoaFisController extends Controller
     }
 
 
-    public function storeRG(Request $request)
-    {
-        try {
-            $validado = $request->validate([
-
-            ]);
-
-            $rg = RG::create($validado);
-            return response()->json($rg, 201);
-        }
-        catch (ValidationException $e)
-        {
-            return response()->json(['msg'=>'Dados obrigatórios não fornecidos ou inválidos'], 422);
-        }
-        catch (QueryException $e)
-        {
-            if($e->getCode()==23505)
-                return response()->json(['msg'=>'Valores duplicados: somente é permitido um único RG com mesmo número e Estado'], 500);
-            return response()->json($e->getMessage(), 500);
-        }
-        catch (\Exception $e)
-        {
-            return response()->json(['msg'=>'Erro interno'], 500);
-        }
-    }
-
-
     public function show(string $xid)
     {
         $cliente = DB::table('clientes_pessoa_fis')
