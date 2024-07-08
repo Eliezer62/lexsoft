@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('descricao')->nullable();
-            $table->datetime('inicio');
-            $table->datetime('fim');
+            $table->datetime('inicio')->nullable();
+            $table->datetime('fim')->nullable();
             $table->bigInteger('evento');
             $table->bigInteger('tarefa');
 
