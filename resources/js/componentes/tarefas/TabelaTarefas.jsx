@@ -3,6 +3,7 @@ import {Button, Col, Input, Layout, Row, Table} from 'antd';
 import {TbStatusChange} from "react-icons/tb";
 import {GrEdit} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
+import DOMPurify from 'dompurify'
 
 
 export default function TabelaTarefas(props)
@@ -88,13 +89,13 @@ export default function TabelaTarefas(props)
                 loading={props.loading}
                 expandable={{
                     expandedRowRender: (record) => (
-                        <p
+                        <div
                             style={{
                                 margin: 0,
                             }}
+                            dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(record.descricao)}}
                         >
-                            {record.descricao}
-                        </p>
+                        </div>
                     ),
                     rowExpandable: (record) => record.name !== 'Not Expandable',
                 }}
