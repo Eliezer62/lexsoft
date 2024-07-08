@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('prazos', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->softDeletes();
             $table->string('descricao')->nullable();
             $table->datetime('inicio')->nullable();
             $table->datetime('fim')->nullable();
