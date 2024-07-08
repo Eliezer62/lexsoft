@@ -24,11 +24,13 @@ return new class extends Migration
             //constraint
             $table->foreign('evento', 'fk_prazo_evento')
                 ->references('id')
-                ->on('eventos');
+                ->on('eventos')
+                ->onDelete('cascade');
 
             $table->foreign('tarefa', 'fk_prazo_tarefa')
                 ->references('id')
-                ->on('tarefas');
+                ->on('tarefas')
+                ->onDelete('cascade');
             //index
         });
 
