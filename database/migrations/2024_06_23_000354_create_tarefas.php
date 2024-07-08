@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->string('assunto');
-            $table->text('descricao');
+            $table->text('descricao')->nullable();
             $table->integer('responsavel');
             $table->enum('status', ['nova', 'em progresso', 'confirmar', 'resolvido', 'sem solução']);
 
