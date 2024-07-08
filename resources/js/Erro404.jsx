@@ -1,24 +1,17 @@
 import React from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
-import { Flex } from 'antd';
+import {Button, Result} from 'antd';
 
  const Error404 = () => {
 
      return (
          <LayoutBasico>
-            <Flex
-                align={'center'}
-                justify={'center'}
-                vertical={1}
-                style={{color:'#71717A', height:'99%'}}
-            >
-                <h1
-                    style={{
-                        fontSize: '72pt',
-                    }}
-                >ERRO 404 :(</h1>
-                <h4 style={{fontSize: '28pt'}}>Página não encontrada</h4>
-            </Flex>
+             <Result
+                 status="404"
+                 title="404"
+                 subTitle="Desculpe, essa página não exsite no site."
+                 extra={<Button type="primary" onClick={()=>window.location = '/'}>Voltar</Button>}
+             />
         </LayoutBasico>
      );
 }
