@@ -32,8 +32,8 @@ class TarefaController extends Controller
                 'assunto' => 'required|string|max:255',
                 'descricao' => 'sometimes|string',
                 'responsavel' => 'required',
-                'inicio' => 'date',
-                'fim' => 'date'
+                'inicio' => 'nullable|date',
+                'fim' => 'nullable|date'
             ]);
             $prazo = new Prazo();
             $tarefa = new Tarefa();
@@ -68,11 +68,11 @@ class TarefaController extends Controller
         }
         catch (ValidationException $e)
         {
-            return response()->json(['msg'=>'Campo descrição é obrigatório'], 422);
+            return response()->json(['msg'=>'Campo assunto é obrigatório'], 422);
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
 }
