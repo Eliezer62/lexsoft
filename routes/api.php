@@ -124,6 +124,9 @@ Route::controller(TarefaController::class)
     ->group(function (){
        Route::get('/{xid}', 'index')
             ->name('tarefas.index');
+
+       Route::post('/', 'store')
+           ->name('tarefas.store');
     });
 
 //Atendimento Controller
