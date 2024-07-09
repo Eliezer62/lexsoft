@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('descricao')->nullable();
             $table->datetime('inicio')->nullable();
             $table->datetime('fim')->nullable();
-            $table->bigInteger('evento');
-            $table->bigInteger('tarefa');
+            $table->bigInteger('evento')->nullable();
+            $table->bigInteger('tarefa')->nullable();
 
             //constraint
             $table->foreign('evento', 'fk_prazo_evento')
