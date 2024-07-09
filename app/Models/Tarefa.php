@@ -17,11 +17,15 @@ class Tarefa extends Model
     protected $table = 'tarefas';
 
     protected $fillable = [
+        'assunto',
         'descricao',
         'responsavel',
         'status'
     ];
 
+    protected $guarded = ['xid'];
+
+    protected $hidden = ['id', 'updated_at', 'created_at'];
 
     protected $casts = [
         'status'=>TarefaStatus::class
