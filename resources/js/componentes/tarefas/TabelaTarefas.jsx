@@ -83,7 +83,7 @@ export default function TabelaTarefas(props)
                 size={'small'}
                 pagination={
                     {
-                        pageSize: 7
+                        pageSize: 6
                     }
                 }
                 loading={props.loading}
