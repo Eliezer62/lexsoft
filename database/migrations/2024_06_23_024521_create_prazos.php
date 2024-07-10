@@ -36,6 +36,7 @@ return new class extends Migration
 
         DB::statement('ALTER TABLE prazos ADD COLUMN xid public.xid DEFAULT xid()');
         DB::statement('ALTER TABLE prazos ADD CONSTRAINT uc_prazos_xid UNIQUE (xid)');
+        DB::statement('ALTER TABLE prazos ADD CONSTRAINT chk_prazo_fim_maior CHECK (inicio<fim)');
     }
 
     /**
