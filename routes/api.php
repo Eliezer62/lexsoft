@@ -127,6 +127,9 @@ Route::controller(TarefaController::class)
 
        Route::post('/', 'store')
            ->name('tarefas.store');
+
+       Route::put('/{xid}', 'update')
+           ->name('tarefas.update');
     });
 
 //Atendimento Controller
