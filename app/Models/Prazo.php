@@ -51,7 +51,7 @@ class Prazo extends Model
 
     public function tarefa()
     {
-
+        return $this->belongsTo(Tarefa::class, 'id', 'tarefa');
     }
 
 

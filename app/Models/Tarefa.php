@@ -39,4 +39,9 @@ class Tarefa extends Model
     {
         return $this->belongsTo(Advogado::class, 'responsavel', 'id');
     }
+
+    public function prazo()
+    {
+        return $this->hasOne(Prazo::class, 'tarefa', 'id');
+    }
 }
