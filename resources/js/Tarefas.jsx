@@ -4,6 +4,7 @@ import TabelaTarefas from "@/componentes/tarefas/TabelaTarefas.jsx";
 import NovaTarefas from "@/componentes/tarefas/NovaTarefas.jsx";
 import {message} from 'antd';
 import axios from "axios";
+import EditarTarefas from "@/componentes/tarefas/EditarTarefas.jsx";
 
 
 const Tarefas = () => {
@@ -11,6 +12,7 @@ const Tarefas = () => {
     const [messageApi, contextholder] = message.useMessage();
     const [timeOut, setTimeOut] = useState(0);
     const [tarefas, setTarefas] = useState([]);
+    const [loadingTable, setLoadingTable] = useState(true);
 
     const abrirNovaTarefa = () => setOpenNovaTarefa(true);
 
@@ -31,7 +33,7 @@ const Tarefas = () => {
             const response = await axios.get('/api/tarefas/cpvfkgm65k23bn0tib4g')
                 .then((response)=>{
                     setTarefas(response.data);
-                    console.log(tarefas);
+                    setLoadingTable(false);
                 }).catch((error)=>{
                     mensagemErro('Erro em obter os atendimentos');
                 });
@@ -48,9 +50,6 @@ const Tarefas = () => {
         }
     });
 
-    const teste = [
-        {'assunto':'teste', 'status':'nova', 'descricao':'<p>descricao dado ate mais</p>',
-        'prazo':{inicio:'inicio', fim:'fim'}}]
 
     return (
         <LayoutBasico titulo={'Tarefas'} menu={'tarefas'}>
@@ -61,6 +60,7 @@ const Tarefas = () => {
             <TabelaTarefas
                 dados={tarefas}
                 adicionar={abrirNovaTarefa}
+                loading={loadingTable}
             />
             <NovaTarefas
                 open={openNovaTarefa}

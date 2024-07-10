@@ -1,15 +1,19 @@
 import React, {useState} from 'react';
-import {Button, Col, Input, Layout, Row, Table} from 'antd';
+import {Button, Col, Input, Layout, message, Row, Table} from 'antd';
 import {TbStatusChange} from "react-icons/tb";
 import {GrEdit} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import DOMPurify from 'dompurify'
 import dayjs from "dayjs";
+import EditarTarefas from "@/componentes/tarefas/EditarTarefas.jsx";
 
 
 export default function TabelaTarefas(props)
 {
     const [pesquisa, setPesquisa] = useState('');
+    const [openEditarTarefa, setOpenEditarTarefa] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
+    const [tarefa, setTarefa] = useState({});
 
     const coluna = [
         {
@@ -56,13 +60,31 @@ export default function TabelaTarefas(props)
                 return (
                     <>
                         <Button title={'Alterar Status'}><TbStatusChange/></Button>&nbsp;
-                        <Button title={'Editar'}><GrEdit/></Button>&nbsp;
+                        <Button title={'Editar'}
+                            onClick={()=>{
+                                setOpenEditarTarefa(true);
+                                setTarefa(record);
+                                console.log(tarefa);
+                            }}
+                        ><GrEdit/></Button>&nbsp;
                         <Button title={'Remover'} danger><IoIosRemoveCircleOutline/></Button>
                     </>
                 );
             }
         }
     ]
+
+    const cancelar = () => {
+        setOpenEditarTarefa(false);
+    }
+
+    const mensagemSucesso = (msg) => {
+        messageApi.success(msg);
+    }
+
+    const mensagemErro = (msg) => {
+        messageApi.error(msg);
+    }
 
     return (
         <Layout
@@ -85,7 +107,7 @@ export default function TabelaTarefas(props)
                 size={'small'}
                 pagination={
                     {
-                        pageSize: 6
+                        pageSize: 4
                     }
                 }
                 loading={props.loading}
@@ -101,6 +123,14 @@ export default function TabelaTarefas(props)
                     ),
                     rowExpandable: (record) => record.name !== 'Not Expandable',
                 }}
+            />
+            {contextHolder}
+            <EditarTarefas
+                open={openEditarTarefa}
+                cancelar={cancelar}
+                mensagemSucesso={mensagemSucesso}
+                mensagemErro={mensagemErro}
+                tarefa={tarefa}
             />
         </Layout>
     );
