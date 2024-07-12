@@ -49,6 +49,7 @@ class TarefaController extends Controller
                 $tarefa->status = 'nova';
                 if($tarefa->saveOrFail())
                 {
+                    $validado['descricao'] = null;
                     $prazo->fill($validado);
                     $prazo->tarefa = $tarefa->id;
                     if($prazo->saveOrFail())
