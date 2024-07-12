@@ -4,6 +4,7 @@ import {fa} from "faker-br/lib/locales.js";
 import ReactQuill from "react-quill";
 import axios from "axios";
 import dayjs from "dayjs";
+import EditorSimples from "@/componentes/EditorSimples.jsx";
 
 const NovaTarefas = (props) => {
     const [form] = Form.useForm();
@@ -16,7 +17,6 @@ const NovaTarefas = (props) => {
             //alterar para cookies
             tarefa.responsavel = 'cq8998665k25di0tid5g';
             tarefa.assunto = form.getFieldValue('assunto');
-            tarefa.descricao = form.getFieldValue('descricao');
             let inicio = form.getFieldValue('inicio');
             tarefa.inicio = (inicio)?dayjs(inicio, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm'):null;
             let fim  = form.getFieldValue('fim');
@@ -35,6 +35,11 @@ const NovaTarefas = (props) => {
                 props.mensagemErro('Erro em salvar a tarefa '+error.response?.data.msg);
             });
         });
+    }
+
+    const changeDescricao = (descricao) => {
+        tarefa.descricao = descricao;
+        setTarefa(tarefa);
     }
 
     return (
@@ -65,7 +70,7 @@ const NovaTarefas = (props) => {
                     label={'Descrição'}
                     name={'descricao'}
                 >
-                    <ReactQuill/>
+                    <EditorSimples onChange={changeDescricao}/>
                 </Form.Item>
 
                 <Form.Item

@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {DatePicker, Form, Input, Modal} from "antd";
-import {fa} from "faker-br/lib/locales.js";
-import ReactQuill from "react-quill";
 import axios from "axios";
 import dayjs from "dayjs";
+import EditorSimples from "@/componentes/EditorSimples.jsx";
+
 
 const EditarTarefas = (props) => {
     const [form] = Form.useForm();
@@ -16,7 +16,7 @@ const EditarTarefas = (props) => {
             //alterar para cookies
             tarefa.responsavel = 'cq8998665k25di0tid5g';
             tarefa.assunto = form.getFieldValue('assunto');
-            tarefa.descricao = form.getFieldValue('descricao');
+            //tarefa.descricao = form.getFieldValue('descricao');
             let inicio = form.getFieldValue('inicio');
             tarefa.inicio = (inicio)?dayjs(inicio, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm'):null;
             let fim  = form.getFieldValue('fim');
@@ -35,6 +35,11 @@ const EditarTarefas = (props) => {
                 props.mensagemErro('Erro em editar a tarefa '+error.response?.data.msg);
             });
         });
+    }
+
+    const editorChange = (descricao)=>{
+        tarefa.descricao = descricao;
+        setTarefa(tarefa);
     }
 
     return (
@@ -67,7 +72,7 @@ const EditarTarefas = (props) => {
                     name={'descricao'}
                     initialValue={props.tarefa.descricao}
                 >
-                    <ReactQuill/>
+                    <EditorSimples dados={props.tarefa.descricao} onChange={editorChange}/>
                 </Form.Item>
 
                 <Form.Item
@@ -86,7 +91,6 @@ const EditarTarefas = (props) => {
                     <DatePicker showTime format={'DD/MM/YYYY HH:mm'}/>
                 </Form.Item>
             </Form>
-
         </Modal>
     );
 }
