@@ -95,6 +95,7 @@ class TarefaController extends Controller
 
             $tarefa->fill($validado);
             $tarefa->save();
+            $validado['descricao'] = null;
             $tarefa->prazo->fill($validado);
             $tarefa->prazo->save();
 
@@ -107,7 +108,7 @@ class TarefaController extends Controller
         catch (QueryException $e)
         {
             if($e->getCode()==23514) return response()->json(['msg'=>'data de início deve ser menor que a final'], 422);
-            else throw new \Exception();
+            else return  response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
         {
