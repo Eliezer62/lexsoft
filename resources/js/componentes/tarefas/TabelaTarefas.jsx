@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {Button, Col, Input, Layout, message, Row, Select, Table} from 'antd';
-import {TbStatusChange} from "react-icons/tb";
 import {GrEdit} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import DOMPurify from 'dompurify'
@@ -15,6 +14,14 @@ export default function TabelaTarefas(props)
     const [openEditarTarefa, setOpenEditarTarefa] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const [tarefa, setTarefa] = useState({});
+
+    const opcoes = [
+        {label:'Nova', value:'nova'},
+        {value:'em progresso', label:'Em progresso'},
+        {value:'confirmar', label:'Confirmar'},
+        {value:'resolvido', label:'Resolvido'},
+        {value:'sem solução', label:'Sem solução'}
+    ]
 
     const coluna = [
         {
@@ -35,13 +42,7 @@ export default function TabelaTarefas(props)
             dataIndex: 'status',
             sorter: (a,b) => a.assunto.localeCompare(b.assunto),
             sortDirections: ['descend', 'ascend'],
-            render: (item, record) => (<Select options={[
-                    {label:'Nova', value:'nova'},
-                    {value:'em progresso', label:'Em progresso'},
-                    {value:'confirmar', label:'Confirmar'},
-                    {value:'resolvido', label:'Resolvido'},
-                    {value:'sem solução', label:'Sem solução'}
-                ]} defaultValue={item} style={{width:'150px'}} onChange={async (e)=>{
+            render: (item, record) => (<Select options={opcoes} value={record.status} style={{width:'150px'}} onChange={async (e)=>{
                     const m = messageApi.loading('Atualizando o status', 1);
                     await axios.post('/api/tarefas/'+record.xid+'/status', {status:e})
                         .then((resp)=>{
