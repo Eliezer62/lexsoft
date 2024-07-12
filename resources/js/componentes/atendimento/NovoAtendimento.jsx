@@ -1,10 +1,8 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {DatePicker, Input, Modal, Select} from "antd";
 import {Form} from 'antd';
 import axios from "axios";
 import dayjs from "dayjs";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import EditorSimples from "@/componentes/EditorSimples.jsx";
 
 const NovoAtendimento = (props) => {

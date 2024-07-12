@@ -2,7 +2,6 @@ import React from 'react';
 import {Drawer} from "antd";
 import DescricaoItem from "@/componentes/DescricaoItem.jsx";
 import dayjs from "dayjs";
-import ReactQuill from "react-quill";
 import EditorSimples from "@/componentes/EditorSimples.jsx";
 
 const ViewAtendimento = (props) => {
