@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Advogado;
 use App\Models\Prazo;
 use App\Models\Tarefa;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -83,7 +84,7 @@ class TarefaController extends Controller
         try {
             $validado = $request->validate([
                 'assunto' => 'string|max:255',
-                'descricao' => 'sometimes|string',
+                'descricao' => 'nullable|string',
                 'inicio' => 'nullable|date',
                 'fim' => 'nullable|date'
             ]);
@@ -110,6 +111,38 @@ class TarefaController extends Controller
         catch (\Exception $e)
         {
             return response()->json(['msg'=>'Erro interno'], 500);
+        }
+    }
+
+
+    public function delete(string $xid)
+    {
+        Tarefa::firstWhere('xid', $xid)?->delete();
+
+        return response(status: 200);
+    }
+
+    public function status(Request $request, string $xid)
+    {
+        try{
+            $valido = $request->validate(['status' => 'required']);
+
+            $tarefa = Tarefa::firstWhere('xid', $xid);
+            if (is_null($tarefa)) return response(status: 404);
+            $tarefa->fill($valido);
+            $tarefa['updated_at'] = Carbon::now();
+
+            $tarefa->save();
+
+            return response(status: 200);
+        }
+        catch (ValidationException $e)
+        {
+            return response()->json(['msg'=>'dados inválidos enviado'], 422);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json(['msg'=>'erro interno'], 500);
         }
     }
 }

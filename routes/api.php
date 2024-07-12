@@ -130,6 +130,12 @@ Route::controller(TarefaController::class)
 
        Route::put('/{xid}', 'update')
            ->name('tarefas.update');
+
+       Route::delete('/{xid}', 'delete')
+           ->name('tarefas.delete');
+
+       Route::post('/{xid}/status', 'status')
+           ->name('tarefas.status');
     });
 
 //Atendimento Controller
