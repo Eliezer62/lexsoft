@@ -30,12 +30,12 @@ const Tarefas = () => {
 
     useEffect(() => {
         const getTarefas = async () => {
-            const response = await axios.get('/api/tarefas/cpvfkgm65k23bn0tib4g')
+            const response = await axios.get('/api/tarefas/cq8998665k25di0tid5g')
                 .then((response)=>{
                     setTarefas(response.data);
                     setLoadingTable(false);
                 }).catch((error)=>{
-                    mensagemErro('Erro em obter os atendimentos');
+                    mensagemErro('Erro em obter as tarefas');
                 });
         }
 

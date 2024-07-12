@@ -14,7 +14,7 @@ const NovaTarefas = (props) => {
         form.validateFields().then(async ()=>{
             setConfirmLoading(true);
             //alterar para cookies
-            tarefa.responsavel = 'cpvfkgm65k23bn0tib4g';
+            tarefa.responsavel = 'cq8998665k25di0tid5g';
             tarefa.assunto = form.getFieldValue('assunto');
             tarefa.descricao = form.getFieldValue('descricao');
             let inicio = form.getFieldValue('inicio');

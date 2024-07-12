@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {Button, Col, Input, Layout, message, Row, Table} from 'antd';
+import {Button, Col, Input, Layout, message, Row, Select, Table} from 'antd';
 import {TbStatusChange} from "react-icons/tb";
 import {GrEdit} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import DOMPurify from 'dompurify'
 import dayjs from "dayjs";
 import EditarTarefas from "@/componentes/tarefas/EditarTarefas.jsx";
+import axios from "axios";
 
 
 export default function TabelaTarefas(props)
@@ -34,6 +35,24 @@ export default function TabelaTarefas(props)
             dataIndex: 'status',
             sorter: (a,b) => a.assunto.localeCompare(b.assunto),
             sortDirections: ['descend', 'ascend'],
+            render: (item, record) => (<Select options={[
+                    {label:'Nova', value:'nova'},
+                    {value:'em progresso', label:'Em progresso'},
+                    {value:'confirmar', label:'Confirmar'},
+                    {value:'resolvido', label:'Resolvido'},
+                    {value:'sem solução', label:'Sem solução'}
+                ]} defaultValue={item} style={{width:'150px'}} onChange={async (e)=>{
+                    const m = messageApi.loading('Atualizando o status', 1);
+                    await axios.post('/api/tarefas/'+record.xid+'/status', {status:e})
+                        .then((resp)=>{
+                            messageApi.destroy(m.id);
+                            messageApi.success('Status atualizado com sucesso');
+                        })
+                        .catch((e)=>{
+                            messageApi.destroy(m.id);
+                            messageApi.error('Erro em atualizar o status '+e.response.data?.msg);
+                        });
+            }}/>)
         },
         {
             title: 'Prazo',
@@ -59,7 +78,6 @@ export default function TabelaTarefas(props)
             render: (text, record) => {
                 return (
                     <>
-                        <Button title={'Alterar Status'}><TbStatusChange/></Button>&nbsp;
                         <Button title={'Editar'}
                             onClick={()=>{
                                 setOpenEditarTarefa(true);
@@ -67,7 +85,18 @@ export default function TabelaTarefas(props)
                                 console.log(tarefa);
                             }}
                         ><GrEdit/></Button>&nbsp;
-                        <Button title={'Remover'} danger><IoIosRemoveCircleOutline/></Button>
+                        <Button title={'Remover'} danger onClick={async ()=>{
+                            const m = messageApi.loading('Removendo a tarefa',1);
+                            console.log('/api/tarefas/'+record.xid);
+                            await axios.delete('/api/tarefas/'+record.xid)
+                                .then((resp)=>{
+                                    messageApi.destroy(m.id);
+                                    messageApi.success('Tarefa removida com sucesso');
+                                }).catch((erro)=>{
+                                    messageApi.destroy(m.id);
+                                    messageApi.error('Erro em remvoer a tarefa');
+                                });
+                        }}><IoIosRemoveCircleOutline/></Button>
                     </>
                 );
             }
