@@ -238,6 +238,6 @@ export default function EditorSimples(props) {
     return (
         < CKEditor editor={ClassicEditor} config={editorConfig} data={props.dados} onChange={(e, ed)=>{
             props.onChange(ed.getData());
-        }}/>
+        }} disabled={props.disabled}/>
     );
 }

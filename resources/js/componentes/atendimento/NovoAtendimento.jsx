@@ -5,12 +5,14 @@ import axios from "axios";
 import dayjs from "dayjs";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import EditorSimples from "@/componentes/EditorSimples.jsx";
 
 const NovoAtendimento = (props) => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [loadingEnviar, setLoadingEnviar] = useState(false);
     const [clientes, setClientes] = useState([]);
+    const [descricao, setDescricao] = useState(null);
 
     const enviar = () => {
         setLoadingEnviar(true);
@@ -18,7 +20,7 @@ const NovoAtendimento = (props) => {
            let atendimento = {};
            atendimento.assunto = form.getFieldValue('assunto');
            atendimento.data = dayjs(form.getFieldValue('data'), 'DD/MM/YYYY').format('YYYY-MM-DD HH:mm');
-           atendimento.descricao = form.getFieldValue('descricao');
+           atendimento.descricao = descricao;
            let cliente = clientes.find(e => e.value === form.getFieldValue('cliente'));
            if(cliente?.tipo==='fisico')
                atendimento.clientefis = cliente.value;
@@ -54,6 +56,9 @@ const NovoAtendimento = (props) => {
         getClientes();
     }, [props.open]);
 
+    const handleDescricao = (descricao) => {
+        setDescricao(descricao);
+    }
 
     return (
         <Modal title="Novo Atendimento"
@@ -121,7 +126,7 @@ const NovoAtendimento = (props) => {
                     label={'Descrição'}
                     name={'descricao'}
                 >
-                    <ReactQuill theme="snow" />
+                    <EditorSimples onChange={handleDescricao}/>
                 </Form.Item>
             </Form>
         </Modal>

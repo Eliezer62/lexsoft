@@ -3,6 +3,7 @@ import {Drawer} from "antd";
 import DescricaoItem from "@/componentes/DescricaoItem.jsx";
 import dayjs from "dayjs";
 import ReactQuill from "react-quill";
+import EditorSimples from "@/componentes/EditorSimples.jsx";
 
 const ViewAtendimento = (props) => {
 
@@ -22,7 +23,7 @@ const ViewAtendimento = (props) => {
           <DescricaoItem titulo={'Cliente'} conteudo={props.atendimento?.cliente}/>
           <DescricaoItem titulo={'Processo'} conteudo={props.atendimento?.processo}/>
           <p>Descrição</p>
-          <ReactQuill theme="snow" value={props.atendimento?.descricao} readOnly={true}/>
+          <EditorSimples dados={props.atendimento?.descricao} disabled={true}/>
       </Drawer>
     );
 }
