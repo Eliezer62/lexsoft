@@ -121,6 +121,18 @@ Route::controller(TarefaController::class)
     ->group(function (){
        Route::get('/{xid}', 'index')
             ->name('tarefas.index');
+
+       Route::post('/', 'store')
+           ->name('tarefas.store');
+
+       Route::put('/{xid}', 'update')
+           ->name('tarefas.update');
+
+       Route::delete('/{xid}', 'delete')
+           ->name('tarefas.delete');
+
+       Route::post('/{xid}/status', 'status')
+           ->name('tarefas.status');
     });
 
 //Atendimento Controller
