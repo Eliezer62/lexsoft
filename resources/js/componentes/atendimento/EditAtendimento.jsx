@@ -3,7 +3,6 @@ import {DatePicker, Input, Modal, Select} from "antd";
 import {Form} from 'antd';
 import axios from "axios";
 import dayjs from "dayjs";
-import 'react-quill/dist/quill.snow.css';
 import EditorSimples from "@/componentes/EditorSimples.jsx";
 
 const EditAtendimento = (props) => {
