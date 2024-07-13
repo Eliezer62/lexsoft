@@ -27,4 +27,6 @@ class Tribunal extends Model
         'nome',
         'ramo_tribunal'
     ];
+
+    public $timestamps = false;
 }

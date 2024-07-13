@@ -354,5 +354,141 @@ class TribunalSeeder extends Seeder
             'nome'=>'Tribunal de Justiça do Amapá',
             'ramo_tribunal'=>'8'
         ]);
+        Tribunal::firstOrCreate([
+            'id'=>'804',
+            'nome'=>'Tribunal de Justiça do Amazonas',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'805',
+            'nome'=>'Tribunal de Justiça da Bahia',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'806',
+            'nome'=>'Tribunal de Justiça do Ceará',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'807',
+            'nome'=>'Tribunal de Justiça do Distrito Federal',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'808',
+            'nome'=>'Tribunal de Justiça do Espírito Santo',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'809',
+            'nome'=>'Tribunal de Justiça de Goiás',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'810',
+            'nome'=>'Tribunal de Justiça do Maranhão',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'811',
+            'nome'=>'Tribunal de Justiça do Mato Grosso',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'812',
+            'nome'=>'Tribunal de Justiça do Mato Grosso do Sul',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'813',
+            'nome'=>'Tribunal de Justiça de Minas Gerais',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'814',
+            'nome'=>'Tribunal de Justiça do Pará',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'815',
+            'nome'=>'Tribunal de Justiça da Paraíba',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'816',
+            'nome'=>'Tribunal de Justiça do Paraná',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'817',
+            'nome'=>'Tribunal de Justiça do Pernambuco',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'818',
+            'nome'=>'Tribunal de Justiça do Piauí',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'819',
+            'nome'=>'Tribunal de Justiça do Rio de Janeiro',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'820',
+            'nome'=>'Tribunal de Justiça do Rio Grande do Norte',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'821',
+            'nome'=>'Tribunal de Justiça do Rio Grande do Sul',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'822',
+            'nome'=>'Tribunal de Justiça de Rondônia',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'823',
+            'nome'=>'Tribunal de Justiça de Roraima',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'824',
+            'nome'=>'Tribunal de Justiça de Santa Catarina',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'825',
+            'nome'=>'Tribunal de Justiça de Sergipe',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'826',
+            'nome'=>'Tribunal de Justiça de São Paulo',
+            'ramo_tribunal'=>'8'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'827',
+            'nome'=>'Tribunal de Justiça do Tocantis',
+            'ramo_tribunal'=>'8'
+        ]);
+        //Militar
+        Tribunal::firstOrCreate([
+            'id'=>'913',
+            'nome'=>'Tribunal de Justiça Militar do Estado de Minas Gerais',
+            'ramo_tribunal'=>'9'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'921',
+            'nome'=>'Tribunal de Justiça Militar do Estado do Rio Grande do Sul',
+            'ramo_tribunal'=>'9'
+        ]);
+        Tribunal::firstOrCreate([
+            'id'=>'926',
+            'nome'=>'Tribunal de Justiça Militar do Estado de São Paulo',
+            'ramo_tribunal'=>'9'
+        ]);
     }
 }

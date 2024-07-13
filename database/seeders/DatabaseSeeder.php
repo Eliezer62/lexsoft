@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         EstadoCivilSeeder::run();
         ClasseJudicialSeeder::run();
         CidadeSeeder::run();
+        TribunalSeeder::run();
     }
 }
