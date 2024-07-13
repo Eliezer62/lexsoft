@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Cidade;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class CidadeSeeder extends Seeder
 {
@@ -14,7 +12,7 @@ class CidadeSeeder extends Seeder
      */
     public static function run(): void
     {
-        DB::table('cidades')->insert([
+        $cidades = [
             [
                 "id"=> 1,
                 "nome"=> "Alta Floresta D'Oeste",
@@ -33434,6 +33432,11 @@ class CidadeSeeder extends Seeder
                 "nome"=> "Brasília",
                 "estado"=> "DF"
             ]
-        ]);
+        ];
+
+        foreach($cidades as $cidade)
+        {
+            Cidade::firstOrCreate($cidade);
+        }
     }
 }

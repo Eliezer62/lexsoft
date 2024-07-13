@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         SexoSeeder::run();
         EstadoCivilSeeder::run();
         ClasseJudicialSeeder::run();
+        CidadeSeeder::run();
     }
 }
