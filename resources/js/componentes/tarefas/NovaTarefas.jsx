@@ -1,7 +1,5 @@
 import React, {useState} from 'react';
 import {DatePicker, Form, Input, Modal} from "antd";
-import {fa} from "faker-br/lib/locales.js";
-import ReactQuill from "react-quill";
 import axios from "axios";
 import dayjs from "dayjs";
 import EditorSimples from "@/componentes/EditorSimples.jsx";
