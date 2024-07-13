@@ -15,4 +15,6 @@ class ClasseJudicial extends Model
         'id',
         'descricao'
     ];
+
+    public $timestamps = false;
 }
