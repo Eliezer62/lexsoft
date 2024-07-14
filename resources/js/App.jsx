@@ -11,6 +11,17 @@ import Clientes from "@/Clientes.jsx";
 import Atendimentos from "@/Atendimentos.jsx";
 import Documentos from "@/Documentos.jsx";
 import Processos from "@/Processos.jsx";
+import NovoProcesso from "@/processos/NovoProcesso.jsx";
+
+const RotaProcessos = () => {
+    return (
+        <Routes>
+            <Route path="/" Component={Processos} />
+            <Route path={'/criar'} Component={NovoProcesso}/>
+        </Routes>
+    );
+}
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
@@ -23,7 +34,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Route path='/tarefas' Component={Tarefas}/>
                 <Route path={'/atendimentos'} Component={Atendimentos}/>
                 <Route path={'/documentos'} Component={Documentos}/>
-                <Route path={'/processos'} Component={Processos}/>
+                <Route path={'/processos/*'} element={<RotaProcessos/>}/>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>
