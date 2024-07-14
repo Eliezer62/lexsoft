@@ -46,6 +46,7 @@ export default function Processos() {
             <TabelaBase
                 pesquisa={setPesquisa}
                 coluna={colunas}
+                adicionar={()=>window.location.href='/processos/criar'}
             />
       </LayoutBasico>
     );
