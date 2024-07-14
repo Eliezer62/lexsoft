@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Advogado;
+use App\Models\ClientePessoaFis;
+use App\Models\ClientePessoaJur;
 use App\Models\Comarca;
 use App\Models\Processo;
 use App\Models\Vara;
@@ -84,6 +87,74 @@ class ProcessoController extends Controller
         catch (\Exception $e)
         {
             return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Vincula advogados e partes a um processo, rota do controlador
+     * @param Request $request
+     * @param $xid
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function vincular(Request $request, $xid)
+    {
+        try
+        {
+            $validados = $request->validate([
+                'advogados' => 'nullable|array',
+                'partes' => 'nullable|array',
+            ]);
+
+            $processo = Processo::firstWhere('xid', $xid);
+            if ($request->has('advogados'))
+                $this->vincularAdvogados($processo, $validados['advogados']);
+
+            if ($request->has('partes'))
+                $this->vincularPartes($processo, $validados['partes']);
+
+            return response()->json([], 200);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Vincular um array de clientes
+     * @param $processo
+     * @param array $clientes
+     * @return void
+     */
+    private function vincularPartes($processo, array $partes)
+    {
+        foreach ($partes as $index=>$parte)
+        {
+            if($parte['tipo']=='fisico')
+            {
+                $cliente = ClientePessoaFis::firstWhere('xid', $parte['cliente']);
+                $processo->partes()->attach($cliente, ['qualificacao'=>$parte['qualificacao']]);
+            }
+            else if($parte['tipo']=='juridico')
+            {
+                $cliente = ClientePessoaJur::firstWhere('xid', $parte['cliente']);
+                $processo->partes_jur()->attach($cliente, ['qualificacao'=>$parte['qualificacao']]);
+            }
+        }
+
+    }
+
+    /**
+     * Vincular um array de advogados a um processo
+     * @param Processo $processo
+     * @param array $advogados
+     * @return void
+     */
+    private function vincularAdvogados(Processo $processo, array $advogados): void
+    {
+        foreach ($advogados as $advogado) {
+            $advogado = Advogado::firstWhere('xid', $advogado);
+            $processo->advogados()->attach($advogado);
         }
     }
 }

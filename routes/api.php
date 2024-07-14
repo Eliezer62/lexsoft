@@ -178,4 +178,7 @@ Route::controller(ProcessoController::class)
 
         Route::post('/', 'store')
             ->name('processos.store');
+
+        Route::post('/{xid}/partes', 'vincular')
+            ->name('processos.partes');
     });
