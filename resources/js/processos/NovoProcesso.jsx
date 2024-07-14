@@ -58,11 +58,12 @@ export default function NovoProcesso() {
     return (
         <LayoutBasico titulo='Novo Processo' menu={'processos'}>
             {contextHolder}
-            <Breadcrumb>
-                <Breadcrumb.Item href={'/'}><HomeOutlined/></Breadcrumb.Item>
-                <Breadcrumb.Item href={'/processos'}>Processos</Breadcrumb.Item>
-                <Breadcrumb.Item>Criar</Breadcrumb.Item>
-            </Breadcrumb>
+            <Breadcrumb items={[
+                {title:<HomeOutlined/>, href:'/'},
+                {title:'Processos', href:'/processos'},
+                {title:'Criar'}
+            ]}
+            />
             <FormProcesso form={form}/>
             <Flex
                 align={'right'}
