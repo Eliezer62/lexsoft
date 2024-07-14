@@ -29,7 +29,7 @@ return new class extends Migration
             $table->date('data_criacao');
             $table->date('data_distribuicao')->nullable();
             $table->smallInteger('classe_judicial');
-            $table->char('tribunal', 2);
+            $table->char('tribunal', 3);
             $table->integer('vara');
             $table->integer('comarca')->nullable();
 

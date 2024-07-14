@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nome', 60)
                     ->index('index_varas_nome');
-            $table->char('idcnj',4);
-            $table->integer('comarca');
+            $table->char('idcnj',4)->nullable();
+            $table->integer('comarca')->nullable();
         });
     }
 
