@@ -17,6 +17,7 @@ import PartesProcesso from "@/processos/PartesProcesso.jsx";
 const RotaProcessos = () => {
     return (
         <Routes>
+            <Route path={'*'} element={<Erro404/>}/>
             <Route path="/" Component={Processos} />
             <Route path={'/criar'} Component={NovoProcesso}/>
             <Route path={'/criar/:xid/partes'} Component={PartesProcesso}/>
