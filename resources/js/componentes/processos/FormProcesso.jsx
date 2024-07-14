@@ -1,6 +1,7 @@
-import React from 'react';
-import {Col, DatePicker, Form, Input, InputNumber, Row, Select} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Col, DatePicker, Form, Input, InputNumber, message, Row, Select} from 'antd';
 import dayjs from "dayjs";
+import axios from "axios";
 
 /**
  * Componente formulário para criar Processo
@@ -9,6 +10,39 @@ import dayjs from "dayjs";
  * @constructor
  */
 export default function FormProcesso(props){
+    const [messageApi, contextHolder] = message.useMessage();
+    const [classesJur, setClassesJur] = useState([]);
+    const [tribunais, setTribunais] = useState([]);
+
+    useEffect(() => {
+        const getClasses = async () => {
+            await axios.get('/api/classes_judiciais')
+                .then((resp)=>{
+                    let classes = [];
+                    resp.data.forEach(classe => {
+                        classes.push({label:classe.id+" "+classe.descricao, value:classe.id});
+                    })
+                    setClassesJur(classes);
+                })
+                .catch(e=>{
+                    messageApi.error('Erro em obter classes judiciais');
+                });
+        }
+
+        const getTribunais = async () => {
+            await axios.get('/api/tribunais')
+                .then((resp)=>{
+                    let t = [];
+                    resp.data.forEach(tribunal => {
+                        t.push({label:tribunal.nome, value:tribunal.id});
+                    });
+                    setTribunais(t);
+                })
+        }
+
+        getClasses();
+        getTribunais();
+    }, []);
 
     return (
         <Form
@@ -16,6 +50,7 @@ export default function FormProcesso(props){
             layout={'vertical'}
             form={props.form}
         >
+            {contextHolder}
             <div>
                 <h3>Dados do processo</h3>
                 <Row>
@@ -141,7 +176,12 @@ export default function FormProcesso(props){
                             label={'Classe Judicial'}
                             name={'classe_judicial'}
                         >
-                            <Select />
+                            <Select
+                                options={classesJur}
+                                style={{width:'275px'}}
+                                showSearch
+                                optionFilterProp={'label'}
+                            />
                         </Form.Item>
                     </Col>
                     <Col className={'item-col'}>
@@ -149,7 +189,12 @@ export default function FormProcesso(props){
                             label={'Tribunal'}
                             name={'tribunal'}
                         >
-                            <Select />
+                            <Select
+                                options={tribunais}
+                                style={{width:'275px'}}
+                                showSearch
+                                optionFilterProp={'label'}
+                            />
                         </Form.Item>
                     </Col>
                 </Row>
