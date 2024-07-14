@@ -97,8 +97,7 @@ class ClientePessoaFis extends Model
 
     public function processos()
     {
-        return $this->belongsToMany(Processo::class)
-            ->as('partes')
+        return $this->belongsToMany(Processo::class, 'partes', 'clientefis', 'processo')
             ->withPivot('qualificacao');
     }
 

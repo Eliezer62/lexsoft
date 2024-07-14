@@ -57,8 +57,7 @@ class Processo extends Model
      */
     public function partes()
     {
-        return $this->belongsToMany(ClientePessoaFis::class)
-            ->as('partes')
+        return $this->belongsToMany(ClientePessoaFis::class, 'partes', 'processo', 'clientefis')
             ->withPivot('qualificacao');
     }
 
@@ -68,8 +67,7 @@ class Processo extends Model
      */
     public function partes_jur()
     {
-        return $this->belongsToMany(ClientePessoaJur::class)
-            ->as('partes_jur')
+        return $this->belongsToMany(ClientePessoaJur::class, 'partes_jur', 'processo', 'clientejur')
             ->withPivot('qualificacao');
     }
 }
