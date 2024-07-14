@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Casts\Advogado;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -49,8 +48,7 @@ class Processo extends Model
 
     public function advogados()
     {
-        return $this->belongsToMany(Advogado::class)
-            ->as('representa');
+        return $this->belongsToMany(Advogado::class, 'representa', 'processo', 'advogado');
     }
 
     /**
