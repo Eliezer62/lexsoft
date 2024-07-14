@@ -160,3 +160,7 @@ Route::get('/documentos/pesquisa', [DocumentoController::class, 'search']);
 Route::get('/storage/content/{xid}', [DocumentoController::class, 'show']);
 
 Route::delete('/storage/content/{xid}', [DocumentoController::class, 'delete']);
+
+//Rotas Processo
+Route::get('/classes_judiciais', [ClasseJudicialController::class, 'index'])
+    ->name('classe_judicial.index');
