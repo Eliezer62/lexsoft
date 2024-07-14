@@ -12,12 +12,14 @@ import Atendimentos from "@/Atendimentos.jsx";
 import Documentos from "@/Documentos.jsx";
 import Processos from "@/Processos.jsx";
 import NovoProcesso from "@/processos/NovoProcesso.jsx";
+import PartesProcesso from "@/processos/PartesProcesso.jsx";
 
 const RotaProcessos = () => {
     return (
         <Routes>
             <Route path="/" Component={Processos} />
             <Route path={'/criar'} Component={NovoProcesso}/>
+            <Route path={'/criar/:xid/partes'} Component={PartesProcesso}/>
         </Routes>
     );
 }
