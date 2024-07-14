@@ -130,7 +130,6 @@ export default function FormPartes(props){
                     )}
                 </Form.List>
             </Form>
-            <Button onClick={()=>console.log(props.form.getFieldValue('partes'))}>aaa</Button>
         </Flex>
     )
 }
