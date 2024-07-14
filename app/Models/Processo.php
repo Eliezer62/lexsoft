@@ -20,7 +20,6 @@ class Processo extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'xid',
         'numero',
         'valor_causa',
         'valor_condenacao',
@@ -34,6 +33,17 @@ class Processo extends Model
         'tribunal',
         'vara',
         'comarca'
+    ];
+
+    protected $guarded = [
+        'xid'
+    ];
+
+    protected $hidden = [
+        'id',
+        'updated_at',
+        'created_at',
+        'deleted_at'
     ];
 
 

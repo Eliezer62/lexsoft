@@ -28,6 +28,8 @@ class Vara extends Model
         'comarca'
     ];
 
+    public $timestamps = false;
+
     /**
      * Obtém comarca de vara
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
