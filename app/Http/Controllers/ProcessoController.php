@@ -37,9 +37,9 @@ class ProcessoController extends Controller
         $processo = new Processo();
 
         try{
-            DB::transaction(function () use ($validados, $processo) {
+            DB::transaction(function () use ($validados, $processo, $request) {
                 $comarca = null;
-                if (!is_null($validados['comarca'])) {
+                if ($request->has('comarca')) {
                     $comarca = new Comarca();
                     $comarca->fill([
                         'nome' => $validados['comarca'],
@@ -56,7 +56,7 @@ class ProcessoController extends Controller
                 $vara = new Vara();
                 $vara->fill([
                     'nome' => $validados['vara'],
-                    'comarca' => $comarca?->id
+                    'comarca' => (!is_null($comarca))?$comarca->id:null
                 ]);
 
                 if (!$vara->saveOrFail()) {
