@@ -164,3 +164,6 @@ Route::delete('/storage/content/{xid}', [DocumentoController::class, 'delete']);
 //Rotas Processo
 Route::get('/classes_judiciais', [ClasseJudicialController::class, 'index'])
     ->name('classe_judicial.index');
+
+Route::get('/tribunais', [TribunalController::class, 'index'])
+    ->name('tribunal.index');
