@@ -167,3 +167,11 @@ Route::get('/classes_judiciais', [ClasseJudicialController::class, 'index'])
 
 Route::get('/tribunais', [TribunalController::class, 'index'])
     ->name('tribunal.index');
+
+Route::controller(ProcessoController::class)
+    ->prefix('/processos')
+    ->group(function (){
+
+        Route::post('/', 'store')
+            ->name('processos.store');
+    });
