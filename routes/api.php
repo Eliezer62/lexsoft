@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Documento;
+use App\Models\Qualificacao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -167,6 +168,9 @@ Route::get('/classes_judiciais', [ClasseJudicialController::class, 'index'])
 
 Route::get('/tribunais', [TribunalController::class, 'index'])
     ->name('tribunal.index');
+
+Route::get('/qualificacoes', [QualificacaoController::class, 'index'])
+    ->name('qualificacao.index');
 
 Route::controller(ProcessoController::class)
     ->prefix('/processos')
