@@ -175,6 +175,8 @@ Route::get('/qualificacoes', [QualificacaoController::class, 'index'])
 Route::controller(ProcessoController::class)
     ->prefix('/processos')
     ->group(function (){
+        Route::get('/', 'index')
+            ->name('processos.index');
 
         Route::post('/', 'store')
             ->name('processos.store');

@@ -14,6 +14,17 @@ use Illuminate\Validation\ValidationException;
 
 class ProcessoController extends Controller
 {
+    public function index()
+    {
+        $processos = DB::select('
+            SELECT
+                p.xid, p.numero, p."numCNJ", t.nome AS tribunal
+                FROM processos p JOIN tribunais t ON t.id = tribunal;
+        ');
+
+        return response()->json($processos, 200);
+    }
+
     /**
      * Salva um processo
      * @param Request $request
