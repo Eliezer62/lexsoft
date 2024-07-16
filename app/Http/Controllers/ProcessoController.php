@@ -19,7 +19,8 @@ class ProcessoController extends Controller
         $processos = DB::select('
             SELECT
                 p.xid, p.numero, p."numCNJ", t.nome AS tribunal
-                FROM processos p JOIN tribunais t ON t.id = tribunal;
+                FROM processos p JOIN tribunais t ON t.id = tribunal
+                WHERE p.deleted_at IS NULL ORDER BY p.updated_at;
         ');
 
         return response()->json($processos, 200);
