@@ -178,6 +178,9 @@ Route::controller(ProcessoController::class)
         Route::get('/', 'index')
             ->name('processos.index');
 
+        Route::get('/{xid}', 'show')
+            ->name('processos.show');
+
         Route::post('/', 'store')
             ->name('processos.store');
 

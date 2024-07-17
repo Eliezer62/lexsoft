@@ -20,11 +20,28 @@ class ProcessoController extends Controller
             SELECT
                 p.xid, p.numero, p."numCNJ", t.nome AS tribunal
                 FROM processos p JOIN tribunais t ON t.id = tribunal
-                WHERE p.deleted_at IS NULL ORDER BY p.updated_at;
+                WHERE p.deleted_at IS NULL ORDER BY p.updated_at DESC;
         ');
 
         return response()->json($processos, 200);
     }
+
+    public function show(string $xid)
+    {
+        $processo = Processo::select([
+            'xid','numero', 'numCNJ', 'prioridade', 'justica_gratuita',
+            'valor_causa', 'valor_condenacao', 'instancia', 'classe_judicial',
+            'processos.tribunal','data_criacao','data_distribuicao'
+        ])
+            ->selectRaw('comarcas.nome as comarca')
+            ->selectRaw('varas.nome as vara')
+            ->join('comarcas', 'processos.comarca', 'comarcas.id')
+            ->join('varas', 'processos.vara', 'varas.id')
+            ->firstWhere('xid', $xid);
+
+        return response()->json($processo, 200);
+    }
+
 
     /**
      * Salva um processo
