@@ -70,4 +70,14 @@ class Processo extends Model
         return $this->belongsToMany(ClientePessoaJur::class, 'partes_jur', 'processo', 'clientejur')
             ->withPivot('qualificacao');
     }
+
+    public function vara()
+    {
+        return $this->hasOne(Vara::class, 'id', 'vara');
+    }
+
+    public function comarca()
+    {
+        return $this->hasOne(Comarca::class, 'id', 'comarca');
+    }
 }
