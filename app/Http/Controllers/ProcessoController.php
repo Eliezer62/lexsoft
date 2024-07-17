@@ -150,7 +150,7 @@ class ProcessoController extends Controller
             if(!is_null($processo->comarca))
                 $processo->comarca()->first()->update(['nome'=>$validados['comarca']]);
 
-            else if($request->has('comarca') && is_null($processo->comarca))
+            else if($request->has('comarca') && is_null($processo->comarca) && !is_null($request->input('comarca')))
             {
                 $comarca = Comarca::create(['nome'=>$validados['comarca'], 'tribunal'=>$validados['tribunal']]);
                 $processo->update(['comarca'=>$comarca->id]);
