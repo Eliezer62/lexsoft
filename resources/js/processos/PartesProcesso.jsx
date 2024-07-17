@@ -31,7 +31,7 @@ export default function PartesProcesso(props){
                 data:data
             }).then((resp)=>{
                 messageApi.success('Partes salvas com sucesso');
-                //setInterval(()=>location.href='/processos/'+xid+'/movimentar', 3000);
+                setInterval(()=>location.href='/processos/'+xid+'/movimentar', 3000);
             }).catch((e)=>{
                 messageApi.error('Erro em salvar as partes');
             })

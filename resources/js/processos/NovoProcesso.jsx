@@ -37,7 +37,6 @@ export default function NovoProcesso() {
                 processo.tribunal = form.getFieldValue('tribunal');
                 processo.comarca = form.getFieldValue('comarca');
                 processo.vara = form.getFieldValue('vara');
-                console.log(processo);
 
                 await axios({
                     method:'POST',
