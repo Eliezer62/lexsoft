@@ -144,7 +144,7 @@ export default function FormProcesso(props){
                                 label={'Valor da Causa'}
                                 name={'valor_causa'}
                                 rules={[
-                                    {type:'number', message:'Formato inválido'}
+                                    {type:'regexp', pattern:new RegExp(/\\d+\\,?\\d+/gm), message:'Formato inválido'}
                                 ]}
                             >
                                 <InputNumber min={0} precision={2} decimalSeparator={','} style={{width:'150px'}}/>
@@ -155,7 +155,7 @@ export default function FormProcesso(props){
                                 label={'Valor de Condenação'}
                                 name={'valor_condenacao'}
                                 rules={[
-                                    {type:'number', message:'Formato inválido'}
+                                    {type:'regexp', pattern:new RegExp(/\\d+\\,?\\d+/gm), message:'Formato inválido'}
                                 ]}
                             >
                                 <InputNumber min={0} precision={2} decimalSeparator={','} style={{width:'150px'}}/>
