@@ -16,19 +16,12 @@ export default function PartesProcesso(props){
     const enviar = () => {
         form.validateFields().then(async ()=>{
             setLoading(true);
-            let data = [];
+            let data = {};
             const p = form.getFieldValue('partes');
             //Torna unique as partes - vale a ultima instancia
             let partes = [...new Map(p.map(item =>
                 [item['cliente'], item])).values()];
 
-            //resolve o tipo do cliente
-            await axios.get('/api/clientes').then((resp)=>{
-                setClientes(resp.data);
-            });
-            await partes.forEach(parte => {
-                parte.tipo = clientes.find(e => e.xid === parte.cliente)?.tipo;
-            });
             data.partes = partes;
             data.advogados = form.getFieldValue('advogados');
 
@@ -38,7 +31,7 @@ export default function PartesProcesso(props){
                 data:data
             }).then((resp)=>{
                 messageApi.success('Partes salvas com sucesso');
-                setInterval(()=>location.href='/processos/'+xid+'/movimentar', 3000);
+                //setInterval(()=>location.href='/processos/'+xid+'/movimentar', 3000);
             }).catch((e)=>{
                 messageApi.error('Erro em salvar as partes');
             })
