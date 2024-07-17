@@ -57,15 +57,15 @@ export default function EditarProcesso()
                 processo.numCNJ = form.getFieldValue('numCNJ');
                 processo.data_criacao = dayjs(form.getFieldValue('data_criacao'), 'DD/MM/YYYY').format('YYYY-MM-DD');
                 let data_d = form.getFieldValue('data_distribuicao');
-                processo.data_distribuicao = (data_d)?dayjs(form.getFieldValue('data_criacao'), 'DD/MM/YYYY').format('YYYY-MM-DD'):null;
+                processo.data_distribuicao = (data_d)?dayjs(form.getFieldValue('data_distribuicao'), 'DD/MM/YYYY').format('YYYY-MM-DD'):null;
                 processo.prioridade = form.getFieldValue('prioridade');
                 processo.instancia = form.getFieldValue('instancia');
                 processo.justica_gratuita = form.getFieldValue('justica_gratuita');
 
-                let valor_causa = form.getFieldValue('valor_causa');
-                processo.valor_causa = (valor_causa)?valor_causa:null;
-                let valor_condenacao = form.getFieldValue('valor_condenacao');
-                processo.valor_condenacao = (valor_condenacao)?valor_condenacao:null;
+                let valor_causa = parseFloat(form.getFieldValue('valor_causa'));
+                processo.valor_causa = (valor_causa)?valor_causa.toFixed(2):null;
+                let valor_condenacao = parseFloat(form.getFieldValue('valor_condenacao'));
+                processo.valor_condenacao = (valor_condenacao)?valor_condenacao.toFixed(2):null;
 
                 processo.classe_judicial = form.getFieldValue('classe_judicial');
                 processo.tribunal = form.getFieldValue('tribunal');
@@ -78,7 +78,6 @@ export default function EditarProcesso()
                     data:processo
                 }).then((resp)=>{
                     messageApi.success('Processo salvo com sucesso');
-                    setInterval(()=>location.reload(), 3000);
                 }).catch(erro=>{
                     messageApi.error('Erro em salvar o processo: '+erro.response?.data?.msg);
                 });
