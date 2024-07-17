@@ -33,9 +33,8 @@ class ProcessoController extends Controller
             'valor_causa', 'valor_condenacao', 'instancia', 'classe_judicial',
             'processos.tribunal','data_criacao','data_distribuicao'
         ])
-            ->selectRaw('comarcas.nome as comarca')
+            ->selectRaw('(SELECT nome FROM comarcas WHERE comarcas.id = processos.comarca) as comarca')
             ->selectRaw('varas.nome as vara')
-            ->join('comarcas', 'processos.comarca', 'comarcas.id')
             ->join('varas', 'processos.vara', 'varas.id')
             ->firstWhere('xid', $xid);
 
@@ -120,6 +119,74 @@ class ProcessoController extends Controller
     }
 
     /**
+     * Atualizar Processo
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, string $xid)
+    {
+        try{
+            $validados = $request->validate([
+                'numero'=>'required|string|max:20',
+                'valor_causa'=>'nullable|decimal:2',
+                'valor_condenacao'=>'nullable|decimal:2',
+                'justica_gratuita'=>'nullable|boolean',
+                'prioridade'=>'nullable|boolean',
+                'instancia'=>'nullable|string|max:1',
+                'numCNJ'=>'required|string|max:20|min:20',
+                'data_criacao'=>'required|date',
+                'data_distribuicao'=>'nullable|date',
+                'classe_judicial'=>'required|integer',
+                'tribunal'=>'required|integer',
+                'comarca'=>'nullable|string',
+                'vara'=>'required|string'
+            ]);
+
+            //Atualizar vara
+            $processo = Processo::firstWhere('xid', $xid);
+            $processo->vara()->first()->update(['nome'=>$validados['vara']]);
+
+            //Atualizar comarca
+            if(!is_null($processo->comarca))
+                $processo->comarca()->first()->update(['nome'=>$validados['comarca']]);
+
+            else if($request->has('comarca') && is_null($processo->comarca))
+            {
+                $comarca = Comarca::create(['nome'=>$validados['comarca'], 'tribunal'=>$validados['tribunal']]);
+                $processo->update(['comarca'=>$comarca->id]);
+            }
+
+            if($request->has('comarca')) unset($validados['comarca']);
+            if($request->has('vara')) unset($validados['vara']);
+
+            $processo->update($validados);
+
+            return response()->json($processo, 200);
+        }
+        catch (ValidationException $e)
+        {
+            return response()->json(['msg'=>'dados inválidos enviado'], 422);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Remover processo
+     * @param string $xid
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(string $xid)
+    {
+        $processo = Processo::firstWhere('xid', $xid);
+        if(!is_null($processo)) $processo->delete();
+
+        return response()->json([], 200);
+    }
+
+    /**
      * Vincula advogados e partes a um processo, rota do controlador
      * @param Request $request
      * @param $xid
@@ -145,7 +212,7 @@ class ProcessoController extends Controller
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
 
@@ -159,14 +226,14 @@ class ProcessoController extends Controller
     {
         foreach ($partes as $index=>$parte)
         {
-            if($parte['tipo']=='fisico')
+            $cliente = ClientePessoaFis::firstWhere('xid', $parte['cliente']);
+            if($cliente)
             {
-                $cliente = ClientePessoaFis::firstWhere('xid', $parte['cliente']);
                 $processo->partes()->attach($cliente, ['qualificacao'=>$parte['qualificacao']]);
             }
-            else if($parte['tipo']=='juridico')
+            $cliente = ClientePessoaJur::firstWhere('xid', $parte['cliente']);
+            if($cliente)
             {
-                $cliente = ClientePessoaJur::firstWhere('xid', $parte['cliente']);
                 $processo->partes_jur()->attach($cliente, ['qualificacao'=>$parte['qualificacao']]);
             }
         }
@@ -185,5 +252,88 @@ class ProcessoController extends Controller
             $advogado = Advogado::firstWhere('xid', $advogado);
             $processo->advogados()->attach($advogado);
         }
+    }
+
+    /**
+     * Get partes de um processo
+     * @param string $xid
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPartes(string $xid)
+    {
+        $partes = DB::select('
+        (SELECT c.xid as xid, partes.qualificacao FROM partes
+         JOIN clientes_pessoa_fis c ON c.id = partes.clientefis
+        JOIN processos p ON p.id = partes.processo
+        WHERE p.xid = :xid) UNION ALL
+        (SELECT c.xid, partes_jur.qualificacao FROM partes_jur
+        JOIN clientes_pessoa_jur c ON c.id = partes_jur.clientejur
+        JOIN processos p ON p.id = partes_jur.processo
+        WHERE p.xid = :xid)
+        ', ['xid'=>$xid]);
+
+        return response()->json($partes, 200);
+    }
+
+    /**
+     * Get Advogados de um processo
+     * @param string $xid
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAdvogados(string $xid)
+    {
+        $advogados = DB::select('SELECT DISTINCT(a.xid) FROM representa r
+        JOIN advogados a on r.advogado = a.id
+        JOIN processos p on r.processo = p.id
+        WHERE p.xid = :xid
+        ', ['xid'=>$xid]);
+
+        return response()->json($advogados, 200);
+    }
+
+    public function updatePartesEAdvs(Request $request, string $xid)
+    {
+        $validados = $request->validate([
+            'partes' => 'nullable|array',
+            'advogados' => 'nullable|array'
+        ]);
+        $processo = Processo::firstWhere('xid', $xid);
+        if($request->has('advogados'))
+            $this->updateAdvs($processo, $validados['advogados']);
+
+        if($request->has('partes'))
+            $this->updatePartes($processo, $validados['partes']);
+
+        return response()->json([], 200);
+    }
+
+    public function updatePartes(Processo $processo, array $partes)
+    {
+        $clientesfis = [];
+        $clientesjur = [];
+        foreach ($partes as $parte)
+        {
+            $cliente = ClientePessoaFis::firstWhere('xid', $parte['cliente']);
+            if($cliente)
+                $clientesfis[$cliente->id] =  ['qualificacao'=>$parte['qualificacao']];
+            $cliente = ClientePessoaJur::firstWhere('xid', $parte['cliente']);
+            if($cliente)
+                $clientesjur[$cliente->id] = ['qualificacao'=>$parte['qualificacao']];
+        }
+
+        $processo->partes()->sync($clientesfis);
+        $processo->partes_jur()->sync($clientesjur);
+    }
+
+
+    public function updateAdvs(Processo $processo, array $advs)
+    {
+        $advogados = [];
+        foreach ($advs as $index=>$adv)
+        {
+            $advogados[] = Advogado::firstWhere('xid', $adv)->id;
+        }
+
+        $processo->advogados()->sync($advogados);
     }
 }

@@ -186,4 +186,19 @@ Route::controller(ProcessoController::class)
 
         Route::post('/{xid}/partes', 'vincular')
             ->name('processos.partes');
+
+        Route::put('/{xid}', 'update')
+            ->name('processos.update');
+
+        Route::delete('/{xid}', 'delete')
+            ->name('processos.delete');
+
+        Route::get('/{xid}/partes', 'getPartes')
+            ->name('processos.getPartes');
+
+        Route::get('/{xid}/advogados', 'getAdvogados')
+            ->name('processos.getAdvogados');
+
+        Route::put('/{xid}/partes', 'updatePartesEAdvs')
+            ->name('processos.updatePartes');
     });
