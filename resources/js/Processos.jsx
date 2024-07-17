@@ -2,7 +2,10 @@ import React, {useEffect, useState} from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
 import axios from "axios";
-import {message} from "antd";
+import {Button, message} from "antd";
+import {GrEdit, GrView} from "react-icons/gr";
+import {IoIosRemoveCircleOutline} from "react-icons/io";
+import {MdDriveFileMoveOutline} from "react-icons/md";
 
 export default function Processos() {
     const [pesquisa, setPesquisa] = useState('');
@@ -38,9 +41,24 @@ export default function Processos() {
         {
             title: 'Ações',
             key: 'acoes',
+            fixed:'right',
             render: (_, record) => {
                 return (
                     <>
+                        <Button title={'movimentar'} onClick={()=>location.href='/processos/'+record.xid+'/movimentar'}><MdDriveFileMoveOutline /></Button>&nbsp;
+                        <Button title='visualizar'><GrView/></Button>&nbsp;
+                        <Button title='editar' onClick={()=>location.href = '/processos/'+record.xid+'/editar'}><GrEdit/></Button>&nbsp;
+                        <Button danger={true} title={'remover'} onClick={async ()=>{
+                            const msg = messageApi.loading('Removendo processo');
+                            await axios.delete('/api/processos/'+record.xid)
+                                .then((r)=>{
+                                    messageApi.destroy(msg.id);
+                                    messageApi.success('Processo removido com sucesso');
+                                }).catch((error)=>{
+                                    messageApi.destroy(msg.id);
+                                    messageApi.error('Erro em remover o processo');
+                                });
+                        }}><IoIosRemoveCircleOutline/></Button>
                     </>
                 )
             }
