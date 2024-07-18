@@ -201,4 +201,7 @@ Route::controller(ProcessoController::class)
 
         Route::put('/{xid}/partes', 'updatePartesEAdvs')
             ->name('processos.updatePartes');
+
+        Route::get('/{xid}/visualizar', 'visualizarProcesso')
+            ->name('processos.visualizarProcesso');
     });

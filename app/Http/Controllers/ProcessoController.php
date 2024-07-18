@@ -336,4 +336,34 @@ class ProcessoController extends Controller
 
         $processo->advogados()->sync($advogados);
     }
+
+
+    public function visualizarProcesso(string $xid)
+    {
+        $processos = DB::select('
+        SELECT p.xid, p.numero, p."numCNJ", p.valor_causa, p.valor_condenacao,
+        p.justica_gratuita, p.prioridade, p.instancia, p.data_criacao,
+        p.data_distribuicao, concat(cj.id, \' \', cj.descricao) as classe_judicial,
+        t.nome as tribunal, (SELECT nome FROM comarcas com WHERE com.id = p.comarca) as comarca,
+        v.nome as vara,
+        JSON_AGG(JSON_BUILD_OBJECT(\'cliente\', vpp.cliente, \'documento\', vpp.documento,
+        \'qualificacao\', vpp.qualificacao
+        )) AS partes
+
+        FROM processos p
+        JOIN classes_judiciais cj ON cj.id = p.classe_judicial
+        JOIN tribunais t ON t.id = p.tribunal
+        JOIN varas v ON v.id = p.vara
+        JOIN view_partes_processo vpp ON vpp.processo = p.xid
+
+        WHERE xid = :xid
+        GROUP BY p.xid, p.xid, p.numero, p."numCNJ", p.valor_causa, p.valor_condenacao, p.justica_gratuita, p.prioridade, p.instancia, p.data_criacao, p.data_distribuicao, concat(cj.id, \' \', cj.descricao), t.nome, (SELECT nome FROM comarcas com WHERE com.id = p.comarca), v.nome
+        ', ['xid'=>$xid]);
+
+        foreach ($processos as $processo)
+        {
+            $processo->partes = json_decode($processo->partes);
+        }
+        return response()->json($processos, 200);
+    }
 }
