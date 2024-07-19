@@ -6,6 +6,7 @@ import {Button, message} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import {MdDriveFileMoveOutline} from "react-icons/md";
+import VisualizarProcesso from "@/processos/VisualizarProcesso.jsx";
 
 export default function Processos() {
     const [pesquisa, setPesquisa] = useState('');
@@ -13,6 +14,8 @@ export default function Processos() {
     const [loadingTable, setLoadingTable] = useState(true);
     const [processos, setProcessos] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
+    const [processo, setProcesso] = useState({});
+    const [visualizarProcesso, setVisualizarProcesso] = useState(false);
 
     const colunas = [
         {
@@ -46,7 +49,10 @@ export default function Processos() {
                 return (
                     <>
                         <Button title={'movimentar'} onClick={()=>location.href='/processos/'+record.xid+'/movimentar'}><MdDriveFileMoveOutline /></Button>&nbsp;
-                        <Button title='visualizar'><GrView/></Button>&nbsp;
+                        <Button title='visualizar' onClick={()=>{
+                            setProcesso(record);
+                            setVisualizarProcesso(true);
+                        }}><GrView/></Button>&nbsp;
                         <Button title='editar' onClick={()=>location.href = '/processos/'+record.xid+'/editar'}><GrEdit/></Button>&nbsp;
                         <Button danger={true} title={'remover'} onClick={async ()=>{
                             const msg = messageApi.loading('Removendo processo');
@@ -95,6 +101,11 @@ export default function Processos() {
                 adicionar={()=>window.location.href='/processos/criar'}
                 loading={loadingTable}
             />
+          <VisualizarProcesso
+            open={visualizarProcesso}
+            onClose={()=>setVisualizarProcesso(false)}
+            processo={processo}
+          />
       </LayoutBasico>
     );
 }
