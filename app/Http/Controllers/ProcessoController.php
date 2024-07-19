@@ -364,6 +364,6 @@ class ProcessoController extends Controller
         {
             $processo->partes = json_decode($processo->partes);
         }
-        return response()->json($processos, 200);
+        return response()->json($processos[0], 200);
     }
 }
