@@ -18,10 +18,19 @@ class ProcessoController extends Controller
     {
         $processos = DB::select('
             SELECT
-                p.xid, p.numero, p."numCNJ", t.nome AS tribunal
+                p.xid, p.numero, p."numCNJ", t.nome AS tribunal, v.nome as vara,
+                (SELECT c.nome FROM comarcas c WHERE c.id = p.comarca) AS comarca,
+                (JSON_AGG(JSON_BUILD_OBJECT(\'parte\', CONCAT(vpp.cliente) ))) AS partes
                 FROM processos p JOIN tribunais t ON t.id = tribunal
-                WHERE p.deleted_at IS NULL ORDER BY p.updated_at DESC;
+                JOIN varas v ON v.id = p.vara
+                JOIN view_partes_processo vpp ON vpp.processo = p.xid
+                WHERE p.deleted_at IS NULL GROUP BY p.xid, p.updated_at, p.xid, p.numero, p."numCNJ", t.nome, v.nome, (SELECT c.nome FROM comarcas c WHERE c.id = p.comarca) ORDER BY p.updated_at DESC;
         ');
+
+        foreach ($processos as $processo)
+        {
+            $processo->partes = json_decode($processo->partes);
+        }
 
         return response()->json($processos, 200);
     }
