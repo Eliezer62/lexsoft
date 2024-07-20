@@ -9,7 +9,7 @@ import {Button, Result} from 'antd';
              <Result
                  status="404"
                  title="404"
-                 subTitle="Desculpe, essa página não exsite no site."
+                 subTitle="Desculpe, essa página não existe no site."
                  extra={<Button type="primary" onClick={()=>window.location = '/'}>Voltar</Button>}
              />
         </LayoutBasico>

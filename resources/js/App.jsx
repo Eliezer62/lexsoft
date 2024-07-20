@@ -15,6 +15,7 @@ import NovoProcesso from "@/processos/NovoProcesso.jsx";
 import PartesProcesso from "@/processos/PartesProcesso.jsx";
 import EditarProcesso from "@/processos/EditarProcesso.jsx";
 import EditarPartesProcesso from "@/processos/EditarPartesProcesso.jsx";
+import MovimentarProcesso from "@/processos/MovimentarProcesso.jsx";
 
 const RotaProcessos = () => {
     return (
@@ -25,6 +26,7 @@ const RotaProcessos = () => {
             <Route path={'/criar/:xid/partes'} Component={PartesProcesso}/>
             <Route path={'/:xid/editar'} Component={EditarProcesso}/>
             <Route path={'/:xid/editar/partes'} Component={EditarPartesProcesso} />
+            <Route path={':xid/movimentar'} Component={MovimentarProcesso} />
         </Routes>
     );
 }
