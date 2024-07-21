@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->string('descricao');
-            $table->integer('ordem');
+            $table->integer('ordem')->nullable();
             $table->date('data');
             $table->bigInteger('processo');
 
