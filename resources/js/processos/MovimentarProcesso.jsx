@@ -120,6 +120,7 @@ export default function MovimentarProcesso()
             await axios.get('/api/processos/'+xid+'/eventos')
                 .then((resp)=>{
                     resp.data.forEach(e => {
+                        e.data = dayjs(e.data, 'YYYY-MM-DD').format('DD/MM/YYYY');
                         e.inicio = (e.inicio)?dayjs(e.inicio, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY HH:mm'):null;
                         e.fim = (e.fim)?dayjs(e.fim, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY HH:mm'):null;
                     });
