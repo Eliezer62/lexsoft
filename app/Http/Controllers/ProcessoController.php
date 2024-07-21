@@ -6,6 +6,8 @@ use App\Models\Advogado;
 use App\Models\ClientePessoaFis;
 use App\Models\ClientePessoaJur;
 use App\Models\Comarca;
+use App\Models\Evento;
+use App\Models\Prazo;
 use App\Models\Processo;
 use App\Models\Vara;
 use Illuminate\Http\Request;
@@ -374,5 +376,52 @@ class ProcessoController extends Controller
             $processo->partes = json_decode($processo->partes);
         }
         return response()->json($processos[0], 200);
+    }
+
+    /**
+     * Lancar novo evento em um processo
+     * @param Request $request
+     * @param string $xid
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function lancarEvento(Request $request, string $xid)
+    {
+        try{
+            $processo = Processo::firstWhere('xid', $xid);
+
+            $validados = $request->validate([
+                'descricao'=>'required|string|max:255',
+                'data'=>'required|date',
+                'inicio'=>'sometimes|nullable|date',
+                'fim'=>'sometimes|nullable|date'
+            ]);
+
+            $evento = Evento::create([
+                'descricao'=>$validados['descricao'],
+                'data'=>$validados['data'],
+                'processo'=>$processo->id
+            ]);
+
+            if(is_null($evento)) throw new \Exception();
+
+            if($request->has('inicio') && !is_null($validados['inicio']))
+            {
+                Prazo::create([
+                    'inicio'=>$validados['inicio'],
+                    'fim'=>$validados['fim'],
+                    'evento'=>$evento->id
+                ]);
+            }
+
+            return response()->json(['msg'=>'sucesso'], 200);
+        }
+        catch(ValidationException $e)
+        {
+            return response()->json(['msg'=>'Descrição e data são obrigatório, dados inválidos enviado'], 422);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json(['msg'=>'Erro interno'], 500);
+        }
     }
 }

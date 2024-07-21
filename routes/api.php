@@ -204,4 +204,7 @@ Route::controller(ProcessoController::class)
 
         Route::get('/{xid}/visualizar', 'visualizarProcesso')
             ->name('processos.visualizarProcesso');
+
+        Route::post('/{xid}/eventos', 'lancarEvento')
+            ->name('processos.lancarEvento');
     });
