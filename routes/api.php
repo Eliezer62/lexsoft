@@ -207,4 +207,10 @@ Route::controller(ProcessoController::class)
 
         Route::post('/{xid}/eventos', 'lancarEvento')
             ->name('processos.lancarEvento');
+
+        Route::get('/{xid}/eventos', 'getEventos')
+            ->name('processos.getEventos');
+
+        Route::delete('/{processo}/eventos/{xid}', 'removerEvento')
+            ->name('processos.removerEvento');
     });

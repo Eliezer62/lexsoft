@@ -424,4 +424,29 @@ class ProcessoController extends Controller
             return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
+
+
+    public function getEventos(string $xid)
+    {
+        $processo = Processo::firstWhere('xid', $xid);
+
+        $eventos = DB::select("
+        SELECT ROW_NUMBER() OVER () AS ordem, e.xid, e.descricao, e.data, (SELECT inicio FROM prazos WHERE prazos.evento = e.id) as inicio,
+        (SELECT fim FROM prazos p WHERE p.evento = e.id)
+        FROM eventos e
+        WHERE e.processo = :processo AND deleted_at IS NULL
+        ORDER BY created_at DESC
+        ", ['processo'=>$processo->id]);
+
+        return response()->json($eventos, 200);
+    }
+
+    public function removerEvento(string $processo, string $xid)
+    {
+        $evento = Evento::firstWhere('xid', $xid);
+
+        if(!is_null($evento)) $evento->delete();
+
+        return response()->json(status:200);
+    }
 }
