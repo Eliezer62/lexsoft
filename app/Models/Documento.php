@@ -30,10 +30,21 @@ class Documento extends Model
         'data_criacao',
         'pessoafis',
         'pessoajur',
-        'processo'
     ];
 
     protected $guarded = [
         'xid',
     ];
+
+    protected $hidden = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
+
+    public function evento()
+    {
+        return $this->belongsToMany(Evento::class, 'vinculados', 'documento', 'evento');
+    }
 }
