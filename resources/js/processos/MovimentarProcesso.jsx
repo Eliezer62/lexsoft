@@ -1,11 +1,29 @@
 import React, {useEffect, useState} from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import {useParams} from 'react-router-dom';
-import {Breadcrumb, Button, DatePicker, Flex, Form, Input, Modal, message, Table, Popover, Popconfirm} from "antd";
+import {
+    Breadcrumb,
+    Button,
+    DatePicker,
+    Flex,
+    Form,
+    Input,
+    Modal,
+    message,
+    Table,
+    Popover,
+    Popconfirm,
+    Upload, List, Skeleton
+} from "antd";
 import {HomeOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
 import axios from "axios";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
+import {MdDriveFolderUpload} from "react-icons/md";
+import { UploadOutlined } from '@ant-design/icons';
+import {IoCloudDownloadOutline} from "react-icons/io5";
+import VincularDocs from "@/componentes/processos/VincularDocs.jsx";
+
 
 export default function MovimentarProcesso()
 {
@@ -17,6 +35,8 @@ export default function MovimentarProcesso()
     const [messageApi, context] = message.useMessage();
     const [eventos, setEventos] = useState([]);
     const [intervalo, setIntervalo] = useState(0);
+    const [vincularDocs, setVincularDocs] = useState(false);
+    const [documentos, setDocumentos] = useState([]);
 
     const colunas = [
         {
@@ -58,7 +78,9 @@ export default function MovimentarProcesso()
             render: (_, record) => {
                 return (
                     <>
-                        <Button title={'vincular documento'}>Documento</Button>&nbsp;
+                        <Button title={'vincular documento'} onClick={()=>{
+                            setVincularDocs(true);
+                        }}><MdDriveFolderUpload /></Button>&nbsp;
                         <Popconfirm title={'Remover evento'}
                                     description={'Deseja remover este evento?'}
                                     onConfirm={async ()=>{
@@ -84,6 +106,7 @@ export default function MovimentarProcesso()
 
     const fechar = () => {
         setNovoEvento(false);
+        setVincularDocs(false);
     }
 
     const enviar = () => {
@@ -214,8 +237,10 @@ export default function MovimentarProcesso()
                         />
                     </Form.Item>
                 </Form>
-
             </Modal>
+            <VincularDocs open={vincularDocs}
+                          onCancel={fechar}
+            />
         </LayoutBasico>
     )
 }
