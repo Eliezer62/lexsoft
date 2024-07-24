@@ -34,23 +34,25 @@ export default function NovoDocumento()
                 </Form>
             )
         }).then(async ()=>{
-            const file = new File([conteudo], form.getFieldValue('nome')+'.lex' , {
-                type: "text/plain",
-            });
-            let formData = new FormData();
-            formData.append('arquivo', file);
-            formData.append('nome', form.getFieldValue('nome'));
+            form.validateFields(async ()=>{
+                const file = new File([conteudo], form.getFieldValue('nome')+'.lex' , {
+                    type: "text/plain",
+                });
+                let formData = new FormData();
+                formData.append('arquivo', file);
+                formData.append('nome', form.getFieldValue('nome'));
 
-            await axios({
-                method:'POST',
-                url:`/api/processos/${xid}/movimentar/${evento}/salvar-documento`,
-                data:formData
-            }).then((resp)=>{
-                setDocumento(resp.data);
-                messageApi.success('Documento salvo com sucesso');
-            }).catch(()=>{
-                messageApi.error('Erro em salvar o documento');
-            });
+                await axios({
+                    method:'POST',
+                    url:`/api/processos/${xid}/movimentar/${evento}/salvar-documento`,
+                    data:formData
+                }).then((resp)=>{
+                    setDocumento(resp.data);
+                    messageApi.success('Documento salvo com sucesso');
+                }).catch(()=>{
+                    messageApi.error('Erro em salvar o documento');
+                });
+            }).catch(()=>messageApi.error('Nome é obrigatório'));
         });
         else {
             const file = new File([conteudo], form.getFieldValue('nome')+'.lex' , {
