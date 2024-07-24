@@ -214,3 +214,5 @@ Route::controller(ProcessoController::class)
         Route::delete('/{processo}/eventos/{xid}', 'removerEvento')
             ->name('processos.removerEvento');
     });
+
+Route::post('/processos/{processo}/movimentar/{xid}/salvar-documento', [DocumentoController::class, 'salvar']);

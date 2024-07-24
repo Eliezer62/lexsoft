@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\ClientePessoaFis;
 use App\Models\ClientePessoaJur;
 use App\Models\Documento;
+use App\Models\Evento;
+use App\Models\Processo;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -94,5 +96,51 @@ class DocumentoController extends Controller
         if(!is_null($documento)) $documento->delete();
 
         return response(status: 200);
+    }
+
+    /**
+     * Salva um documento do editor
+     * @param Request $request
+     * @param string $processo
+     * @param string $evento
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function salvar(Request $request, string $processo, string $evento)
+    {
+        $valido = $request->validate(['arquivo'=>'required|file|max:2048576', 'nome'=>'required|string|max:255']);
+
+        $processo = Processo::firstWhere('xid', $processo);
+
+        $evento = Evento::firstWhere('xid', $evento);
+
+        $arquivo = $request->file('arquivo');
+
+        if($request->has('xid'))
+        {
+            $documento = Documento::firstWhere('xid', $request->input('xid'));
+
+            Storage::disk('local')->delete($documento->src);
+
+            $documento->update(['src'=>'/processos/'.$processo->xid.'/eventos/'.$evento->xid.'/content/'.$arquivo->hashName()]);
+            Storage::disk('local')->put('/processos/'.$processo->xid.'/eventos/'.$evento->xid.'/content/', $request->file('arquivo'));
+
+            $documento = Documento::find($documento->id);
+            return response()->json($documento, 200);
+        }
+        else{
+            $documento = new Documento();
+            $documento->fill([
+                'tipo_arquivo'=>$arquivo->extension(),
+                'descricao'=>$request->input('nome').'.lex',
+                'src'=>'/processos/'.$processo->xid.'/eventos/'.$evento->xid.'/content/'.$arquivo->hashName(),
+                'data_criacao'=>Carbon::now()->format('Y-m-d H:i:s')
+            ]);
+            $documento->save();
+            Storage::disk('local')->putFile('/processos/'.$processo->xid.'/eventos/'.$evento->xid.'/content/', $arquivo);
+            $documento->evento()->attach($evento);
+
+            $documento = Documento::find($documento->id);
+            return response()->json($documento, 200);
+        }
     }
 }
