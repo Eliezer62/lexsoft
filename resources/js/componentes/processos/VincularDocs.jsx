@@ -71,6 +71,7 @@ export default function VincularDocs(props){
             open={props.open}
             onCancel={props.onCancel}
             width={800}
+            onOk={props.onCancel}
         >
             <Flex
                 justify={'right'}

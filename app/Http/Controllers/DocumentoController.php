@@ -130,7 +130,7 @@ class DocumentoController extends Controller
         else{
             $documento = new Documento();
             $documento->fill([
-                'tipo_arquivo'=>$arquivo->extension(),
+                'tipo_arquivo'=>'lex',
                 'descricao'=>$request->input('nome').'.lex',
                 'src'=>'/processos/'.$processo->xid.'/eventos/'.$evento->xid.'/content/'.$arquivo->hashName(),
                 'data_criacao'=>Carbon::now()->format('Y-m-d H:i:s')
