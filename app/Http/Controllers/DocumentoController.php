@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Exception;
-use PhpParser\Comment\Doc;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DocumentoController extends Controller
 {
@@ -86,6 +86,43 @@ class DocumentoController extends Controller
     {
         $documento = Documento::firstWhere('xid', $xid);
         if(is_null($documento)) return response(status:404);
+
+        if($documento->tipo_arquivo == 'lex  ')
+        {
+            $arquivo = Storage::disk('local')->get($documento->src);
+            $arquivo = '<html>
+                            <style>
+                            *{
+                                padding: 0;
+                                margin: 0;
+                            }
+                            body{
+                                margin-left: 3cm;
+                                margin-top: 3cm;
+                                margin-bottom: 2cm;
+                                margin-right: 2cm;
+                            }
+                            pre{
+                                font-family: Sans-Serif;
+                            }
+                            table {
+                                margin: auto;
+                            }
+                            table td, table th {
+                                border:0.5px solid #333333;
+                                padding: 0;
+                                margin:0;
+                                min-width: 5px;
+                            }
+
+                            </style>
+                        <body><pre>'
+                        .$arquivo.'</pre>
+                        </body></html>';
+            return Pdf::loadHTML($arquivo)
+                ->setPaper('a4', 'portrait')
+                ->stream($documento->descricao.'.pdf');
+        }
 
         return Storage::disk('local')->response($documento->src);
     }
@@ -171,5 +208,19 @@ class DocumentoController extends Controller
             return response(status: 200);
         }
         else return response(status: 500);
+    }
+
+
+    public function documentosVinculados($processo, $evento)
+    {
+        $evento = Evento::firstWhere('xid', $evento);
+
+        $documentos = DB::select('
+        SELECT xid,tipo_arquivo, descricao, data_criacao,
+               (CASE WHEN tipo_arquivo=\'lex\' THEN true ELSE false END) as editavel
+        FROM documentos docs, vinculados vincs WHERE docs.id = vincs.documento AND vincs.evento = :evento;
+        ', ['evento'=>$evento->id]);
+
+        return response()->json($documentos, 200);
     }
 }
