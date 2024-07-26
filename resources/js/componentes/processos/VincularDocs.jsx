@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Flex, Input, List, Modal, Skeleton, Upload, message} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
-import {IoCloudDownloadOutline} from "react-icons/io5";
+import {IoCloudDownloadOutline, IoLinkOutline} from "react-icons/io5";
 import axios from "axios";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import dayjs from "dayjs";
@@ -14,6 +14,11 @@ export default function VincularDocs(props){
     const [loadingEnviar, setLoadingEnviar] = useState(false);
     const [messageApi, contextMsg] = message.useMessage();
     const [docsVinculados, setDocsVinculados] = useState([]);
+    const [modalDocsClientes, setModalDocsClientes] = useState(false);
+    const [docsPesquisa, setDocsPesquisa] = useState([]);
+    const [pesquisa, setPesquisa] = useState('');
+    const [pesquisaLoading, setPesquisaLoading] = useState(false);
+    const [reload, setReload] = useState(true);
 
     const upload = {
         showUploadList:false,
@@ -56,6 +61,7 @@ export default function VincularDocs(props){
             setFileList(arquivos);
             setLoadingEnviar(false);
             messageApi.destroy(msg.id);
+            setReload(!reload);
             if(arquivos.length===0) messageApi.success('Documentos salvos com sucesso');
             else messageApi.error('Erro em enviar alguns documentos');
         })
@@ -76,9 +82,10 @@ export default function VincularDocs(props){
                     setDocumentos(resp.data);
                 });
         }
-        getDocs();
+        if(!props.open) setDocsVinculados([]);
+        else getDocs();
 
-    }, [docsVinculados, props.open]);
+    }, [docsVinculados, props.open, reload]);
 
     return (
         <Modal
@@ -87,11 +94,12 @@ export default function VincularDocs(props){
             onCancel={props.onCancel}
             width={800}
             onOk={props.onCancel}
+            destroyOnClose={true}
         >
             <Flex
                 justify={'right'}
             >
-                <Button style={{marginRight:'10px'}}>Vincular Existente</Button>
+                <Button style={{marginRight:'10px'}} onClick={()=>setModalDocsClientes(true)}>Vincular Existente</Button>
                 <Upload
                     {...upload}
                 >
@@ -133,16 +141,15 @@ export default function VincularDocs(props){
                             <Button type={'primary'} onClick={()=>{window.open('/api/storage/content/'+item.xid, '_blank').focus()}}><IoCloudDownloadOutline /></Button>,
                             <Button danger={true} onClick={async ()=>{
                                 let msg = messageApi.loading('Removendo...', 1000);
-                                await axios.delete('/api/storage/content/'+item.xid)
+                                await axios.delete((!item.cliente)?'/api/storage/content/'+item.xid:`/api/processos/${props.processo}/movimentar/${props.evento}/vincular/`+item.xid)
                                     .then(async (resp)=>{
                                         messageApi.destroy(msg.id);
                                         messageApi.success('Documento removido com sucesso');
-                                        await axios.get('/api/documentos/pesquisa?query='+'eliezer')
-                                            .then((resp)=>{
-                                                setDocumentos(resp.data);
-                                            });
+                                        setReload(!reload);
                                     })
-                                    .catch((error)=>messageApi.error('Erro em remover o documento'));
+                                    .catch((error)=>{
+                                        messageApi.destroy(msg.id);
+                                        messageApi.error('Erro em remover o documento')});
                             }}><IoIosRemoveCircleOutline/></Button>
                         ]}
                     >
@@ -157,6 +164,59 @@ export default function VincularDocs(props){
             >
             </List>
             {contextMsg}
+
+            <Modal
+                title={'Vincular documento de Clientes'}
+                open={modalDocsClientes}
+                onOk={()=>setModalDocsClientes(false)}
+                onCancel={()=>setModalDocsClientes(false)}
+
+            >
+                <Flex
+                    justify={'center'}
+                    align={'start'}
+                >
+                    <Input.Search loading={pesquisaLoading} placeholder={'Procurar um documentos'} onSearch={async (value, e)=>{
+                        await setPesquisa(value);
+                        await setPesquisaLoading(true);
+                        await axios.get('/api/documentos/pesquisa?query='+pesquisa).then((resp)=>{
+                           setDocsPesquisa(resp.data);
+                        }).catch(()=>{
+                            messageApi.error('Erro em pesquisar')
+                        }).finally(()=>{
+                            setPesquisaLoading(false);
+                        });
+                    }}
+                    />
+                </Flex>
+                <List
+                    dataSource={docsPesquisa}
+                    renderItem={(item)=>(
+                        <List.Item
+                            actions={[
+                                <Button type={'primary'} title={'vincular'}
+                                onClick={()=>{
+                                    axios.post(`/api/processos/${props.processo}/movimentar/${props.evento}/vincular/`+item.xid)
+                                        .then((resp)=>{
+                                            messageApi.success('Documento vinculado com sucesso');
+                                            setReload(!reload);
+                                        }).catch((resp)=>{
+                                            if(resp.response.status===501) messageApi.info('Documento já vinculado');
+                                            else messageApi.error('Erro em vincular o documento');
+                                    });
+                                }}
+                                ><IoLinkOutline /></Button>
+                            ]}
+                        >
+                            <Skeleton loading={pesquisaLoading}>
+                                <List.Item.Meta title={item.cliente +' '+item.documento}
+                                description={item.descricao}
+                                />
+                            </Skeleton>
+                        </List.Item>
+                    )}
+                />
+            </Modal>
         </Modal>
     );
 }
