@@ -36,7 +36,7 @@ export default function MovimentarProcesso()
     const [eventos, setEventos] = useState([]);
     const [intervalo, setIntervalo] = useState(0);
     const [vincularDocs, setVincularDocs] = useState(false);
-    const [documentos, setDocumentos] = useState([]);
+    const [evento, setEvento] = useState({});
 
     const colunas = [
         {
@@ -80,6 +80,7 @@ export default function MovimentarProcesso()
                     <>
                         <Button title={'vincular documento'} onClick={()=>{
                             setVincularDocs(true);
+                            setEvento(record);
                         }}><MdDriveFolderUpload /></Button>&nbsp;
                         <Popconfirm title={'Remover evento'}
                                     description={'Deseja remover este evento?'}
@@ -240,6 +241,8 @@ export default function MovimentarProcesso()
             </Modal>
             <VincularDocs open={vincularDocs}
                           onCancel={fechar}
+                          processo={xid}
+                          evento={evento.xid}
             />
         </LayoutBasico>
     )

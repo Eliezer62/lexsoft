@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Flex, Input, List, Modal, Skeleton, Upload} from "antd";
+import {Button, Flex, Input, List, Modal, Skeleton, Upload, message} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
 import {IoCloudDownloadOutline} from "react-icons/io5";
 import axios from "axios";
@@ -9,6 +9,8 @@ export default function VincularDocs(props){
     const [documentos, setDocumentos] = useState([]);
     const [fileList, setFileList] = useState([]);
     const [confirmarUpload, setConfirmarUpload] = useState(true);
+    const [loadingEnviar, setLoadingEnviar] = useState(false);
+    const [messageApi, contextMsg] = message.useMessage();
 
     const upload = {
         showUploadList:false,
@@ -19,7 +21,41 @@ export default function VincularDocs(props){
     }
 
     const handleUpload = () => {
+        let enviados = [];
+        let promisses = [];
+        setLoadingEnviar(true);
+        fileList.forEach(async (file) => {
+            let formData = new FormData();
+            formData.append('arquivo', file);
 
+            promisses.push(axios({
+                method:'POST',
+                url:`/api/processos/${props.processo}/movimentar/${props.evento}/vincular-upload`,
+                data:formData
+            }));
+        });
+
+        Promise.all(promisses).finally( async ()=>{
+            setFileList([]);
+            const arquivos = [];
+            const msg = messageApi.loading('Enviando arquivos', 10000000);
+            for(const promisse of promisses)
+            {
+                try {
+                    await promisse;
+
+                }catch (resp)
+                {
+                    const arq = await resp.config.data.get('arquivo');
+                    arquivos.push(arq);
+                }
+            }
+            setFileList(arquivos);
+            setLoadingEnviar(false);
+            messageApi.destroy(msg.id);
+            if(arquivos.length===0) messageApi.success('Documentos salvos com sucesso');
+            else messageApi.error('Erro em enviar alguns documentos');
+        })
     }
 
     const removerUpload = (file) => {
@@ -34,23 +70,27 @@ export default function VincularDocs(props){
             title={'Vincular Documento'}
             open={props.open}
             onCancel={props.onCancel}
+            width={800}
         >
             <Flex
                 justify={'right'}
             >
+                <Button style={{marginRight:'10px'}}>Vincular Existente</Button>
                 <Upload
                     {...upload}
                 >
                     <Button icon={<UploadOutlined />} style={{marginRight:'10px'}}>Upload</Button>
                 </Upload>
-                <Button type={'primary'}>Novo</Button>
+                <Button type={'primary'} onClick={()=>
+                    window.open('/processos/'+props.processo+'/movimentar/'+props.evento.xid+'/novo-documento'
+                    , '_blank')}>Novo</Button>
             </Flex>
+            {(fileList.length > 0)?(
             <List
                 itemLayout={'horizontal'}
                 dataSource={fileList}
                 renderItem={(item) => (
                     <List.Item>
-                        {console.log(item)}
                         <Skeleton title={false} loading={false}>
                             <List.Item.Meta
                                 title={item.name}
@@ -62,9 +102,9 @@ export default function VincularDocs(props){
                 )}
             >
 
-            </List>
+            </List>):(null)}
             {fileList.length?(<Flex justify={'right'}>
-                <Button type={'primary'}>Enviar</Button>
+                <Button type={'primary'} onClick={handleUpload} loading={loadingEnviar}>Enviar</Button>
             </Flex>):(null)}
             <h3>Documentos Vinculados</h3>
             <List
@@ -98,8 +138,8 @@ export default function VincularDocs(props){
                     </List.Item>
                 )}
             >
-
             </List>
+            {contextMsg}
         </Modal>
     );
 }
