@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Exception;
 use Barryvdh\DomPDF\Facade\Pdf;
+use PhpParser\Comment\Doc;
 
 class DocumentoController extends Controller
 {
@@ -210,17 +211,50 @@ class DocumentoController extends Controller
         else return response(status: 500);
     }
 
-
+    /**
+     * Obtem os documentos vinculados a um evento de um processo
+     * @param $processo
+     * @param $evento
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function documentosVinculados($processo, $evento)
     {
         $evento = Evento::firstWhere('xid', $evento);
 
         $documentos = DB::select('
         SELECT xid,tipo_arquivo, descricao, data_criacao,
-               (CASE WHEN tipo_arquivo=\'lex\' THEN true ELSE false END) as editavel
+               (CASE WHEN tipo_arquivo=\'lex\' THEN true ELSE false END) as editavel,
+               COALESCE(docs.pessoafis, docs.pessoajur) as cliente
         FROM documentos docs, vinculados vincs WHERE docs.id = vincs.documento AND vincs.evento = :evento;
         ', ['evento'=>$evento->id]);
 
         return response()->json($documentos, 200);
+    }
+
+    /**
+     * Vincula um documento de pessoa em um evento
+     * @param $processo
+     * @param $evento
+     * @param $documento
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
+     */
+    public function vincularDocsPessoa($processo, $evento, $documento)
+    {
+        $evento = Evento::firstWhere('xid', $evento);
+
+        $documento = Documento::firstWhere('xid', $documento);
+        $documento->evento()->attach($evento);
+        return response(status: 200);
+    }
+
+
+    public function desvincularDocsPessoa($processo, $evento, $documento)
+    {
+        $evento = Evento::firstWhere('xid', $evento);
+
+        $documento = Documento::firstWhere('xid', $documento);
+
+        $documento->evento()->detach($evento);
+        return response(status: 200);
     }
 }

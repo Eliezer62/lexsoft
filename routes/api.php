@@ -220,3 +220,7 @@ Route::post('/processos/{processo}/movimentar/{xid}/salvar-documento', [Document
 Route::post('/processos/{processo}/movimentar/{evento}/vincular-upload', [DocumentoController::class, 'uploadVincular']);
 
 Route::get('/processos/{processo}/movimentar/{evento}/documentos', [DocumentoController::class, 'documentosVinculados']);
+
+Route::get('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'vincularDocsPessoa']);
+
+Route::delete('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'desvincularDocsPessoa']);
