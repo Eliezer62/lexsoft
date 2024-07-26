@@ -83,7 +83,7 @@ export default function VincularDocs(props){
                     <Button icon={<UploadOutlined />} style={{marginRight:'10px'}}>Upload</Button>
                 </Upload>
                 <Button type={'primary'} onClick={()=>
-                    window.open('/processos/'+props.processo+'/movimentar/'+props.evento.xid+'/novo-documento'
+                    window.open('/processos/'+props.processo+'/movimentar/'+props.evento+'/novo-documento'
                     , '_blank')}>Novo</Button>
             </Flex>
             {(fileList.length > 0)?(

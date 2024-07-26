@@ -34,7 +34,7 @@ export default function NovoDocumento()
                 </Form>
             )
         }).then(async ()=>{
-            form.validateFields(async ()=>{
+            form.validateFields().then(async ()=>{
                 const file = new File([conteudo], form.getFieldValue('nome')+'.lex' , {
                     type: "text/plain",
                 });
