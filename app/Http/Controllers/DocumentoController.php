@@ -143,4 +143,33 @@ class DocumentoController extends Controller
             return response()->json($documento, 200);
         }
     }
+
+
+    public function uploadVincular(Request $request, $processo, $evento)
+    {
+        $request->validate([
+            'arquivo'=>'required|file|max:2048576'
+        ]);
+
+        $processo = Processo::firstWhere('xid', $processo);
+        $evento = Evento::firstWhere('xid', $evento);
+
+        if($request->hasFile('arquivo'))
+        {
+            $arquivo = $request->file('arquivo');
+
+            $documento = Documento::create([
+                'tipo_arquivo'=>$arquivo->extension(),
+                'descricao'=>$arquivo->getClientOriginalName(),
+                'src'=>'/processos/'.$processo->xid.'/eventos/'.$evento->xid.'/content/'.$arquivo->hashName(),
+                'data_criacao'=>Carbon::now()->format('Y-m-d H:i:s')
+            ]);
+
+            Storage::disk('local')->putFile('/processos/'.$processo->xid.'/eventos/'.$evento->xid.'/content/', $arquivo);
+            $documento->evento()->attach($evento);
+
+            return response(status: 200);
+        }
+        else return response(status: 500);
+    }
 }

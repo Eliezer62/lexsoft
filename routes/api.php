@@ -216,3 +216,5 @@ Route::controller(ProcessoController::class)
     });
 
 Route::post('/processos/{processo}/movimentar/{xid}/salvar-documento', [DocumentoController::class, 'salvar']);
+
+Route::post('/processos/{processo}/movimentar/{evento}/vincular-upload', [DocumentoController::class, 'uploadVincular']);
