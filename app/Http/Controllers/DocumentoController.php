@@ -240,11 +240,22 @@ class DocumentoController extends Controller
      */
     public function vincularDocsPessoa($processo, $evento, $documento)
     {
-        $evento = Evento::firstWhere('xid', $evento);
+        try{
+            $evento = Evento::firstWhere('xid', $evento);
 
-        $documento = Documento::firstWhere('xid', $documento);
-        $documento->evento()->attach($evento);
-        return response(status: 200);
+            $documento = Documento::firstWhere('xid', $documento);
+            $documento->evento()->attach($evento);
+            return response(status: 200);
+        }
+        catch (QueryException $e)
+        {
+            if($e->getCode()==23505)
+                return response(status: 501);
+            return response(status: 500);
+        }
+        catch (\Exception $e){
+            response(status: 500);
+        }
     }
 
 

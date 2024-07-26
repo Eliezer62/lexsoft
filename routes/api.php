@@ -221,6 +221,6 @@ Route::post('/processos/{processo}/movimentar/{evento}/vincular-upload', [Docume
 
 Route::get('/processos/{processo}/movimentar/{evento}/documentos', [DocumentoController::class, 'documentosVinculados']);
 
-Route::get('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'vincularDocsPessoa']);
+Route::post('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'vincularDocsPessoa']);
 
 Route::delete('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'desvincularDocsPessoa']);
