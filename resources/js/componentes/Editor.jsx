@@ -195,8 +195,6 @@ export default function Editor(props) {
             SpecialCharactersMathematical,
             SpecialCharactersText,
             Strikethrough,
-            Subscript,
-            Superscript,
             Table,
             TableCaption,
             TableCellProperties,

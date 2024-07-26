@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Flex, Input, List, Modal, Skeleton, Upload, message} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
 import {IoCloudDownloadOutline} from "react-icons/io5";
 import axios from "axios";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
+import dayjs from "dayjs";
+import {GrEdit} from "react-icons/gr";
 
 export default function VincularDocs(props){
     const [documentos, setDocumentos] = useState([]);
@@ -11,6 +13,7 @@ export default function VincularDocs(props){
     const [confirmarUpload, setConfirmarUpload] = useState(true);
     const [loadingEnviar, setLoadingEnviar] = useState(false);
     const [messageApi, contextMsg] = message.useMessage();
+    const [docsVinculados, setDocsVinculados] = useState([]);
 
     const upload = {
         showUploadList:false,
@@ -65,6 +68,18 @@ export default function VincularDocs(props){
         setFileList(newFileList);
     }
 
+
+    useEffect(() => {
+        const getDocs = async () => {
+            await axios.get(`/api/processos/${props.processo}/movimentar/${props.evento}/documentos`)
+                .then((resp)=>{
+                    setDocumentos(resp.data);
+                });
+        }
+        getDocs();
+
+    }, [docsVinculados, props.open]);
+
     return (
         <Modal
             title={'Vincular Documento'}
@@ -114,6 +129,7 @@ export default function VincularDocs(props){
                 renderItem={(item) => (
                     <List.Item
                         actions={[
+                            item.editavel && <Button><GrEdit/></Button>,
                             <Button type={'primary'} onClick={()=>{window.open('/api/storage/content/'+item.xid, '_blank').focus()}}><IoCloudDownloadOutline /></Button>,
                             <Button danger={true} onClick={async ()=>{
                                 let msg = messageApi.loading('Removendo...', 1000);
@@ -130,10 +146,10 @@ export default function VincularDocs(props){
                             }}><IoIosRemoveCircleOutline/></Button>
                         ]}
                     >
-                        <Skeleton title={false}>
+                        <Skeleton title={false} loading={false}>
                             <List.Item.Meta
-                                title={item.cliente + ' '+item.documento}
-                                description={item.descricao}
+                                title={item.descricao}
+                                description={'Criado em '+dayjs(item.data_criacao, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY HH:mm')}
                             />
                         </Skeleton>
                     </List.Item>
