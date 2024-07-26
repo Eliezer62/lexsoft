@@ -9,22 +9,30 @@ Instalando dependências PHP da API Laravel
 ```bash
 composer install
 ```
-Resolvendo dependências da aplicação FRONT-END
+Resolvendo dependências da aplicação React
 ```bash
 npm install
 ```
 Construindo a aplicação web
 ```bash
-npm run prod
+npm run build
 ```
 Renomear o arquivo .env.example para .env<br><br>
 Obter a key da aplicação
 ```bash
 php artisan key:generate
 ```
-Criar link simbólico para o storage
+Criando o link simbólico para o Storage
 ```bash
 php artisan storage:link
 ```
-Configurar o .env para o ambiente local
+Configurar o .env para o ambiente local<br>
+Criando as tabelas do banco de dados
+```bash
+php artisan migrate
+```
+Populacionando as tabelas
+```bash
+php artisan db:seed
+```
 
