@@ -217,6 +217,8 @@ Route::controller(ProcessoController::class)
 
 Route::post('/processos/{processo}/movimentar/{xid}/salvar-documento', [DocumentoController::class, 'salvar']);
 
+Route::get('/processos/{processo}/movimentar/{xid}/documento/{documento}', [DocumentoController::class, 'getContentDocumentoLex']);
+
 Route::post('/processos/{processo}/movimentar/{evento}/vincular-upload', [DocumentoController::class, 'uploadVincular']);
 
 Route::get('/processos/{processo}/movimentar/{evento}/documentos', [DocumentoController::class, 'documentosVinculados']);

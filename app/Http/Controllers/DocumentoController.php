@@ -145,7 +145,7 @@ class DocumentoController extends Controller
      */
     public function salvar(Request $request, string $processo, string $evento)
     {
-        $valido = $request->validate(['arquivo'=>'required|file|max:2048576', 'nome'=>'required|string|max:255']);
+        $valido = $request->validate(['arquivo'=>'required|file|max:2048576', 'nome'=>'sometimes|string|max:255']);
 
         $processo = Processo::firstWhere('xid', $processo);
 
@@ -267,5 +267,15 @@ class DocumentoController extends Controller
 
         $documento->evento()->detach($evento);
         return response(status: 200);
+    }
+
+
+    public function getContentDocumentoLex($processo, $evento, $documento)
+    {
+        $documento = Documento::firstWhere('xid', $documento);
+
+        if(is_null($documento)) return response(status: 404);
+
+        else return Storage::disk('local')->response($documento->src);
     }
 }
