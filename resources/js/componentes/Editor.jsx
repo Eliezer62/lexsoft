@@ -203,7 +203,6 @@ export default function Editor(props) {
             TableToolbar,
             TextPartLanguage,
             TextTransformation,
-            Title,
             TodoList,
             Underline,
             Undo
@@ -305,7 +304,10 @@ export default function Editor(props) {
         table: {
             contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
         },
-        translations: [translations]
+        translations: [translations],
+        config: {
+            title:false,
+        }
     };
 
     return (
@@ -330,6 +332,7 @@ export default function Editor(props) {
                                             }}
                                             editor={DecoupledEditor}
                                             config={editorConfig}
+                                            data={props.data}
                                             onChange={(event, editor)=>{
                                                 props.change(editor.getData())
                                             }}
