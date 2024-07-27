@@ -21,10 +21,12 @@ return new class extends Migration
 
             //foreign key
             $table->foreign('evento', 'fk_vinculados_evento')
-                    ->references('id')->on('eventos');
+                    ->references('id')->on('eventos')
+                    ->onDelete('CASCADE');
 
             $table->foreign('documento', 'fk_vinculados_documento')
-                    ->references('id')->on('documentos');
+                    ->references('id')->on('documentos')
+                    ->onDelete('CASCADE');
         });
     }
 

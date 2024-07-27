@@ -225,7 +225,7 @@ class DocumentoController extends Controller
         SELECT xid,tipo_arquivo, descricao, data_criacao,
                (CASE WHEN tipo_arquivo=\'lex\' THEN true ELSE false END) as editavel,
                COALESCE(docs.pessoafis, docs.pessoajur) as cliente
-        FROM documentos docs, vinculados vincs WHERE docs.id = vincs.documento AND vincs.evento = :evento;
+        FROM documentos docs, vinculados vincs WHERE docs.id = vincs.documento AND vincs.evento = :evento AND docs.deleted_at IS NULL;
         ', ['evento'=>$evento->id]);
 
         return response()->json($documentos, 200);
