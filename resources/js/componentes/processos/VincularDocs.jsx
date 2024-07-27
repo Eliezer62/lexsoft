@@ -137,7 +137,7 @@ export default function VincularDocs(props){
                 renderItem={(item) => (
                     <List.Item
                         actions={[
-                            item.editavel && <Button><GrEdit/></Button>,
+                            item.editavel && <Button onClick={()=>{window.open(`/processos/${props.processo}/movimentar/${props.evento}/editar-documento/`+item.xid)}}><GrEdit/></Button>,
                             <Button type={'primary'} onClick={()=>{window.open('/api/storage/content/'+item.xid, '_blank').focus()}}><IoCloudDownloadOutline /></Button>,
                             <Button danger={true} onClick={async ()=>{
                                 let msg = messageApi.loading('Removendo...', 1000);
