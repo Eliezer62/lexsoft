@@ -30,6 +30,7 @@
         "react-beautiful-dnd": "^13.1.1",
         "react-dom": "^18.3.1",
         "react-icons": "^5.2.1",
-        "refine": "^0.0.1-alpha"
+        "refine": "^0.0.1-alpha",
+        "universal-cookie": "^7.2.0"
     }
 }
