@@ -226,3 +226,15 @@ Route::get('/processos/{processo}/movimentar/{evento}/documentos', [DocumentoCon
 Route::post('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'vincularDocsPessoa']);
 
 Route::delete('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'desvincularDocsPessoa']);
+
+
+//AUTH controller
+Route::controller(AuthController::class)
+    ->prefix('/auth')
+    ->group(function (){
+        Route::post('/login', 'login')
+        ->name('auth.login');
+
+        Route::post('/logout', 'logout')
+            ->name('auth.logout');
+    });
