@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Col, DatePicker, Flex, Form, Input, InputNumber, message, Row, Select} from 'antd';
 import dayjs from "dayjs";
 import axios from "axios";
-const navigate = useNavigate();
+import {useNavigate} from "react-router-dom";
 
 /**
  * Componente formulário para criar Processo
