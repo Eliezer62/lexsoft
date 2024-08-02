@@ -6,6 +6,7 @@ import FormProcesso from "@/componentes/processos/FormProcesso.jsx";
 import axios from "axios";
 import {HomeOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
+import {useNavigate} from "react-router-dom";
 
 export default function EditarProcesso()
 {
@@ -13,6 +14,7 @@ export default function EditarProcesso()
     const [messageApi, context] = message.useMessage();
     const [loading, setLoading] = useState(false);
     const [reload, setReload] = useState(false);
+    const navigate = useNavigate();
     let {xid} = useParams();
 
     useEffect(() => {
@@ -40,6 +42,7 @@ export default function EditarProcesso()
                     form.setFieldValue('vara', dados?.vara);
 
                 }).catch((e)=>{
+                    if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     messageApi.error('Erro em obter os dados', 10)
                 });
             messageApi.destroy(loading.id);
@@ -79,6 +82,7 @@ export default function EditarProcesso()
                 }).then((resp)=>{
                     messageApi.success('Processo salvo com sucesso');
                 }).catch(erro=>{
+                    if(erro.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     messageApi.error('Erro em salvar o processo: '+erro.response?.data?.msg);
                 });
                 setLoading(false);

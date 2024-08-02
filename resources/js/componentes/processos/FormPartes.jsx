@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Flex, Form, Input, message, Select} from "antd";
+import {Button, Flex, Form, message, Select} from "antd";
 import axios from "axios";
-import {PlusOutlined, MinusCircleOutlined} from '@ant-design/icons'
+import {PlusOutlined} from '@ant-design/icons'
+import {useNavigate} from "react-router-dom";
 
 export default function FormPartes(props){
     const [messageApi, contextHolder] = message.useMessage();
     const [advogados, setAdvogados] = useState([]);
     const [clientes, setClientes] = useState([]);
     const [qualificacoes, setQualificacoes] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getAdvs = async () => {
@@ -18,6 +20,7 @@ export default function FormPartes(props){
                 });
                 setAdvogados(advs);
             }).catch(e=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em obter os advogados');
             });
         }
@@ -29,6 +32,7 @@ export default function FormPartes(props){
                 });
                 setClientes(clientes);
             }).catch(error=>{
+                if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em obter os clientes');
             });
         }
@@ -40,6 +44,7 @@ export default function FormPartes(props){
                 });
                 setQualificacoes(qual);
             }).catch(error=>{
+                if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em obter as qualificações');
             });
         }

@@ -3,12 +3,14 @@ import {Drawer, message} from "antd";
 import DescricaoItem from "@/componentes/DescricaoItem.jsx";
 import axios from "axios";
 import dayjs from "dayjs";
+import {useNavigate} from "react-router-dom";
 
 export default function VisualizarProcesso(props)
 {
     const [dados_processo, setDadosProcesso] = useState({});
     const [loading, setLoading] = useState(true);
     const [messageApi, context] = message.useMessage();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getProcesso = async () => {
@@ -19,6 +21,7 @@ export default function VisualizarProcesso(props)
                         setDadosProcesso(resp.data);
                         setLoading(false);
                     }).catch(e=>{
+                        if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                         messageApi.error('Erro em obter os dados do processo');
                     });
             }

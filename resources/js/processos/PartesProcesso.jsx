@@ -5,6 +5,7 @@ import FormPartes from "@/componentes/processos/FormPartes.jsx";
 import {Breadcrumb, Button, Flex, Form, message} from "antd";
 import {HomeOutlined} from "@ant-design/icons";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 export default function PartesProcesso(props){
     const {xid} = useParams();
@@ -12,6 +13,7 @@ export default function PartesProcesso(props){
     const [loading, setLoading] = useState(false);
     const [clientes, setClientes] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
+    const navigate = useNavigate();
 
     const enviar = () => {
         form.validateFields().then(async ()=>{
@@ -33,6 +35,7 @@ export default function PartesProcesso(props){
                 messageApi.success('Partes salvas com sucesso');
                 setInterval(()=>location.href='/processos/'+xid+'/movimentar', 3000);
             }).catch((e)=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em salvar as partes');
             })
         });

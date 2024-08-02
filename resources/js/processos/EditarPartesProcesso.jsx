@@ -5,6 +5,7 @@ import FormPartes from "@/componentes/processos/FormPartes.jsx";
 import {Breadcrumb, Button, Flex, Form, message} from "antd";
 import {HomeOutlined} from "@ant-design/icons";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 export default function EditarPartesProcesso(props){
     const {xid} = useParams();
@@ -12,6 +13,7 @@ export default function EditarPartesProcesso(props){
     const [loading, setLoading] = useState(false);
     const [clientes, setClientes] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
+    const navigate = useNavigate();
 
     const enviar = () => {
         form.validateFields().then(async ()=>{
@@ -31,8 +33,8 @@ export default function EditarPartesProcesso(props){
                 data:data
             }).then((resp)=>{
                 messageApi.success('Partes atualizadas com sucesso');
-                //setInterval(()=>location.href='/processos/'+xid+'/movimentar', 3000);
             }).catch((e)=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em atualizar as partes');
             });
             setLoading(false);
@@ -50,6 +52,9 @@ export default function EditarPartesProcesso(props){
                         dados.push(p);
                     })
                     form.setFieldValue('partes', dados);
+                }).catch((erro)=>{
+                    if(erro.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                    messageApi.error('Erro em obter dados');
                 });
         }
         const getAdvs = async () => {
@@ -58,6 +63,9 @@ export default function EditarPartesProcesso(props){
                     let adv = [];
                     resp.data.forEach(a => adv.push(a.xid));
                     form.setFieldValue('advogados', adv);
+                }).catch((e)=>{
+                    if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                    messageApi.error('Erro em obter dados');
                 });
         }
         getPartes();

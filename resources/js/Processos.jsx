@@ -8,6 +8,7 @@ import {IoIosRemoveCircleOutline} from "react-icons/io";
 import {MdDriveFileMoveOutline} from "react-icons/md";
 import VisualizarProcesso from "@/processos/VisualizarProcesso.jsx";
 import DOMPurify from "dompurify";
+import {useNavigate} from "react-router-dom";
 
 function DownOutlined() {
     return null;
@@ -137,6 +138,8 @@ export default function Processos() {
             await axios.get('/api/processos').then(resp => {
                 setProcessos(resp.data);
             }).catch((e)=>{
+                const navigate = useNavigate();
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em obter os processos');
             });
         }
