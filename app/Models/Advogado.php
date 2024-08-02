@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Processo;
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 
-class Advogado extends Authenticatable
+class Advogado extends Authenticatable implements JWTSubject
 {
     use Notifiable, SoftDeletes;
 
@@ -90,8 +90,8 @@ class Advogado extends Authenticatable
             'oab' => 'string',
             'uf_oab' => 'string',
             'primeiro_login' => 'bool',
-            'created_at' => 'datetime:d/m/Y HH:MM:SS',
-            'updated_at' => 'datetime:d/m/Y HH:MM:SS'
+            'created_at' => 'datetime:d/m/Y H:i:s',
+            'updated_at' => 'datetime:d/m/Y H:i:s'
         ];
     }
 
@@ -105,5 +105,15 @@ class Advogado extends Authenticatable
     public function processos()
     {
         return $this->belongsToMany(Processo::class, 'representa', 'advogado', 'processo');
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
