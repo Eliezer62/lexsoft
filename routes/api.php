@@ -237,4 +237,7 @@ Route::controller(AuthController::class)
 
         Route::post('/logout', 'logout')
             ->name('auth.logout');
+
+        Route::get('/check', 'check')
+            ->name('auth.check');
     });

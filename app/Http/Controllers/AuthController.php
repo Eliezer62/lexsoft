@@ -40,12 +40,13 @@ class AuthController extends Controller
                 ], 401);
             }
 
+            $tempo = Carbon::now()->add('seconds', 900)->timezone('America/Sao_Paulo');
             $user = Auth::user();
             return response()->json([
                 'user'=>$user,
                 'token'=>$token,
-                'expired'=>Carbon::now()->add('seconds', 900)->timezone('America/Sao_Paulo')->format('Y-m-d H:i:s')
-            ], 200);
+                'expired'=>$tempo->format('Y-m-d H:i:s')
+            ], 200)->withCookie(cookie('token', $token, 15, secure: true, sameSite: 'lax'));
         }
         catch (ValidationException $e)
         {
@@ -59,5 +60,14 @@ class AuthController extends Controller
     {
         Auth::logout();
         return response()->json(['msg'=>'Deslogado com sucesso']);
+    }
+
+    /**
+     * Checa se o login ainda é valido
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function check()
+    {
+        return response()->json(['valido'=>Auth::check()]);
     }
 }
