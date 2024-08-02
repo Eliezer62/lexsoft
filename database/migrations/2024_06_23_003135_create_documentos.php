@@ -21,7 +21,6 @@ return new class extends Migration
             $table->dateTime('data_criacao')->nullable();
             $table->integer('pessoafis')->nullable();
             $table->integer('pessoajur')->nullable();
-            $table->bigInteger('processo')->nullable();
         });
         DB::statement('ALTER TABLE documentos ADD COLUMN xid public.xid DEFAULT xid()');
         DB::statement('ALTER TABLE documentos ADD CONSTRAINT uc_doc_xid UNIQUE (xid)');

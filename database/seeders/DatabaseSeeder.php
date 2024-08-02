@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         ClasseJudicialSeeder::run();
         CidadeSeeder::run();
         TribunalSeeder::run();
+        QualificacaoSeeder::run();
     }
 }

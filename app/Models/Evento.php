@@ -15,10 +15,21 @@ class Evento extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'xid',
         'descricao',
         'ordem',
         'data',
         'processo'
     ];
+
+    protected $guarded = [
+        'xid'
+    ];
+
+    /**
+     * Retorna o processo do evento
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function processo(){
+        return $this->belongsTo(Processo::class, 'id', 'processo');
+    }
 }

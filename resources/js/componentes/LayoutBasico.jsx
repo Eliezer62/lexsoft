@@ -58,7 +58,7 @@ const LayoutBasico = (props) => {
     } = theme.useToken();
 
     const handleMenu = (e) => {
-        window.location = e.key;
+        window.location = '/'+e.key;
     }
 
     return (

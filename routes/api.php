@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Documento;
+use App\Models\Qualificacao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -160,3 +161,80 @@ Route::get('/documentos/pesquisa', [DocumentoController::class, 'search']);
 Route::get('/storage/content/{xid}', [DocumentoController::class, 'show']);
 
 Route::delete('/storage/content/{xid}', [DocumentoController::class, 'delete']);
+
+//Rotas Processo
+Route::get('/classes_judiciais', [ClasseJudicialController::class, 'index'])
+    ->name('classe_judicial.index');
+
+Route::get('/tribunais', [TribunalController::class, 'index'])
+    ->name('tribunal.index');
+
+Route::get('/qualificacoes', [QualificacaoController::class, 'index'])
+    ->name('qualificacao.index');
+
+Route::controller(ProcessoController::class)
+    ->prefix('/processos')
+    ->group(function (){
+        Route::get('/', 'index')
+            ->name('processos.index');
+
+        Route::get('/{xid}', 'show')
+            ->name('processos.show');
+
+        Route::post('/', 'store')
+            ->name('processos.store');
+
+        Route::post('/{xid}/partes', 'vincular')
+            ->name('processos.partes');
+
+        Route::put('/{xid}', 'update')
+            ->name('processos.update');
+
+        Route::delete('/{xid}', 'delete')
+            ->name('processos.delete');
+
+        Route::get('/{xid}/partes', 'getPartes')
+            ->name('processos.getPartes');
+
+        Route::get('/{xid}/advogados', 'getAdvogados')
+            ->name('processos.getAdvogados');
+
+        Route::put('/{xid}/partes', 'updatePartesEAdvs')
+            ->name('processos.updatePartes');
+
+        Route::get('/{xid}/visualizar', 'visualizarProcesso')
+            ->name('processos.visualizarProcesso');
+
+        Route::post('/{xid}/eventos', 'lancarEvento')
+            ->name('processos.lancarEvento');
+
+        Route::get('/{xid}/eventos', 'getEventos')
+            ->name('processos.getEventos');
+
+        Route::delete('/{processo}/eventos/{xid}', 'removerEvento')
+            ->name('processos.removerEvento');
+    });
+
+Route::post('/processos/{processo}/movimentar/{xid}/salvar-documento', [DocumentoController::class, 'salvar']);
+
+Route::get('/processos/{processo}/movimentar/{xid}/documento/{documento}', [DocumentoController::class, 'getContentDocumentoLex']);
+
+Route::post('/processos/{processo}/movimentar/{evento}/vincular-upload', [DocumentoController::class, 'uploadVincular']);
+
+Route::get('/processos/{processo}/movimentar/{evento}/documentos', [DocumentoController::class, 'documentosVinculados']);
+
+Route::post('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'vincularDocsPessoa']);
+
+Route::delete('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'desvincularDocsPessoa']);
+
+
+//AUTH controller
+Route::controller(AuthController::class)
+    ->prefix('/auth')
+    ->group(function (){
+        Route::post('/login', 'login')
+        ->name('auth.login');
+
+        Route::post('/logout', 'logout')
+            ->name('auth.logout');
+    });

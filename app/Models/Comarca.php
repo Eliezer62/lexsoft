@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comarca extends Model
 {
-    protected $table = 'tribunais';
+    protected $table = 'comarcas';
 
     /**
      * Primary key
@@ -19,6 +19,8 @@ class Comarca extends Model
         'nome',
         'tribunal'
     ];
+
+    public $timestamps = false;
 
     public function tribunal()
     {

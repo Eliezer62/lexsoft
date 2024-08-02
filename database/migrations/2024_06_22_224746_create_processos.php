@@ -20,6 +20,7 @@ return new class extends Migration
                     ->unique('uc_processos_numero');
             $table->decimal('valor_causa', 15, 2)->nullable();
             $table->decimal('valor_condenacao', 15, 2)->nullable();
+            $table->boolean('prioridade')->default(false);
             $table->boolean('justica_gratuita')->default(false);
             $table->char('instancia',1)->nullable();
             $table->char('numCNJ', 20)
@@ -28,9 +29,9 @@ return new class extends Migration
             $table->date('data_criacao');
             $table->date('data_distribuicao')->nullable();
             $table->smallInteger('classe_judicial');
-            $table->char('tribunal', 2);
+            $table->char('tribunal', 3);
             $table->integer('vara');
-            $table->integer('comarca');
+            $table->integer('comarca')->nullable();
 
             //Constraints
             $table->foreign('tribunal')

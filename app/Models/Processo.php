@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Casts\Advogado;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,7 +19,6 @@ class Processo extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'xid',
         'numero',
         'valor_causa',
         'valor_condenacao',
@@ -36,11 +34,21 @@ class Processo extends Model
         'comarca'
     ];
 
+    protected $guarded = [
+        'xid'
+    ];
+
+    protected $hidden = [
+        'id',
+        'updated_at',
+        'created_at',
+        'deleted_at'
+    ];
+
 
     public function advogados()
     {
-        return $this->belongsToMany(Advogado::class)
-            ->as('representa');
+        return $this->belongsToMany(Advogado::class, 'representa', 'processo', 'advogado');
     }
 
     /**
@@ -49,8 +57,7 @@ class Processo extends Model
      */
     public function partes()
     {
-        return $this->belongsToMany(ClientePessoaFis::class)
-            ->as('partes')
+        return $this->belongsToMany(ClientePessoaFis::class, 'partes', 'processo', 'clientefis')
             ->withPivot('qualificacao');
     }
 
@@ -60,8 +67,17 @@ class Processo extends Model
      */
     public function partes_jur()
     {
-        return $this->belongsToMany(ClientePessoaJur::class)
-            ->as('partes_jur')
+        return $this->belongsToMany(ClientePessoaJur::class, 'partes_jur', 'processo', 'clientejur')
             ->withPivot('qualificacao');
+    }
+
+    public function vara()
+    {
+        return $this->hasOne(Vara::class, 'id', 'vara');
+    }
+
+    public function comarca()
+    {
+        return $this->hasOne(Comarca::class, 'id', 'comarca');
     }
 }

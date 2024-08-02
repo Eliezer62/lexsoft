@@ -41,8 +41,7 @@ class ClientePessoaJur extends Model
 
     public function processos()
     {
-        return $this->belongsToMany(Processo::class)
-            ->as('partes_jur')
+        return $this->belongsToMany(Processo::class, 'partes_jur', 'clientefis', 'processo')
             ->withPivot('qualificacao');
     }
 

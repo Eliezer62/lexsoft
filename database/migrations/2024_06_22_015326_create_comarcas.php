@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('nome', 60)
                     ->index('index_comarca_nome');
-            $table->char('tribunal', 2);
+            $table->char('tribunal', 3);
 
             //Constraints
-            $table->foreign('tribunal')->references('id')->on('tribunais');
-
-
+            $table->foreign('tribunal', 'fk_comarca_tb')
+                ->references('id')
+                ->on('tribunais');
         });
     }
 
