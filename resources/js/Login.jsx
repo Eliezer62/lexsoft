@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ptBR from "antd/locale/pt_BR.js";
 import {Button, ConfigProvider, Flex, Form, message, Input, Row} from "antd";
 import {UserOutlined, LockOutlined} from "@ant-design/icons";
@@ -8,13 +8,14 @@ import axios from "axios";
 
 export default function Login(props)
 {
+    const [loading, setLoading] = useState(false);
     const {state} = useLocation();//get a anterior path para acessar use state.anterior
-    console.log(state?.anterior);
 
     const [form] = Form.useForm();
     const [messageApi, context] = message.useMessage();
     const enviar = () => {
         form.validateFields().then(async ()=>{
+            setLoading(true);
             let username = new String(form.getFieldValue('username'));
             let cpf = username.match(/(\d{11})|(\d{3}\.\d{3}\.\d{3}\-\d{2})/gm);
             cpf = (cpf)?cpf[0].replaceAll('.','')?.replaceAll('-',''):null;
@@ -34,7 +35,7 @@ export default function Login(props)
             }).catch((resp)=>{
                 messageApi.error('E-mail ou senha inválidos. Verifique seus dados', 10);
                 form.resetFields();
-            });
+            }).finally(()=>setLoading(false));
         });
     }
 
@@ -97,7 +98,7 @@ export default function Login(props)
                     </Flex>
                     <Flex justify={'center'} vertical>
                         <Button type={'link'}>Esqueci minha senha</Button>
-                        <Button type={'primary'} onClick={enviar} size={'large'}>Login</Button>
+                        <Button type={'primary'} onClick={enviar} size={'large'} loading={loading}>Login</Button>
                     </Flex>
                 </div>
             </Row>
