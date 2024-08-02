@@ -27,6 +27,13 @@ Criando o link simbólico para o Storage
 php artisan storage:link
 ```
 Configurar o .env para o ambiente local<br>
+Configurando o sistema de Login
+```bash
+php artisan vendor:publish --provider="PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider"
+```
+```bash
+php artisan jwt:secret
+```
 Criando as tabelas do banco de dados
 ```bash
 php artisan migrate
