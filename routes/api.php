@@ -29,6 +29,7 @@ Route::controller(GrupoUsuarioController::class)
 //Rotas para Advogado
 Route::controller(AdvogadoController::class)
     ->prefix('/advogados')
+    ->middleware(['auth:api'])
     ->group(function (){
         Route::get('/', 'index')
             ->name('advogados.index');
@@ -52,6 +53,7 @@ Route::controller(AdvogadoController::class)
 //Cliente
 Route::controller(ClienteController::class)
     ->prefix('/clientes')
+    ->middleware(['auth:api'])
     ->group(function (){
        Route::get('/', 'index')
             ->name('clientes.index');
@@ -60,6 +62,7 @@ Route::controller(ClienteController::class)
 //Cliente Pessoa Física
 Route::controller(ClientePessoaFisController::class)
     ->prefix('/clientesfis')
+    ->middleware(['auth:api'])
     ->group(function(){
         Route::get('/', 'index')
                 ->name('clientesfis.index');
@@ -83,6 +86,7 @@ Route::controller(ClientePessoaFisController::class)
 //Cliente Pessoa Jur
 Route::controller(ClientePessoaJurController::class)
     ->prefix('/clientesjur')
+    ->middleware(['auth:api'])
     ->group(function(){
        Route::get('/', 'index')
             ->name('clientesjur.index');
@@ -119,6 +123,7 @@ Route::get('/estados-civis', [EstadoCivilController::class, 'index']);
 //Tarefas Controller
 Route::controller(TarefaController::class)
     ->prefix('/tarefas')
+    ->middleware(['auth:api'])
     ->group(function (){
        Route::get('/{xid}', 'index')
             ->name('tarefas.index');
@@ -138,6 +143,7 @@ Route::controller(TarefaController::class)
 
 //Atendimento Controller
 Route::controller(AtendimentoController::class)
+    ->middleware(['auth:api'])
     ->prefix('/atendimentos')
     ->group(function (){
         Route::get('/', 'index')
@@ -173,6 +179,7 @@ Route::get('/qualificacoes', [QualificacaoController::class, 'index'])
     ->name('qualificacao.index');
 
 Route::controller(ProcessoController::class)
+    ->middleware(['auth:api'])
     ->prefix('/processos')
     ->group(function (){
         Route::get('/', 'index')
