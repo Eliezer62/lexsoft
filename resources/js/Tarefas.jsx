@@ -14,6 +14,7 @@ const Tarefas = () => {
     const [tarefas, setTarefas] = useState([]);
     const [loadingTable, setLoadingTable] = useState(true);
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem('user'));
 
     const abrirNovaTarefa = () => setOpenNovaTarefa(true);
 
@@ -31,7 +32,7 @@ const Tarefas = () => {
 
     useEffect(() => {
         const getTarefas = async () => {
-            const response = await axios.get('/api/tarefas/cq8998665k25di0tid5g')
+            const response = await axios.get('/api/tarefas/'+user.xid)
                 .then((response)=>{
                     setTarefas(response.data);
                     setLoadingTable(false);

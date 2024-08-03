@@ -10,18 +10,20 @@ const EditarTarefas = (props) => {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [tarefa, setTarefa] = useState({});
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem('user'));
 
     const enviar = ()=>{
         form.validateFields().then(async ()=>{
             setConfirmLoading(true);
             //alterar para cookies
-            tarefa.responsavel = 'cq8998665k25di0tid5g';
+            tarefa.responsavel = user.xid;
             tarefa.assunto = form.getFieldValue('assunto');
-            //tarefa.descricao = form.getFieldValue('descricao');
-            let inicio = form.getFieldValue('inicio');
-            tarefa.inicio = (inicio)?dayjs(inicio, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm'):null;
-            let fim  = form.getFieldValue('fim');
-            tarefa.fim = (fim)?dayjs(fim, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm'):null;
+            let prazo = form.getFieldValue('prazo');
+            if(prazo)
+            {
+                tarefa.inicio = dayjs(prazo[0], 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm');
+                tarefa.fim = dayjs(prazo[1], 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm');
+            }
 
             await axios({
                 method: "PUT",
@@ -47,7 +49,7 @@ const EditarTarefas = (props) => {
     return (
         <Modal
             open={props.open}
-            title={'Nova Tarefa'}
+            title={'Editar Tarefa'}
             onOk={enviar}
             onCancel={props.cancelar}
             destroyOnClose={true}
@@ -78,19 +80,18 @@ const EditarTarefas = (props) => {
                 </Form.Item>
 
                 <Form.Item
-                    label={'Data de início'}
-                    name={'inicio'}
-                    initialValue={(props.tarefa.prazo?.inicio)?dayjs(props.tarefa.prazo?.inicio, 'YYYY-MM-DD HH:mm'):null}
+                    label={'Prazo'}
+                    name={'prazo'}
+                    initialValue={(props.tarefa.prazo?.inicio)?[dayjs(props.tarefa.prazo?.inicio, 'YYYY-MM-DD HH:mm'), dayjs(props.tarefa.prazo?.fim, 'YYYY-MM-DD HH:mm')]:null}
                 >
-                    <DatePicker showTime format={'DD/MM/YYYY HH:mm'}/>
-                </Form.Item>
-
-                <Form.Item
-                    label={'Data de fim'}
-                    name={'fim'}
-                    initialValue={(props.tarefa.prazo?.fim)?dayjs(props.tarefa.prazo?.fim, 'YYYY-MM-DD HH:mm'):null}
-                >
-                    <DatePicker showTime format={'DD/MM/YYYY HH:mm'}/>
+                    <DatePicker.RangePicker
+                        showTime
+                        format={'DD/MM/YYYY HH:mm'}
+                        id={{
+                            start: 'inicio',
+                            end: 'fim',
+                        }}
+                    />
                 </Form.Item>
             </Form>
         </Modal>
