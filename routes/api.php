@@ -162,11 +162,11 @@ Route::controller(AtendimentoController::class)
             ->name('atendimentos.delete');
     });
 
-Route::get('/documentos/pesquisa', [DocumentoController::class, 'search']);
+Route::get('/documentos/pesquisa', [DocumentoController::class, 'search'])->middleware(['auth:api']);
 
-Route::get('/storage/content/{xid}', [DocumentoController::class, 'show']);
+Route::get('/storage/content/{xid}', [DocumentoController::class, 'show'])->middleware(['auth:api']);
 
-Route::delete('/storage/content/{xid}', [DocumentoController::class, 'delete']);
+Route::delete('/storage/content/{xid}', [DocumentoController::class, 'delete'])->middleware(['auth:api']);
 
 //Rotas Processo
 Route::get('/classes_judiciais', [ClasseJudicialController::class, 'index'])
@@ -222,17 +222,17 @@ Route::controller(ProcessoController::class)
             ->name('processos.removerEvento');
     });
 
-Route::post('/processos/{processo}/movimentar/{xid}/salvar-documento', [DocumentoController::class, 'salvar']);
+Route::post('/processos/{processo}/movimentar/{xid}/salvar-documento', [DocumentoController::class, 'salvar'])->middleware(['auth:api']);
 
-Route::get('/processos/{processo}/movimentar/{xid}/documento/{documento}', [DocumentoController::class, 'getContentDocumentoLex']);
+Route::get('/processos/{processo}/movimentar/{xid}/documento/{documento}', [DocumentoController::class, 'getContentDocumentoLex'])->middleware(['auth:api']);
 
-Route::post('/processos/{processo}/movimentar/{evento}/vincular-upload', [DocumentoController::class, 'uploadVincular']);
+Route::post('/processos/{processo}/movimentar/{evento}/vincular-upload', [DocumentoController::class, 'uploadVincular'])->middleware(['auth:api']);
 
-Route::get('/processos/{processo}/movimentar/{evento}/documentos', [DocumentoController::class, 'documentosVinculados']);
+Route::get('/processos/{processo}/movimentar/{evento}/documentos', [DocumentoController::class, 'documentosVinculados'])->middleware(['auth:api']);
 
-Route::post('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'vincularDocsPessoa']);
+Route::post('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'vincularDocsPessoa'])->middleware(['auth:api']);
 
-Route::delete('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'desvincularDocsPessoa']);
+Route::delete('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'desvincularDocsPessoa'])->middleware(['auth:api']);
 
 
 //AUTH controller
