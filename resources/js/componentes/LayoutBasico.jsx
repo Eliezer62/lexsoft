@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {  UserOutlined } from '@ant-design/icons';
-import {ConfigProvider, Layout, Menu, theme, Avatar, Image, Flex, Button} from 'antd';
+import {ConfigProvider, Layout, Menu, theme, Avatar, Image, Flex, Button, Affix} from 'antd';
 import img from '../../img/logo-nobg.png'
 import ptBR from 'antd/locale/pt_BR';
 import { VscDashboard } from "react-icons/vsc";
@@ -75,56 +75,58 @@ const LayoutBasico = (props) => {
             <Auth/>
             <Layout>
                 <Layout>
-                    <Sider
-                        width={200}
-                        breakpoint="lg"
-                        collapsedWidth="0"
-                        style={{
-                            background: '#f5f5f5',
-                            border: '5px solid #f9f9f9',
-                            fontFamily: 'Roboto'
-                        }}
-                    >
-                        <Flex
+                    <Affix>
+                        <Sider
+                            width={200}
+                            breakpoint="lg"
+                            collapsedWidth="0"
                             style={{
-                                height: '20%',
-                                padding: '10px',
+                                background: '#f5f5f5',
+                                border: '5px solid #f9f9f9',
+                                fontFamily: 'Roboto'
                             }}
-                            justify={'center'} align={'center'}
                         >
-                            <img src={img} alt="logo" width={75} height={75} />
-                            <p className={'logo-nome'}>LEXSOFT</p>
-                        </Flex>
-                        <Menu
-                            mode="inline"
-                            defaultSelectedKeys={[props.menu]}
-                            style={{
-                                height: '70%',
-                                borderRight: 0,
-                                background: '#f5f5f5'
-                            }}
-                            items={items}
-                            onClick={handleMenu}
-                        />
-                        <Flex
-                            style={{
-                                height: '10%',
-                                padding: 5,
-                                width: '100%',
-                                background: '#fff',
-                            }}
-                            align={'center'}
-                            justify={'center'}
-                            onClick={()=>console.log('teste')}
-                        >
-                            <Avatar size={28} icon={<UserOutlined/>}  className='d-inline'/>
-                            <p style={{padding:'5px', color:'#505050', fontStyle: '0.5rem'}}>{user.nome.split(' ')[0]}</p>
-                            <Button type={'link'} title={'Sair'} onClick={()=>{
-                                axios.post('/api/auth/logout');
-                                navigate('/login', {state:{anterior:location.pathname}});
-                            }}><IoIosLogOut /></Button>
-                        </Flex>
-                    </Sider>
+                            <Flex
+                                style={{
+                                    height: '20%',
+                                    padding: '10px',
+                                }}
+                                justify={'center'} align={'center'}
+                            >
+                                <img src={img} alt="logo" width={75} height={75} />
+                                <p className={'logo-nome'}>LEXSOFT</p>
+                            </Flex>
+                            <Menu
+                                mode="inline"
+                                defaultSelectedKeys={[props.menu]}
+                                style={{
+                                    height: '70%',
+                                    borderRight: 0,
+                                    background: '#f5f5f5'
+                                }}
+                                items={items}
+                                onClick={handleMenu}
+                            />
+                            <Flex
+                                style={{
+                                    height: '10%',
+                                    padding: 5,
+                                    width: '100%',
+                                    background: '#fff',
+                                }}
+                                align={'center'}
+                                justify={'center'}
+                                onClick={()=>console.log('teste')}
+                            >
+                                <Avatar size={28} icon={<UserOutlined/>}  className='d-inline'/>
+                                <p style={{padding:'5px', color:'#505050', fontStyle: '0.5rem'}}>{user.nome.split(' ')[0]}</p>
+                                <Button type={'link'} title={'Sair'} onClick={()=>{
+                                    axios.post('/api/auth/logout');
+                                    navigate('/login', {state:{anterior:location.pathname}});
+                                }}><IoIosLogOut /></Button>
+                            </Flex>
+                        </Sider>
+                    </Affix>
                     <Layout
                         className={'layout'}
                     >
