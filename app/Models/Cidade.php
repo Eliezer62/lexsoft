@@ -29,6 +29,9 @@ class Cidade extends Model
     ];
 
 
+    public $timestamps = false;
+
+
     /**
      * Retorna o estado do model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
