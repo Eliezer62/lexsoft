@@ -27,6 +27,7 @@ export default function Processos() {
     const [processo, setProcesso] = useState({});
     const [visualizarProcesso, setVisualizarProcesso] = useState(false);
     const [linha, setLinha] = useState({})
+    const navigate = useNavigate();
 
     const items = [
         {
@@ -64,6 +65,7 @@ export default function Processos() {
                             messageApi.success('Processo removido com sucesso');
                         }).catch((error)=>{
                             messageApi.destroy(msg.id);
+                            if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                             messageApi.error('Erro em remover o processo');
                         });
                 }}>Remover</a>
@@ -138,7 +140,6 @@ export default function Processos() {
             await axios.get('/api/processos').then(resp => {
                 setProcessos(resp.data);
             }).catch((e)=>{
-                const navigate = useNavigate();
                 if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em obter os processos');
             });

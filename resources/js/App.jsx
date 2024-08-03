@@ -18,6 +18,8 @@ import EditarPartesProcesso from "@/processos/EditarPartesProcesso.jsx";
 import MovimentarProcesso from "@/processos/MovimentarProcesso.jsx";
 import NovoDocumento from "@/componentes/documentos/NovoDocumento.jsx";
 import EditarDocumento from "@/componentes/documentos/EditarDocumento.jsx";
+import Dashboard from "@/Dashboard.jsx";
+import Login from "@/Login.jsx";
 
 const RotaProcessos = () => {
     return (
@@ -41,13 +43,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <BrowserRouter>
             <Routes>
                 <Route path='*' element={<Erro404 />} />
-                <Route path='/' Component={LayoutBasico}/>
+                <Route path='/' Component={Dashboard}/>
+                <Route path='/dashboard' Component={Dashboard}/>
                 <Route path='/advogados' Component={Advogados}/>
                 <Route path={'/clientes'} Component={Clientes}/>
                 <Route path='/tarefas' Component={Tarefas}/>
                 <Route path={'/atendimentos'} Component={Atendimentos}/>
                 <Route path={'/documentos'} Component={Documentos}/>
                 <Route path={'/processos/*'} element={<RotaProcessos/>}/>
+                <Route path={'/login'} Component={Login}/>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>
