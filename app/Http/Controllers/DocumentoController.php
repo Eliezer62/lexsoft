@@ -65,9 +65,8 @@ class DocumentoController extends Controller
             $validado = $request->validate(['query' => 'required|string']);
             $q = htmlspecialchars($validado['query'], ENT_QUOTES);
             $documento = DB::table('view_documentos')
-                ->whereRaw('to_tsvector(cliente) @@ to_tsquery(:q) OR
-                            to_tsvector(descricao) @@ to_tsquery(:q) OR
-                             to_tsvector(documento) @@ to_tsquery(:q)')->limit(10)
+                ->whereRaw('to_tsvector(cliente) || to_tsvector(descricao) ||
+                             to_tsvector(documento) @@ phraseto_tsquery(:q)')->limit(10)
                 ->setBindings(['q' => $q])->get();
 
             return $documento;
