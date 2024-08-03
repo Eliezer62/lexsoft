@@ -4,6 +4,7 @@ import {Button, Flex, Form, Input, message, Modal} from "antd";
 import Editor from "@/componentes/Editor.jsx";
 import {useParams} from 'react-router-dom';
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 export default function NovoDocumento()
 {
@@ -12,6 +13,7 @@ export default function NovoDocumento()
     const [modal, contextModal] = Modal.useModal();
     const [form] = Form.useForm();
     const [messageApi, contextMsg] = message.useMessage();
+    const navigate = useNavigate();
     const {xid} = useParams();
     const {evento} = useParams();
 
@@ -49,10 +51,14 @@ export default function NovoDocumento()
                 }).then((resp)=>{
                     setDocumento(resp.data);
                     messageApi.success('Documento salvo com sucesso');
-                }).catch(()=>{
+                }).catch((e)=>{
+                    if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     messageApi.error('Erro em salvar o documento');
                 });
-            }).catch(()=>messageApi.error('Nome é obrigatório'));
+            }).catch((e)=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                messageApi.error('Nome é obrigatório');
+            });
         });
         else {
             const file = new File([conteudo], form.getFieldValue('nome')+'.lex' , {
@@ -70,7 +76,8 @@ export default function NovoDocumento()
             }).then((resp)=>{
                 setDocumento(resp.data);
                 messageApi.success('Documento salvo com sucesso');
-            }).catch(()=>{
+            }).catch((e)=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em salvar o documento');
             });
         }

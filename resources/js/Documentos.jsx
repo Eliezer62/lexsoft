@@ -5,14 +5,13 @@ import { InboxOutlined } from '@ant-design/icons';
 import {Button, Flex, Form, Input, message, Modal, Select} from "antd";
 import axios from "axios";
 import BuscarDocumentos from "@/componentes/documentos/BuscarDocumentos.jsx";
-
-
-
+import {useNavigate} from "react-router-dom";
 const Documentos = () => {
     const [documento, setDocumento] = useState({});
     const [clientes, setClientes] = useState([]);
     const [form] = Form.useForm();
     const [openSearch, setOpenSearch] = useState(false);
+    const navigate = useNavigate();
 
     const atributos = {
         name: 'arquivo',
@@ -50,6 +49,8 @@ const Documentos = () => {
                     temp.push({label:c.nome+' '+c.documento, value:c.xid, tipo:c.tipo});
                 });
                 setClientes(temp);
+            }).catch((e)=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
             });
         }
 
@@ -97,6 +98,8 @@ const Documentos = () => {
                  >
                      <Select
                          options={clientes}
+                         showSearch={true}
+                         optionFilterProp={'label'}
                      />
                  </Form.Item>
              </Form>

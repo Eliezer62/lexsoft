@@ -3,13 +3,14 @@ import {Button, Input, List, Modal, Skeleton, message} from "antd";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import {IoCloudDownloadOutline} from "react-icons/io5";
 import axios from "axios";
-
+import {useNavigate} from "react-router-dom";
 
 const BuscarDocumentos = (props) => {
     const [loading, setLoading] = React.useState(false);
     const [documentos, setDocumentos] = React.useState([]);
     const [pesquisa, setPesquisa] = React.useState('');
     const [messageApi, contextholder] = message.useMessage();
+    const navigate = useNavigate();
 
     const data = [
         {
@@ -45,7 +46,11 @@ const BuscarDocumentos = (props) => {
                                   .then((resp)=>{
                                       setDocumentos(resp.data);
                                       setLoading(false);
-                                  }).catch((err)=>{setLoading(false); setDocumentos([])});
+                                  }).catch((err)=>{
+                                      if(err.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                                      setLoading(false);
+                                      setDocumentos([])
+                                  });
                           }}
             />
             <List
@@ -66,9 +71,16 @@ const BuscarDocumentos = (props) => {
                                             .then((resp)=>{
                                                 setDocumentos(resp.data);
                                                 setLoading(false);
-                                            }).catch((err)=>{setLoading(false); setDocumentos([])});
+                                            }).catch((err)=>{
+                                                if(err.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                                                setLoading(false);
+                                                setDocumentos([])
+                                            });
                                     })
-                                    .catch((error)=>messageApi.error('Erro em remover o documento'));
+                                    .catch((error)=>{
+                                        if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                                        messageApi.error('Erro em remover o documento');
+                                    });
                             }}><IoIosRemoveCircleOutline/></Button>
                         ]}
                     >
