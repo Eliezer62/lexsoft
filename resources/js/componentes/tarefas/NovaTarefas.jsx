@@ -3,11 +3,13 @@ import {DatePicker, Form, Input, Modal} from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 import EditorSimples from "@/componentes/EditorSimples.jsx";
+import {useNavigate} from "react-router-dom";
 
 const NovaTarefas = (props) => {
     const [form] = Form.useForm();
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [tarefa, setTarefa] = useState({});
+    const navigate = useNavigate();
 
     const enviar = ()=>{
         form.validateFields().then(async ()=>{
@@ -29,6 +31,7 @@ const NovaTarefas = (props) => {
                 setConfirmLoading(false);
                 props.cancelar();
             }).catch((error)=>{
+                if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 setConfirmLoading(false);
                 props.mensagemErro('Erro em salvar a tarefa '+error.response?.data.msg);
             });

@@ -4,7 +4,7 @@ import TabelaTarefas from "@/componentes/tarefas/TabelaTarefas.jsx";
 import NovaTarefas from "@/componentes/tarefas/NovaTarefas.jsx";
 import {message} from 'antd';
 import axios from "axios";
-import EditarTarefas from "@/componentes/tarefas/EditarTarefas.jsx";
+import {useNavigate} from "react-router-dom";
 
 
 const Tarefas = () => {
@@ -13,6 +13,7 @@ const Tarefas = () => {
     const [timeOut, setTimeOut] = useState(0);
     const [tarefas, setTarefas] = useState([]);
     const [loadingTable, setLoadingTable] = useState(true);
+    const navigate = useNavigate();
 
     const abrirNovaTarefa = () => setOpenNovaTarefa(true);
 
@@ -35,6 +36,7 @@ const Tarefas = () => {
                     setTarefas(response.data);
                     setLoadingTable(false);
                 }).catch((error)=>{
+                    if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     mensagemErro('Erro em obter as tarefas');
                 });
         }
