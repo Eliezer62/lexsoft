@@ -30,7 +30,7 @@ export default function Login(props)
             await axios.post('/api/auth/login', formData, { withCredentials: true}).then((resp)=>
             {
                 localStorage.setItem('user', JSON.stringify(resp.data.user));
-                if(state?.anterior) location.href=state.anterior;
+                if(state?.anterior && state?.anterior?.toLowerCase()!='/login') location.href=state.anterior;
                 else location.href='/';
             }).catch((resp)=>{
                 messageApi.error('E-mail ou senha inválidos. Verifique seus dados', 10);

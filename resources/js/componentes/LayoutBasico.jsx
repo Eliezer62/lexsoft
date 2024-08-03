@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {  UserOutlined } from '@ant-design/icons';
-import { ConfigProvider, Layout, Menu, theme, Avatar, Image, Flex } from 'antd';
+import {ConfigProvider, Layout, Menu, theme, Avatar, Image, Flex, Button} from 'antd';
 import img from '../../img/logo-nobg.png'
 import ptBR from 'antd/locale/pt_BR';
 import { VscDashboard } from "react-icons/vsc";
@@ -9,7 +9,10 @@ import {IoChatbubbles, IoChatbubblesOutline} from "react-icons/io5";
 import { GrGroup, GrDocumentStore } from "react-icons/gr";
 import { BiTask } from "react-icons/bi";
 import { LiaUserCogSolid } from "react-icons/lia";
-
+import Auth from "@/Seguranca/Auth.jsx";
+import {IoIosLogOut} from "react-icons/io";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const { Content, Sider } = Layout;
 
@@ -51,8 +54,12 @@ const items = [
     }
 ];
 
+const user = JSON.parse(localStorage.getItem('user'));
+
 const LayoutBasico = (props) => {
     const {local, setLocal} = useState();
+    const navigate = useNavigate();
+
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -65,6 +72,7 @@ const LayoutBasico = (props) => {
         <ConfigProvider
             locale={ptBR}
         >
+            <Auth/>
             <Layout>
                 <Layout>
                     <Sider
@@ -107,8 +115,14 @@ const LayoutBasico = (props) => {
                             }}
                             align={'center'}
                             justify={'center'}
+                            onClick={()=>console.log('teste')}
                         >
                             <Avatar size={28} icon={<UserOutlined/>}  className='d-inline'/>
+                            <p style={{padding:'5px', color:'#505050', fontStyle: '0.5rem'}}>{user.nome.split(' ')[0]}</p>
+                            <Button type={'link'} title={'Sair'} onClick={()=>{
+                                axios.post('/api/auth/logout');
+                                navigate('/login', {state:{anterior:location.pathname}});
+                            }}><IoIosLogOut /></Button>
                         </Flex>
                     </Sider>
                     <Layout
