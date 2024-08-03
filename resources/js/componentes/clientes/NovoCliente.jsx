@@ -4,11 +4,13 @@ import FormsPessoaFisica from "@/componentes/clientes/FormsPessoaFisica.jsx";
 import FormsPessoaJuridica from "@/componentes/clientes/FormsPessoaJuridica.jsx";
 import axios from "axios";
 import dayjs from "dayjs";
+import {useNavigate} from "react-router-dom";
 
 const NovoCliente = (props) => {
     const [tipo, setTipo] = useState('fisico');
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
+    const navigate = useNavigate();
 
     const enviarNovoCliente =  () => {
         form.validateFields().then(async ()=>{
@@ -51,7 +53,8 @@ const NovoCliente = (props) => {
                         props.sucessoMsg();
                     })
                     .catch((error)=>{
-                    props.erroMsg(error.response.msg);
+                        if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                        props.erroMsg(error.response.msg);
                 });
                 setLoading(false);
             }
@@ -69,6 +72,7 @@ const NovoCliente = (props) => {
                     url:'/api/clientesjur',
                     data:cliente
                 }).catch((error)=>{
+                    if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     props.erroMsg(error.response.msg);
                 });
                 setLoading(false);

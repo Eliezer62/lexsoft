@@ -9,6 +9,7 @@ import CamposPessoaFisica from "@/componentes/clientes/CamposPessoaFisica.jsx";
 import CamposPessoaJur from "@/componentes/clientes/CamposPessoaJur.jsx";
 import NovoCliente from "@/componentes/clientes/NovoCliente.jsx";
 import EditarCliente from "@/componentes/clientes/EditarCliente.jsx";
+import {useNavigate} from "react-router-dom";
 
 const Clientes = () => {
     const [pesquisa, setPesquisa] = useState('');
@@ -22,6 +23,8 @@ const Clientes = () => {
     const [openEditarCliente, setOpenEditarCliente] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const [loadingEditar, setLoadingEditar] = useState(false);
+    const navigate = useNavigate();
+
 
     const colunas = [
         {
@@ -62,6 +65,7 @@ const Clientes = () => {
                             if(record.tipo==='fisico') rota = '/api/clientesfis/'+record.xid+"/formatado";
                             else rota = '/api/clientesjur/'+record.xid;
                             const response = await axios.get(rota).catch(e=>{
+                                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                                 messageApi.error('Erro em obter os dados');
                             });
                             setCliente(await response.data);
@@ -75,6 +79,7 @@ const Clientes = () => {
                             if(record.tipo==='fisico') rota = '/api/clientesfis/'+record.xid;
                             else rota = '/api/clientesjur/'+record.xid;
                             const response = await axios.get(rota).catch(e=>{
+                                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                                 messageApi.error('Erro em obter os dados');
                             });
                             if(response.data.cpf || response.data.cnpj)
@@ -94,6 +99,7 @@ const Clientes = () => {
                             const response = axios.delete(url).then((response)=>{
                                 messageApi.success('Cliente Removido com sucesso');
                             }).catch(e=>{
+                                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                                 messageApi.error('Não foi possível remover o cliente');
                             });
                         }}><IoIosRemoveCircleOutline/></Button>
@@ -106,7 +112,10 @@ const Clientes = () => {
 
     useEffect(() => {
         const getClientes = async () => {
-            const response = await axios.get('/api/clientes');
+            const response = await axios.get('/api/clientes')
+                .catch((e)=>{
+                    if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                });
             setClientes(response.data);
         }
 

@@ -3,7 +3,7 @@ import {DatePicker, Form, Input, InputNumber, Select} from "antd";
 import {MaskedInput} from "antd-mask-input";
 import axios from "axios";
 import dayjs from "dayjs";
-
+import {useNavigate} from "react-router-dom";
 
 const FormsPessoaFisica = (props) => {
     const [sexos, setSexos] = useState([]);
@@ -11,11 +11,15 @@ const FormsPessoaFisica = (props) => {
     const [naturalidadeUF, setNaturalidadeUF] = useState('');
     const [natualidadeDisponivel, setNaturalidadeDisponivel] = useState(true);
     const [naturalidade, setNaturalidade] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getEstados = async () => {
             let estados = [];
-            const response = await axios.get('/api/estados');
+            const response = await axios.get('/api/estados')
+                .catch((e)=>{
+                    if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                });
             response.data.forEach((e)=>{
                 estados.push({label:e.nome, value:e.uf});
             });
@@ -24,7 +28,9 @@ const FormsPessoaFisica = (props) => {
 
         const getSexos = async  () => {
             let sexos = [];
-            const response = await axios.get('/api/sexos');
+            const response = await axios.get('/api/sexos').catch((e)=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+            });
             response.data.forEach((e)=>{
                 sexos.push({label:e.sexo, value:e.id});
             });
@@ -33,7 +39,10 @@ const FormsPessoaFisica = (props) => {
 
         const getEstadoCivil = async () => {
             let estados = [];
-            const response = await axios.get('/api/estados-civis');
+            const response = await axios.get('/api/estados-civis')
+                .catch((e)=>{
+                    if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                });
             response.data.forEach((e)=>{
                 estados.push({label:e.estado_civil, value:e.id});
             });
@@ -46,7 +55,10 @@ const FormsPessoaFisica = (props) => {
 
 
     const getCidades = async (uf)=>{
-        const response = await axios.get('/api/cidades/'+uf);
+        const response = await axios.get('/api/cidades/'+uf)
+            .catch((e)=>{
+            if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+        });
         let cidades = [];
         response.data.forEach((cidade)=>{
             cidades.push({label:cidade.nome, value:cidade.id});

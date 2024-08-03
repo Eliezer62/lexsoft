@@ -4,10 +4,12 @@ import FormsPessoaFisica from "@/componentes/clientes/FormsPessoaFisica.jsx";
 import FormsPessoaJuridica from "@/componentes/clientes/FormsPessoaJuridica.jsx";
 import axios from "axios";
 import dayjs from "dayjs";
+import {useNavigate} from "react-router-dom";
 
 const EditarCliente = (props) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
+    const navigate = useNavigate();
 
     const enviarCliente =  () => {
         form.validateFields().then(async ()=>{
@@ -51,6 +53,7 @@ const EditarCliente = (props) => {
                         }
                     })
                         .catch((error)=>{
+                            if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                             props.erroMsg(error.response.msg);
                             setLoading(false);
                 });
@@ -76,6 +79,7 @@ const EditarCliente = (props) => {
                     }
                 })
                     .catch((error)=>{
+                        if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                         props.erroMsg(error.response.msg);
                         setLoading(false);
                     });
