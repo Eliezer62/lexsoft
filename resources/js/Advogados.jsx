@@ -125,6 +125,7 @@ const Advogados = () => {
                 url:'/api/advogados/'+advogado.xid,
                 data:advogado
             }).catch((e)=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em atualizar o advogado: '+e.response.data.msg);
             })
             if(response.status==200) messageApi.success('Advogado atualizado com sucesso');
@@ -138,7 +139,10 @@ const Advogados = () => {
 
     useEffect(() => {
         const getAdvs = async () => {
-            const response = await axios.get('/api/advogados');
+            const response = await axios.get('/api/advogados')
+                .catch((e)=>{
+                    if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                });
             setAdvogados(await response.data);
         }
 
