@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use http\Env\Response;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Advogado;
 use Illuminate\Support\Facades\Hash;
@@ -154,6 +155,35 @@ class AdvogadoController extends Controller
         catch (\Exception $e)
         {
             return response()->json(['msg'=>'Erro interno'], 500);
+        }
+    }
+
+    public function atualizarPerfil(Request $request)
+    {
+        try{
+            $validados = $request->validate([
+                'nome' => 'max:60|string',
+                'oab' => 'nullable',
+                'uf_oab' => 'nullable|max:2',
+                'password'=>'sometimes|min:8',
+            ]);
+
+            $advogado = Auth::user();
+            if($request->has('password'))
+            {
+                $advogado->update(['password'=>Hash::make($validados['password'])]);
+                unset($validados['password']);
+            }
+            $advogado->updateOrFail($validados);
+            return response()->json(['msg' => 'atualizado'], 200);
+        }
+        catch (ValidationException $e)
+        {
+            return response()->json(['msg' => 'Dados inválidos enviado'], 422);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json(['msg' => 'Erro interno'.$e->getMessage()], 500);
         }
     }
 }

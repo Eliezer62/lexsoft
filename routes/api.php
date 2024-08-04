@@ -260,3 +260,14 @@ Route::controller(DashboardController::class)
         Route::get('/prazos/{mes}/{ano}', 'prazos')
             ->name('dashboard.prazos');
     });
+
+Route::controller(AdvogadoController::class)
+    ->middleware(['auth:api'])
+    ->prefix('/perfil')
+    ->group(function (){
+        Route::get('/{xid}', 'show')
+            ->name('perfil.show');
+
+        Route::post('/', 'atualizarPerfil')
+            ->name('perfil.atualizar');
+    });
