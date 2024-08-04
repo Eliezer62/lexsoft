@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 class ClientePessoaJur extends Model
 {
-    use Notifiable, SoftDeletes;
+    use Notifiable;
 
     /**
      * Tabela de Cliente Pessoa Jurídica

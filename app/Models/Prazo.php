@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Prazo extends Model
 {
-    use SoftDeletes;
-
     /**
      * Tabela do model
      * @var string

@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Atendimento extends Model
 {
-    use SoftDeletes;
-
     /**
      * Tabela de atendimento
      * @var string

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tarefa extends Model
 {
-    use SoftDeletes;
     /**
      * Primary key de tarefa
      * @var string

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RG extends Model
 {
-    use SoftDeletes;
     /**
      * Tabela de RG
      * @var string
