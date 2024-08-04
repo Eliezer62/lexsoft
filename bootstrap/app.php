@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ValidarPermissoes;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,6 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->validateCsrfTokens(except: [
             '/storage/*'
+        ]);
+        $middleware->alias([
+            'permissoes'=>ValidarPermissoes::class
+        ]);
+        $middleware->api(prepend:[
+            ValidarPermissoes::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
