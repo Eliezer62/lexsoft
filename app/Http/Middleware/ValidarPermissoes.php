@@ -19,12 +19,12 @@ class ValidarPermissoes
         $usuario = Auth::user();
         $rota = $request->route()->action['prefix'];
         //Nao permite que estagiarios vejam atendimento
-        if($rota=='api/atendimentos' && $usuario->grupo == 'estagiario')
+        if($rota=='api/atendimentos' && $usuario?->grupo == 'estagiario')
         {
             return response()->json(['msg'=>'Não permitido'], 403);
         }
         //Nao permite que usuarios nao administradores manipulem usuarios
-        if($rota=='api/advogados' && $usuario->grupo != 'administrador')
+        if($rota=='api/advogados' && $usuario?->grupo != 'administrador')
             return response()->json(['msg'=>'Não permitido'], 403);
 
         return $next($request);
