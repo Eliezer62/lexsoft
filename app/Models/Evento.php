@@ -30,6 +30,6 @@ class Evento extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function processo(){
-        return $this->belongsTo(Processo::class, 'id', 'processo');
+        return $this->belongsTo(Processo::class, 'processo', 'id');
     }
 }

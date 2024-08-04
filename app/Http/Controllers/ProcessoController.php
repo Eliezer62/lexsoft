@@ -20,7 +20,7 @@ class ProcessoController extends Controller
     public function index()
     {
         $advogado = Auth::user();
-        
+
         if($advogado->grupo=='administrador')
         {
             $processos = DB::select('
@@ -500,9 +500,9 @@ class ProcessoController extends Controller
     public function removerEvento(string $processo, string $xid)
     {
         $evento = Evento::firstWhere('xid', $xid);
-        $processo = $evento->processo();
+        $processo = $evento->processo()->get()->first();
         $usuario = Auth::user();
-        
+
         if(!$processo->advogados->contains($usuario) || $usuario->grupo != 'administrador')
                 return response()->json(['msg'=>'Ação não permitida'], 403);
 
