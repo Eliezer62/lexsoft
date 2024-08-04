@@ -9,10 +9,11 @@ import {IoChatbubbles, IoChatbubblesOutline} from "react-icons/io5";
 import { GrGroup, GrDocumentStore } from "react-icons/gr";
 import { BiTask } from "react-icons/bi";
 import { LiaUserCogSolid } from "react-icons/lia";
-import Auth from "@/Seguranca/Auth.jsx";
+import Auth from "@/seguranca/Auth.jsx";
 import {IoIosLogOut} from "react-icons/io";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import Middleware from '../seguranca/Middleware';
 
 const { Content, Sider } = Layout;
 
@@ -73,6 +74,7 @@ const LayoutBasico = (props) => {
             locale={ptBR}
         >
             <Auth/>
+            <Middleware/>
             <Layout>
                 <Layout>
                     <Affix>
@@ -119,7 +121,7 @@ const LayoutBasico = (props) => {
                                 onClick={()=>console.log('teste')}
                             >
                                 <Avatar size={28} icon={<UserOutlined/>}  className='d-inline'/>
-                                <p style={{padding:'5px', color:'#505050', fontStyle: '0.5rem'}}>{user.nome.split(' ')[0]}</p>
+                                <p style={{padding:'5px', color:'#505050', fontStyle: '0.5rem'}}>{user?.nome.split(' ')[0]}</p>
                                 <Button type={'link'} title={'Sair'} onClick={()=>{
                                     axios.post('/api/auth/logout');
                                     navigate('/login', {state:{anterior:location.pathname}});
