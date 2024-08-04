@@ -115,10 +115,11 @@ const LayoutBasico = (props) => {
                                     padding: 5,
                                     width: '100%',
                                     background: '#fff',
+                                    cursor:'pointer'
                                 }}
                                 align={'center'}
                                 justify={'center'}
-                                onClick={()=>console.log('teste')}
+                                onClick={()=>location.href='/perfil'}
                             >
                                 <Avatar size={28} icon={<UserOutlined/>}  className='d-inline'/>
                                 <p style={{padding:'5px', color:'#505050', fontStyle: '0.5rem'}}>{user?.nome.split(' ')[0]}</p>

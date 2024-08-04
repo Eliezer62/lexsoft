@@ -21,6 +21,7 @@ import EditarDocumento from "@/componentes/documentos/EditarDocumento.jsx";
 import Dashboard from "@/Dashboard.jsx";
 import Login from "@/Login.jsx";
 import Erro403 from "./seguranca/Erro403";
+import Perfil from "@/Perfil.jsx";
 
 const RotaProcessos = () => {
     return (
@@ -54,6 +55,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Route path={'/processos/*'} element={<RotaProcessos/>}/>
                 <Route path={'/login'} Component={Login}/>
                 <Route path='/403' Component={Erro403}/>
+                <Route path={'/perfil'} Component={Perfil}/>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>
