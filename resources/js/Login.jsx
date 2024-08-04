@@ -71,6 +71,9 @@ export default function Login(props)
                                 layout={'vertical'}
                                 size={'large'}
                                 form={form}
+                                onKeyUp={(e)=>{
+                                    if(e.key === 'Enter') enviar();
+                                }}
                             >
                                 <Form.Item
                                     label={'E-MAIL/CPF'}
