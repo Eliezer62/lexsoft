@@ -108,7 +108,7 @@ export default function Processos() {
             dataIndex: 'partes',
             render: (_, record) => {
                 let partes = '';
-                record.partes.forEach(p => partes = partes + '<br>' + p.parte);
+                record.partes.forEach(p => partes += p.parte + '<br>');
                 return (
                     <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(partes)}}/>
                 )
