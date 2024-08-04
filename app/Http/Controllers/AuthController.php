@@ -46,7 +46,7 @@ class AuthController extends Controller
                 'user'=>$user,
                 'token'=>$token,
                 'expired'=>$tempo->format('Y-m-d H:i:s')
-            ], 200)->withCookie(cookie('token', $token, 15, secure: true, sameSite: 'lax'));
+            ], 200)->withCookie(cookie('token', $token, 55, secure: true, sameSite: 'lax'));
         }
         catch (ValidationException $e)
         {

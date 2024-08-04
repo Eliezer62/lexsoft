@@ -248,3 +248,15 @@ Route::controller(AuthController::class)
         Route::get('/check', 'check')
             ->name('auth.check');
     });
+
+
+Route::controller(DashboardController::class)
+    ->middleware(['auth:api'])
+    ->prefix('/dashboard')
+    ->group(function (){
+        Route::get('/', 'dashboard')
+        ->name('dashboard.index');
+
+        Route::get('/prazos/{mes}/{ano}', 'prazos')
+            ->name('dashboard.prazos');
+    });
