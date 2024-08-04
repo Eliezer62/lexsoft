@@ -91,35 +91,35 @@ export default function Dashboard()
                 justify={'space-around'}
                 style={{width:'100%', marginBottom:30}}
             >
-                <Card title={'Processo '+dados?.processos[0].numero}  actions={[
-                    <Button type={'link'} onClick={()=>location.href=`/processos/${dados?.processos[0].xid}/movimentar`}>Acessar processo</Button>
+                <Card title={'Processo '+dados?.processos?.[0]?.numero}  actions={[
+                    (dados?.processos?.[1])?(<Button type={'link'} onClick={()=>location.href=`/processos/${dados?.processos?.[0]?.xid}/movimentar`}>Acessar processo</Button>):(null)
                 ]}>
                     <Timeline style={{height:'50px'}} items={[
-                        {children:dados?.processos[0].descricao}
+                        (dados?.processos?.[0])?{children:dados?.processos?.[0]?.descricao}:null,
                     ]}/>
                 </Card>
 
-                <Card title={'Processo '+dados?.processos[1].numero}  actions={[
-                    <Button type={'link'} onClick={()=>location.href=`/processos/${dados?.processos[1].xid}/movimentar`}>Acessar processo</Button>
+                <Card title={'Processo '+dados?.processos?.[1]?.numero}  actions={[
+                    (dados?.processos?.[1])?(<Button type={'link'} onClick={()=>location.href=`/processos/${dados?.processos?.[1]?.xid}/movimentar`}>Acessar processo</Button>):(null)
                 ]}>
                     <Timeline style={{height:'50px'}} items={[
-                        {children:dados?.processos[1].descricao}
+                        (dados?.processos?.[1])?{children:dados?.processos?.[1]?.descricao}:null,
                     ]}/>
                 </Card>
 
-                <Card title={'Processo '+dados?.processos[2].numero}  actions={[
-                    <Button type={'link'} onClick={()=>location.href=`/processos/${dados?.processos[2].xid}/movimentar`}>Acessar processo</Button>
+                <Card title={'Processo '+(dados?.processos?.[2]?.numero ?? '')}  actions={[
+                    (dados?.processos?.[2])?(<Button type={'link'} onClick={()=>location.href=`/processos/${dados?.processos?.[2]?.xid}/movimentar`}>Acessar processo</Button>):(null)
                 ]}>
                     <Timeline style={{height:'50px'}} items={[
-                        {children:dados?.processos[2].descricao}
+                        (dados?.processos?.[2])?{children:dados?.processos?.[2]?.descricao}:null,
                     ]}/>
                 </Card>
 
-                <Card title={'Processo '+dados?.processos[2].numero}  actions={[
-                    <Button type={'link'} onClick={()=>location.href=`/processos/${dados?.processos[3].xid}/movimentar`}>Acessar processo</Button>
+                <Card title={'Processo '+(dados?.processos?.[3]?.numero ?? '')}  actions={[
+                    (dados?.processos?.[3])?(<Button type={'link'} onClick={()=>location.href=`/processos/${dados?.processos?.[3]?.xid}/movimentar`}>Acessar processo</Button>):(null),
                 ]}>
                     <Timeline style={{height:'50px'}} items={[
-                        {children:dados?.processos[3].descricao}
+                        (dados?.processos?.[3])?{children:dados?.processos?.[3]?.descricao}:null,
                     ]}/>
                 </Card>
             </Flex>
