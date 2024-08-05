@@ -48,7 +48,7 @@ const FormsPessoaJuridica = (props) => {
                 name={'cnpj'}
                 initialValue={props.cliente?.cnpj}
                 rules={[
-                    {required:true, message:'CPF é obrigatório'}
+                    {required:true, message:'CNPJ é obrigatório'}
                 ]}
             >
                 <MaskedInput mask={'00.000.000/0000-00'}/>
