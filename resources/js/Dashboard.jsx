@@ -50,7 +50,6 @@ export default function Dashboard()
                    e.data = dayjs(e.data, 'YYYY-MM-DD').format('DD/MM/YYYY');
                 });
                setEventos(resp.data);
-               console.log(eventos);
             }).catch((e)=>{
                 if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
             });
@@ -79,10 +78,6 @@ export default function Dashboard()
     const change = async (e, y=null) => {
         setData([e.month()+1, e.year()]);
     }
-
-    useEffect(() => {
-        console.log(data);
-    }, [data]);
 
     return (
         <LayoutBasico titulo={'Dashboard'} menu={'dashboard'}>
