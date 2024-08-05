@@ -24,7 +24,6 @@ class Endereco extends Model
      * @var array
      */
     protected $fillable = [
-        'xid',
         'logradouro',
         'numero',
         'cidade',
@@ -34,6 +33,10 @@ class Endereco extends Model
         'complemento',
         'pessoafis',
         'pessoajur'
+    ];
+
+    protected $guarded = [
+        'xid'
     ];
 
     protected $hidden = [
