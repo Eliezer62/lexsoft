@@ -11,6 +11,9 @@ import {Navigate, Outlet, useNavigate} from 'react-router-dom';
 export default function Auth()
 {
     const [valido, setValido] = useState(true);
+    const navigate = useNavigate();
+
+    if(!localStorage.getItem('user')) navigate('/login');
 
     useEffect( () => {
         const validarToken = async () => {
