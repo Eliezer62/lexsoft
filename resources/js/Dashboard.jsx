@@ -141,8 +141,8 @@ export default function Dashboard()
                     onChange={change}
                     cellRender={(data)=>{
                         let data_saida = data.format('DD/MM/YYYY');
-                        let e = eventos.find(e=>e.data === data_saida);
-                        if(e)
+                        let e = eventos.filter(e=>e.data === data_saida);
+                        if(e.length > 0)
                         return (
                             <>
                                 <Popover title={'Prazos '+data.toDate().toLocaleDateString('pt-BR', {
@@ -152,7 +152,9 @@ export default function Dashboard()
                                     day: "numeric",
                                 })}
                                     content={()=>(
-                                        <p style={{textAlign:'center'}}>{e.descricao}</p>
+                                        e.map((e) => (
+                                            <p style={{textAlign:'center'}}>{e.descricao}</p>
+                                        ))
                                     )}
                                 >{ponto()}</Popover>
                             </>
