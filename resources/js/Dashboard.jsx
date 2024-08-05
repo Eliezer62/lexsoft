@@ -140,14 +140,19 @@ export default function Dashboard()
                     className={'calendario'}
                     onChange={change}
                     cellRender={(data)=>{
-                        data = data.format('DD/MM/YYYY');
-                        let e = eventos.find(e=>e.data === data);
+                        let data_saida = data.format('DD/MM/YYYY');
+                        let e = eventos.find(e=>e.data === data_saida);
                         if(e)
                         return (
                             <>
-                                <Popover title={'Prazos'}
+                                <Popover title={'Prazos '+data.toDate().toLocaleDateString('pt-BR', {
+                                    weekday: "long",
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                })}
                                     content={()=>(
-                                        <p>{e.descricao}</p>
+                                        <p style={{textAlign:'center'}}>{e.descricao}</p>
                                     )}
                                 >{ponto()}</Popover>
                             </>
