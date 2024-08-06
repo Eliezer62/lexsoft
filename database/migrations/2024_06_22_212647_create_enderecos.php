@@ -25,21 +25,23 @@ return new class extends Migration
             $table->integer('pessoajur')->nullable();
 
             //constraint
-            $table->foreign('cidade')
+            $table->foreign('cidade', 'fk_end_cidade')
                 ->references('id')
                 ->on('cidades');
 
-            $table->foreign('estado')
+            $table->foreign('estado', 'fk_end_estado')
                 ->references('uf')
                 ->on('estados');
 
-            $table->foreign('pessoafis')
+            $table->foreign('pessoafis', 'fk_end_pessoa_fis')
                 ->references('id')
-                ->on('clientes_pessoa_fis');
+                ->on('clientes_pessoa_fis')
+                ->onDelete('CASCADE');
 
-            $table->foreign('pessoajur')
+            $table->foreign('pessoajur', 'fk_end_pessoajur')
                 ->references('id')
-                ->on('clientes_pessoa_jur');
+                ->on('clientes_pessoa_jur')
+                ->onDelete('CASCADE');
         });
         DB::statement('ALTER TABLE enderecos ADD COLUMN xid public.xid DEFAULT xid()');
         DB::statement('ALTER TABLE enderecos ADD CONSTRAINT uc_end_xid UNIQUE (xid)');
