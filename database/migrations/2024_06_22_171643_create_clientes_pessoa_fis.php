@@ -42,14 +42,17 @@ return new class extends Migration
 
             $table->foreign('estado_civil', 'fk_p_fis_estado_civil')
                 ->references('id')
+                ->on('estados_civis')
                 ->onDelete('SET NULL');
 
             $table->foreign('naturalidade', 'fk_p_fis_naturalidade')
                 ->references('id')
+                ->on('cidades')
                 ->onDelete('SET NULL');
 
             $table->foreign('naturalidade_uf', 'fk_p_fis_natu_uf')
                 ->references('uf')
+                ->on('estados')
                 ->onDelete('SET NULL');
 
             //Index

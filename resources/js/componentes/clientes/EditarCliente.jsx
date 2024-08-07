@@ -6,7 +6,6 @@ import axios from "axios";
 import dayjs from "dayjs";
 import {useNavigate} from "react-router-dom";
 import {PlusOutlined} from "@ant-design/icons";
-import {IoRemove} from "react-icons/io5";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 
 const EditarCliente = (props) => {
@@ -16,8 +15,10 @@ const EditarCliente = (props) => {
     const navigate = useNavigate();
     const [estados, setEstados] = useState([]);
     const [cidades, setCidades] = useState([]);
+    const [formTel] = Form.useForm();
 
     const enviarCliente =  () => {
+        formTel.validateFields().then(() => {
         formEnd.validateFields().then(()=>{
         form.validateFields().then(async ()=>{
             setLoading(true);
@@ -43,12 +44,14 @@ const EditarCliente = (props) => {
                 cliente.naturalidade_uf = form.getFieldValue('naturalidade_uf');
                 cliente.profissao = form.getFieldValue('profissao');
                 cliente.data_nascimento = dayjs(form.getFieldValue('data_nascimento')).format('YYYY-MM-DD');
+
                 cliente.rg = {};
                 cliente.rg.numero = form.getFieldValue('rg_numero');
                 cliente.rg.data_emissao = dayjs(form.getFieldValue('rg_data_emissao')).format('YYYY-MM-DD');
                 cliente.rg.emissor = form.getFieldValue('rg_emissor');
                 cliente.rg.estado = form.getFieldValue('rg_estado');
 
+                cliente.novos_telefones = formTel.getFieldValue('telefones');
                 cliente.novos_enderecos = formEnd.getFieldValue('enderecos');
                 const response = await axios({
                         method:'PUT',
@@ -95,7 +98,7 @@ const EditarCliente = (props) => {
                     });
             }
             })
-        });
+        })});
     }
 
     useEffect(() => {
@@ -146,6 +149,80 @@ const EditarCliente = (props) => {
             {props.cliente === "fisico" || props.cliente.cpf ? (
                 <FormsPessoaFisica form={form} cliente={props.cliente}/>) : (
                 <FormsPessoaJuridica form={form} cliente={props.cliente}/>)}
+
+
+            <h3>Telefones</h3>
+
+            <Form
+                layout={'vertical'}
+                form={formTel}
+                preserve={false}
+            >
+                <Form.List name={'telefones'}>
+                    {(fields, {add, remove}) => (
+                        <>
+                            {fields.map( (field) => {
+                                return (
+                                    <Form.Item
+                                        required={true}
+                                        key={field.key}
+                                        noStyle
+                                    >
+                                        <Form.Item
+                                            label={'DDI'}
+                                            name={[field.name, 'ddi']}
+                                        >
+                                            <InputNumber addonBefore={'+'} min={1} max={999}/>
+                                        </Form.Item>
+
+                                        <Form.Item
+                                            label={'DDD'}
+                                            name={[field.name, 'ddd']}
+                                            initialValue={42}
+                                            rules={[
+                                                {required:true, message:'DDD é obrigatório'}
+                                            ]}
+                                        >
+                                            <InputNumber min={1} max={999}/>
+                                        </Form.Item>
+
+                                        <Form.Item
+                                            label={'Número'}
+                                            name={[field.name, 'numero']}
+                                            rules={[
+                                                {required:true, message:'Número é obrigatório'}
+                                            ]}
+                                        >
+                                            <InputNumber maxLength={12} style={{width:400}}/>
+                                        </Form.Item>
+
+                                        <Button
+                                            className="dynamic-delete-button"
+                                            style={{marginBottom: '10px'}}
+                                            danger onClick={()=>remove(field.name)}
+                                        >Remover</Button>
+                                    </Form.Item>
+                                );
+                            } )}
+                            <Form.Item>
+                                <Button
+                                    type="dashed"
+                                    onClick={() => {
+                                        add();
+                                    }
+                                    }
+                                    style={{width: '60%'}}
+                                    icon={<PlusOutlined/>}
+                                >
+                                    Adicionar
+                                </Button>
+                            </Form.Item>
+                        </>
+                    )}
+                </Form.List>
+            </Form>
+
+
 
             <h3>Endereços</h3>
             {(props.cliente?.enderecos)?(

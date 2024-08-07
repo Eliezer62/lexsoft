@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ClientePessoaFis;
 use App\Models\Endereco;
+use App\Models\Telefone;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -200,6 +201,16 @@ class ClientePessoaFisController extends Controller
                         'cidade'=>$endereco['cidade'],
                         'complemento'=>$endereco['complemento']??null,
                         'pessoafis'=>$cliente->id
+                    ]);
+                }
+            }
+
+            if($request->has('novos_telefones'))
+            {
+                foreach ($validado['novos_telefones'] as $telefone)
+                {
+                    Telefone::create([
+                        'ddi'=>'+'.$telefone['ddi']
                     ]);
                 }
             }

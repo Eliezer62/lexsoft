@@ -30,9 +30,9 @@ return new class extends Migration
                 ->on('clientes_pessoa_jur')
                 ->onDelete('CASCADE');
 
-            DB::statement('ALTER TABLE telefones ADD COLUMN xid public.xid DEFAULT xid()');
-            DB::statement('ALTER TABLE telefones ADD CONSTRAINT uc_tel_xid UNIQUE (xid)');
         });
+        DB::statement('ALTER TABLE telefones ADD COLUMN xid public.xid DEFAULT xid()');
+        DB::statement('ALTER TABLE telefones ADD CONSTRAINT uc_tel_xid UNIQUE (xid)');
     }
 
     /**

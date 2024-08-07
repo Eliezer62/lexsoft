@@ -12,11 +12,14 @@ class Telefone extends Model
     protected $table = 'telefones';
 
     protected $fillable = [
-        'xid',
         'ddi',
         'ddd',
         'numero',
         'pessoafis',
         'pessoajur'
+    ];
+
+    protected $guarded = [
+        'xid'
     ];
 }
