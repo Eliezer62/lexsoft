@@ -187,6 +187,7 @@ const Clientes = () => {
               sucessoMsg={exibirSucesso}
               cliente={cliente}
               loadingModal={loadingEditar}
+              erro2Msg={(msg) => (messageApi.error(msg))}
           />
       </LayoutBasico>
     );
