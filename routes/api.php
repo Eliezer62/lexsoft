@@ -271,3 +271,13 @@ Route::controller(AdvogadoController::class)
         Route::post('/', 'atualizarPerfil')
             ->name('perfil.atualizar');
     });
+
+
+Route::controller(EnderecoController::class)
+    ->prefix('enderecos')
+    ->middleware(['auth:api'])
+    ->group(function (){
+
+        Route::delete('/{xid}', 'delete')
+            ->name('enderecos.delete');
+    });
