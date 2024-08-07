@@ -21,6 +21,17 @@ return new class extends Migration
             $table->dateTime('data_criacao')->nullable();
             $table->integer('pessoafis')->nullable();
             $table->integer('pessoajur')->nullable();
+
+            //constraint fk
+            $table->foreign('pessoafis', 'fk_doc_p_fis')
+                    ->references('id')
+                    ->on('clientes_pessoa_fis')
+                    ->onDelete('CASCADE');
+
+            $table->foreign('pessoajur', 'fk_doc_p_jur')
+                    ->references('id')
+                    ->on('clientes_pessoa_jur')
+                    ->onDelete('CASCADE');
         });
         DB::statement('ALTER TABLE documentos ADD COLUMN xid public.xid DEFAULT xid()');
         DB::statement('ALTER TABLE documentos ADD CONSTRAINT uc_doc_xid UNIQUE (xid)');

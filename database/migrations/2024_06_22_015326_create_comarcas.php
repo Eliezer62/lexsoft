@@ -20,7 +20,8 @@ return new class extends Migration
             //Constraints
             $table->foreign('tribunal', 'fk_comarca_tb')
                 ->references('id')
-                ->on('tribunais');
+                ->on('tribunais')
+                ->onDelete('CASCADE');
         });
     }
 

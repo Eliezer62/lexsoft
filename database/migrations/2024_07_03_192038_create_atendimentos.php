@@ -26,15 +26,18 @@ return new class extends Migration
             //constraints
             $table->foreign('clientefis', 'fk_atendimentos_clientefis')
                 ->references('id')
-                ->on('clientes_pessoa_fis');
+                ->on('clientes_pessoa_fis')
+                ->onDelete('CASCADE');
 
             $table->foreign('clientejur', 'fk_atendimentos_clientejur')
                 ->references('id')
-                ->on('clientes_pessoa_jur');
+                ->on('clientes_pessoa_jur')
+                ->onDelete('CASCADE');
 
             $table->foreign('processo', 'fk_atendimentos_processo')
                 ->references('id')
-                ->on('processos');
+                ->on('processos')
+                ->onDelete('SET NULL');
         });
         DB::statement('ALTER TABLE atendimentos ADD COLUMN xid public.xid DEFAULT xid()');
         DB::statement('ALTER TABLE atendimentos ADD CONSTRAINT uc_atendimentos_xid UNIQUE (xid)');

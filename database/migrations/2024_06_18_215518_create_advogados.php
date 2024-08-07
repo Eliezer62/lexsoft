@@ -31,13 +31,15 @@ return new class extends Migration
             //constraints
             $table->unique(['oab', 'uf_oab'], 'uc_adv_oab');
 
-            $table->foreign('grupo')
+            $table->foreign('grupo', 'fk_adv_grupo')
                 ->references('grupo')
-                ->on('grupo_usuarios');
+                ->on('grupo_usuarios')
+                ->onDelete('SET NULL');
 
-            $table->foreign('uf_oab')
+            $table->foreign('uf_oab', 'fk_adv_oab_uf')
                 ->references('uf')
-                ->on('estados');
+                ->on('estados')
+                ->onDelete('SET NULL');
 
             //index
             $table->index('cpf', 'index_adv_cpf');

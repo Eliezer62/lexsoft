@@ -31,25 +31,26 @@ return new class extends Migration
             $table->date('data_nascimento');
 
             //constraints
-            $table->foreign('rg')
+            $table->foreign('rg', 'fk_p_fis_rg')
                 ->references('id')
                 ->on('rgs');
 
-            $table->foreign('sexo')
+            $table->foreign('sexo', 'fk_p_fis_sexo')
                 ->references('id')
-                ->on('sexos');
+                ->on('sexos')
+                ->onDelete('SET NULL');
 
-            $table->foreign('estado_civil')
+            $table->foreign('estado_civil', 'fk_p_fis_estado_civil')
                 ->references('id')
-                ->on('estados_civis');
+                ->onDelete('SET NULL');
 
-            $table->foreign('naturalidade')
+            $table->foreign('naturalidade', 'fk_p_fis_naturalidade')
                 ->references('id')
-                ->on('cidades');
+                ->onDelete('SET NULL');
 
-            $table->foreign('naturalidade_uf')
+            $table->foreign('naturalidade_uf', 'fk_p_fis_natu_uf')
                 ->references('uf')
-                ->on('estados');
+                ->onDelete('SET NULL');
 
             //Index
             $table->index('cpf', 'index_cliente_cpf');
