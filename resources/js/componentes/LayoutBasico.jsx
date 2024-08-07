@@ -115,14 +115,12 @@ const LayoutBasico = (props) => {
                                     padding: 5,
                                     width: '100%',
                                     background: '#fff',
-                                    cursor:'pointer'
                                 }}
                                 align={'center'}
                                 justify={'center'}
-                                onClick={()=>location.href='/perfil'}
                             >
-                                <Avatar size={28} icon={<UserOutlined/>}  className='d-inline'/>
-                                <p style={{padding:'5px', color:'#505050', fontStyle: '0.5rem'}}>{user?.nome.split(' ')[0]}</p>
+                                <Avatar size={28} icon={<UserOutlined/>}  className='d-inline' onClick={()=>location.href='/perfil'} style={{cursor:'pointer'}}/>
+                                <p style={{padding:'5px', color:'#505050', fontStyle: '0.5rem', cursor:'pointer'}} onClick={()=>location.href='/perfil'}>{user?.nome.split(' ')[0]}</p>
                                 <Button type={'link'} title={'Sair'} onClick={()=>{
                                     axios.post('/api/auth/logout');
                                     navigate('/login', {state:{anterior:location.pathname}});
