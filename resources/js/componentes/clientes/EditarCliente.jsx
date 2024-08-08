@@ -79,7 +79,10 @@ const EditarCliente = (props) => {
                     cliente.nome_fantasia = form.getFieldValue('nome_fantasia');
 
                 cliente.administrador = form.getFieldValue('administrador');
+
+                cliente.novos_telefones = formTel.getFieldValue('telefones');
                 cliente.novos_enderecos = formEnd.getFieldValue('enderecos');
+
                 const response = await axios({
                     method:'PUT',
                     url:'/api/clientesjur/'+props.cliente.xid,
@@ -152,6 +155,26 @@ const EditarCliente = (props) => {
 
 
             <h3>Telefones</h3>
+
+            {(props.cliente?.telefones)?(
+                <List dataSource={props.cliente?.telefones??[]} renderItem={(item, index) => (
+                    <List.Item
+                        actions={[
+                            <Button danger onClick={()=>{
+                                axios.delete('/api/telefones/'+item.xid)
+                                    .then((resp)=>{
+                                        props.cliente.telefones = props.cliente?.telefones?.filter((tel) => tel.xid !== item.xid);
+                                        props.setCliente(props.cliente);
+                                        props.sucessoMsg('Telefone removido');
+                                    }).catch((e)=>props.erro2Msg('Erro em remover o telefone'));
+                            }}><IoIosRemoveCircleOutline/></Button>
+                        ]}>
+                        <Skeleton loading={false}>
+                            <List.Item.Meta title={'Telefone '+(index+1)} description={`${item.ddi} ${item.ddd} ${item.numero}`}/>
+                        </Skeleton>
+                    </List.Item>
+                )} />
+            ):(null)}
 
             <Form
                 layout={'vertical'}
@@ -233,6 +256,8 @@ const EditarCliente = (props) => {
                             <Button danger onClick={()=>{
                                 axios.delete('/api/enderecos/'+item.xid)
                                     .then((resp)=>{
+                                        props.cliente.enderecos = props.cliente?.enderecos?.filter((end) => end.xid !== item.xid);
+                                        props.setCliente(props.cliente);
                                         props.sucessoMsg('Endereço removido');
                                     }).catch((e)=>props.erro2Msg('Erro em remover o endereço'));
                             }}><IoIosRemoveCircleOutline/></Button>
