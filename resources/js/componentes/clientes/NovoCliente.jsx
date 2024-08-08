@@ -15,6 +15,7 @@ const NovoCliente = (props) => {
     const [estados, setEstados] = useState([]);
     const [cidades, setCidades] = useState([]);
     const [formEnd] = Form.useForm();
+    const [formTel] = Form.useForm();
 
 
     useEffect(() => {
@@ -53,77 +54,83 @@ const NovoCliente = (props) => {
     }
 
     const enviarNovoCliente =  () => {
-        formEnd.validateFields().then(()=> {
-            form.validateFields().then(async () => {
-                setLoading(true);
-                let url;
-                let cliente = {};
-                if (tipo === 'fisico') {
-                    cliente.nome = form.getFieldValue('nome');
-                    if (form.getFieldValue('nome_social'))
-                        cliente.nome_social = form.getFieldValue('nome_social');
+        formTel.validateFields().then(() => {
+            formEnd.validateFields().then(()=> {
+                form.validateFields().then(async () => {
+                    setLoading(true);
+                    let url;
+                    let cliente = {};
+                    if (tipo === 'fisico') {
+                        cliente.nome = form.getFieldValue('nome');
+                        if (form.getFieldValue('nome_social'))
+                            cliente.nome_social = form.getFieldValue('nome_social');
 
-                    cliente.cpf = form.getFieldValue('cpf').replace(/(\d{3})\.(\d{3})\.(\d{3})\-(\d{2})/, '$1$2$3$4');
-                    cliente.email = form.getFieldValue('email');
-                    cliente.sexo = form.getFieldValue('sexo');
-                    cliente.estado_civil = form.getFieldValue('estado_civil');
-                    if (form.getFieldValue('nome_pai') !== undefined)
-                        cliente.nome_pai = form.getFieldValue('nome_pai');
+                        cliente.cpf = form.getFieldValue('cpf').replace(/(\d{3})\.(\d{3})\.(\d{3})\-(\d{2})/, '$1$2$3$4');
+                        cliente.email = form.getFieldValue('email');
+                        cliente.sexo = form.getFieldValue('sexo');
+                        cliente.estado_civil = form.getFieldValue('estado_civil');
+                        if (form.getFieldValue('nome_pai') !== undefined)
+                            cliente.nome_pai = form.getFieldValue('nome_pai');
 
-                    if (form.getFieldValue('nome_mae') !== undefined)
-                        cliente.nome_mae = form.getFieldValue('nome_mae');
+                        if (form.getFieldValue('nome_mae') !== undefined)
+                            cliente.nome_mae = form.getFieldValue('nome_mae');
 
-                    cliente.naturalidade = form.getFieldValue('naturalidade');
-                    cliente.naturalidade_uf = form.getFieldValue('naturalidade_uf');
-                    cliente.profissao = form.getFieldValue('profissao');
-                    cliente.data_nascimento = dayjs(form.getFieldValue('data_nascimento')).format('YYYY-MM-DD');
-                    //RG
-                    cliente.numero = form.getFieldValue('rg_numero');
-                    cliente.data_emissao = dayjs(form.getFieldValue('rg_data_emissao')).format('YYYY-MM-DD');
-                    cliente.emissor = form.getFieldValue('rg_emissor');
-                    cliente.estado = form.getFieldValue('rg_estado');
+                        cliente.naturalidade = form.getFieldValue('naturalidade');
+                        cliente.naturalidade_uf = form.getFieldValue('naturalidade_uf');
+                        cliente.profissao = form.getFieldValue('profissao');
+                        cliente.data_nascimento = dayjs(form.getFieldValue('data_nascimento')).format('YYYY-MM-DD');
+                        //RG
+                        cliente.numero = form.getFieldValue('rg_numero');
+                        cliente.data_emissao = dayjs(form.getFieldValue('rg_data_emissao')).format('YYYY-MM-DD');
+                        cliente.emissor = form.getFieldValue('rg_emissor');
+                        cliente.estado = form.getFieldValue('rg_estado');
 
-                    cliente.enderecos = formEnd.getFieldValue('enderecos');
+                        cliente.telefones = formTel.getFieldValue('telefones');
+                        cliente.enderecos = formEnd.getFieldValue('enderecos');
 
-                    const response = await axios({
-                        method: 'POST',
-                        url: '/api/clientesfis',
-                        data: cliente
-                    })
-                        .then((resp) => {
-                            props.handleCancel();
-                            props.sucessoMsg();
+                        const response = await axios({
+                            method: 'POST',
+                            url: '/api/clientesfis',
+                            data: cliente
                         })
-                        .catch((error) => {
+                            .then((resp) => {
+                                props.handleCancel();
+                                props.sucessoMsg();
+                            })
+                            .catch((error) => {
+                                if (error.response.status === 401) navigate('/login', {state: {anterior: location.pathname}});
+                                props.erroMsg(error.response.msg);
+                            });
+                        setLoading(false);
+                    } else {
+                        cliente.razao_social = form.getFieldValue('razao_social');
+                        cliente.cnpj = form.getFieldValue('cnpj').replace(/(\d{2})\.(\d{3})\.(\d{3})\/(\d{4})\-(\d{2})/, '$1$2$3$4$5');
+                        cliente.email = form.getFieldValue('email');
+                        if (form.getFieldValue('nome_fantasia'))
+                            cliente.nome_fantasia = form.getFieldValue('nome_fantasia');
+
+                        cliente.administrador = form.getFieldValue('administrador');
+
+                        cliente.telefones = formTel.getFieldValue('telefones');
+                        cliente.enderecos = formEnd.getFieldValue('enderecos');
+
+                        const response = await axios({
+                            method: 'POST',
+                            url: '/api/clientesjur',
+                            data: cliente
+                        }).catch((error) => {
                             if (error.response.status === 401) navigate('/login', {state: {anterior: location.pathname}});
                             props.erroMsg(error.response.msg);
                         });
-                    setLoading(false);
-                } else {
-                    cliente.razao_social = form.getFieldValue('razao_social');
-                    cliente.cnpj = form.getFieldValue('cnpj').replace(/(\d{2})\.(\d{3})\.(\d{3})\/(\d{4})\-(\d{2})/, '$1$2$3$4$5');
-                    cliente.email = form.getFieldValue('email');
-                    if (form.getFieldValue('nome_fantasia'))
-                        cliente.nome_fantasia = form.getFieldValue('nome_fantasia');
-
-                    cliente.administrador = form.getFieldValue('administrador');
-                    cliente.enderecos = formEnd.getFieldValue('enderecos');
-                    const response = await axios({
-                        method: 'POST',
-                        url: '/api/clientesjur',
-                        data: cliente
-                    }).catch((error) => {
-                        if (error.response.status === 401) navigate('/login', {state: {anterior: location.pathname}});
-                        props.erroMsg(error.response.msg);
-                    });
-                    setLoading(false);
-                    if (response.status === 201) {
-                        props.handleCancel();
-                        props.sucessoMsg();
+                        setLoading(false);
+                        if (response.status === 201) {
+                            props.handleCancel();
+                            props.sucessoMsg();
+                        }
                     }
-                }
 
-            });
+                });
+            })
         });
     }
 
@@ -146,6 +153,77 @@ const NovoCliente = (props) => {
                 onChange={(v) => setTipo(v.target.value)}
             />
             {tipo == "fisico" ? (<FormsPessoaFisica form={form}/>) : (<FormsPessoaJuridica form={form}/>)}
+
+            <h3>Telefones</h3>
+            <Form
+                layout={'vertical'}
+                form={formTel}
+                preserve={false}
+            >
+                <Form.List name={'telefones'}>
+                    {(fields, {add, remove}) => (
+                        <>
+                            {fields.map( (field) => {
+                                return (
+                                    <Form.Item
+                                        required={true}
+                                        key={field.key}
+                                        noStyle
+                                    >
+                                        <Form.Item
+                                            label={'DDI'}
+                                            name={[field.name, 'ddi']}
+                                        >
+                                            <InputNumber addonBefore={'+'} min={1} max={999}/>
+                                        </Form.Item>
+
+                                        <Form.Item
+                                            label={'DDD'}
+                                            name={[field.name, 'ddd']}
+                                            initialValue={42}
+                                            rules={[
+                                                {required:true, message:'DDD é obrigatório'}
+                                            ]}
+                                        >
+                                            <InputNumber min={1} max={999}/>
+                                        </Form.Item>
+
+                                        <Form.Item
+                                            label={'Número'}
+                                            name={[field.name, 'numero']}
+                                            rules={[
+                                                {required:true, message:'Número é obrigatório'}
+                                            ]}
+                                        >
+                                            <InputNumber maxLength={12} style={{width:400}}/>
+                                        </Form.Item>
+
+                                        <Button
+                                            className="dynamic-delete-button"
+                                            style={{marginBottom: '10px'}}
+                                            danger onClick={()=>remove(field.name)}
+                                        >Remover</Button>
+                                    </Form.Item>
+                                );
+                            } )}
+                            <Form.Item>
+                                <Button
+                                    type="dashed"
+                                    onClick={() => {
+                                        add();
+                                    }
+                                    }
+                                    style={{width: '60%'}}
+                                    icon={<PlusOutlined/>}
+                                >
+                                    Adicionar
+                                </Button>
+                            </Form.Item>
+                        </>
+                    )}
+                </Form.List>
+            </Form>
+
 
             <Form
                 layout={'vertical'}
