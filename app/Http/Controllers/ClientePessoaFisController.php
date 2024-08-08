@@ -61,7 +61,8 @@ class ClientePessoaFisController extends Controller
                 'data_emissao' => 'required',
                 'emissor' => 'required|string|max:10',
                 'estado' => 'required|string|max:2|min:2',
-                'enderecos' => 'sometimes'
+                'enderecos' => 'sometimes',
+                'telefones'=>'sometimes'
             ]);
 
             $cliente = new ClientePessoaFis();
@@ -74,7 +75,7 @@ class ClientePessoaFisController extends Controller
                     $cliente->rg = $rg->id;
                     if($cliente->saveOrFail())
                     {
-                        foreach ($validado['enderecos'] as $endereco)
+                        foreach ($validado['enderecos']??[] as $endereco)
                         {
                             Endereco::create([
                                 'logradouro'=>$endereco['logradouro'],
@@ -85,6 +86,16 @@ class ClientePessoaFisController extends Controller
                                 'bairro'=>$endereco['bairro'],
                                 'complemento'=>$endereco['complemento'] ?? null,
                                 'pessoafis' => $cliente->id
+                            ]);
+                        }
+
+                        foreach ($validado['telefones']??[] as $telefone)
+                        {
+                            Telefone::create([
+                                'ddi'=>($telefone['ddi'] ?? '+55'),
+                                'ddd'=>$telefone['ddd'],
+                                'numero'=>$telefone['numero'],
+                                'pessoafis'=>$cliente->id
                             ]);
                         }
                         DB::commit();
@@ -150,6 +161,17 @@ class ClientePessoaFisController extends Controller
                     JOIN estados est ON e.estado = est.uf
                     WHERE e.pessoafis = clientes_pessoa_fis.id
                     ) as enderecos
+                "),
+                DB::raw("
+                (SELECT JSON_AGG(JSON_BUILD_OBJECT(
+                    'xid',tel.xid,
+                    'ddi',tel.ddi,
+                    'ddd',tel.ddd,
+                    'numero',tel.numero
+                         )
+                    ) FROM telefones tel
+                    WHERE clientes_pessoa_fis.id = tel.pessoafis
+                ) as telefones
                 ")
             ])
             ->where('deleted_at', '=', null)
@@ -158,6 +180,7 @@ class ClientePessoaFisController extends Controller
         if(is_null($cliente)) return response()->json([], 404);
         $cliente->rg = json_decode($cliente->rg);
         $cliente->enderecos = json_decode($cliente->enderecos);
+        $cliente->telefones = json_decode($cliente->telefones);
         return response()->json($cliente, 200);
     }
 
@@ -207,10 +230,13 @@ class ClientePessoaFisController extends Controller
 
             if($request->has('novos_telefones'))
             {
-                foreach ($validado['novos_telefones'] as $telefone)
+                foreach ($request->input('novos_telefones') as $telefone)
                 {
                     Telefone::create([
-                        'ddi'=>'+'.$telefone['ddi']
+                        'ddi'=>($telefone['ddi'] ?? '+55'),
+                        'ddd'=>$telefone['ddd'],
+                        'numero'=>$telefone['numero'],
+                        'pessoafis'=>$cliente->id
                     ]);
                 }
             }
@@ -225,11 +251,11 @@ class ClientePessoaFisController extends Controller
         {
             if($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: somente é permitido um único RG com mesmo número e Estado'], 500);
-            return response()->json($e->getMessage(), 500);
+            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'], 500);
+            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
         }
     }
 
@@ -264,6 +290,17 @@ class ClientePessoaFisController extends Controller
                     JOIN cidades city ON e.cidade = city.id
                     JOIN estados est ON e.estado = est.uf
                     WHERE e.pessoafis = clientes_pessoa_fis.id) as enderecos
+                "),
+                DB::raw("
+                (SELECT JSON_AGG(JSON_BUILD_OBJECT(
+                    'xid',tel.xid,
+                    'ddi',tel.ddi,
+                    'ddd',tel.ddd,
+                    'numero',tel.numero
+                         )
+                    ) FROM telefones tel
+                    WHERE clientes_pessoa_fis.id = tel.pessoafis
+                ) as telefones
                 ")
             ])
             ->where('deleted_at', '=', null)
@@ -272,6 +309,7 @@ class ClientePessoaFisController extends Controller
         if(is_null($xid)) return response()->json([], 404);
         $cliente->rg = json_decode($cliente->rg);
         $cliente->enderecos = json_decode($cliente->enderecos);
+        $cliente->telefones = json_decode($cliente->telefones);
         return response()->json($cliente, 200);
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ClientePessoaFis;
 use App\Models\Endereco;
+use App\Models\Telefone;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -97,6 +98,17 @@ class ClientePessoaJurController extends Controller
                     JOIN estados est ON e.estado = est.uf
                     WHERE e.pessoajur = clientes_pessoa_jur.id
                     ) as enderecos
+                "),
+            DB::raw("
+                (SELECT JSON_AGG(JSON_BUILD_OBJECT(
+                    'xid',tel.xid,
+                    'ddi',tel.ddi,
+                    'ddd',tel.ddd,
+                    'numero',tel.numero
+                         )
+                    ) FROM telefones tel
+                    WHERE clientes_pessoa_jur.id = tel.pessoajur
+                ) as telefones
                 ")
         ])
             ->with('administrador')
@@ -137,6 +149,19 @@ class ClientePessoaJurController extends Controller
                         'estado'=>$endereco['uf'],
                         'cidade'=>$endereco['cidade'],
                         'complemento'=>$endereco['complemento']??null,
+                        'pessoajur'=>$cliente->id
+                    ]);
+                }
+            }
+
+            if($request->has('novos_telefones'))
+            {
+                foreach ($request->input('novos_telefones') as $telefone)
+                {
+                    Telefone::create([
+                        'ddi'=>($telefone['ddi'] ?? '+55'),
+                        'ddd'=>$telefone['ddd'],
+                        'numero'=>$telefone['numero'],
                         'pessoajur'=>$cliente->id
                     ]);
                 }
