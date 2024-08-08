@@ -85,6 +85,19 @@ const CamposPessoaFisica = (props) => {
                 </Col>
             </Row>
             <Delimitador/>
+            {(props.cliente?.telefones)?(<Row><h4 style={{fontSize:'1.2rem'}}>Telefones</h4></Row>):(null)}
+            {(props.cliente?.telefones)?.map((telefone, index) => (
+                <>
+                    <Row>
+                        <Col span={12}>
+                            <DescricaoItem titulo={'Telefone '+(index+1)} conteudo={`${telefone.ddi} (${telefone.ddd}) ${telefone.numero}`}/>
+                        </Col>
+                    </Row>
+                </>
+            ))
+
+            }
+            <Delimitador/>
             {(props.cliente?.enderecos)?(<Row><h4 style={{fontSize:'1.2rem'}}>Endereços</h4></Row>):(null)}
             {(props.cliente?.enderecos?.map(endereco => (
                 <>
