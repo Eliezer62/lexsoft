@@ -281,3 +281,11 @@ Route::controller(EnderecoController::class)
         Route::delete('/{xid}', 'delete')
             ->name('enderecos.delete');
     });
+
+Route::controller(TelefoneController::class)
+    ->prefix('telefones')
+    ->middleware(['auth:api'])
+    ->group(function (){
+       Route::delete('/{xid}', 'delete')
+            ->name('telefones.delete');
+    });
