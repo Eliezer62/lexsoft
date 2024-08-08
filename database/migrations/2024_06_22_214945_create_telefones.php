@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('telefones', function (Blueprint $table) {
             $table->id();
             $table->char('ddi', 4)->default('+55');
-            $table->char('ddd');
+            $table->char('ddd', 3);
             $table->char('numero', 12);
             $table->integer('pessoafis')->nullable();
             $table->integer('pessoajur')->nullable();
