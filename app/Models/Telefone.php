@@ -22,4 +22,6 @@ class Telefone extends Model
     protected $guarded = [
         'xid'
     ];
+
+    public $timestamps = false;
 }
