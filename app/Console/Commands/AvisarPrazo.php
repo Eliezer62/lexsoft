@@ -7,6 +7,7 @@ use App\Notifications\NotificarFimdoPrazoEvento;
 use App\Notifications\NotificarFimdoPrazoTarefa;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AvisarPrazo extends Command
 {
@@ -48,5 +49,6 @@ class AvisarPrazo extends Command
                 $tarefa->responsavel()->first()->notify(new NotificarFimdoPrazoTarefa($tarefa, $tarefa->responsavel()->first()));
             }
         }
+        Log::info(message: 'Avisar Prazos: tarefa executado com sucesso');
     }
 }
