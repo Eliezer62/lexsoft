@@ -23,7 +23,8 @@ return new class extends Migration
             //constraint
             $table->foreign('responsavel', 'fk_tarefa_adv_resp')
                 ->references('id')
-                ->on('advogados');
+                ->on('advogados')
+                ->onDelete('CASCADE');
         });
         DB::statement('ALTER TABLE tarefas ADD COLUMN xid public.xid DEFAULT xid()');
         DB::statement('ALTER TABLE tarefas ADD CONSTRAINT uc_tarefas_xid UNIQUE (xid)');

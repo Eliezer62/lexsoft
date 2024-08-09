@@ -14,6 +14,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@ant-design/charts": "^2.1.2",
         "@ckeditor/ckeditor5-react": "^8.0.0",
         "@dnd-kit/core": "^6.1.0",
         "antd": "^5.18.3",
@@ -30,6 +31,8 @@
         "react-beautiful-dnd": "^13.1.1",
         "react-dom": "^18.3.1",
         "react-icons": "^5.2.1",
-        "refine": "^0.0.1-alpha"
+        "react-router-dom": "^6.26.0",
+        "refine": "^0.0.1-alpha",
+        "universal-cookie": "^7.2.0"
     }
 }

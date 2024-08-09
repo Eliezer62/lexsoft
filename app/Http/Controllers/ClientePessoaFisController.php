@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClientePessoaFis;
+use App\Models\Endereco;
+use App\Models\Telefone;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -58,7 +60,9 @@ class ClientePessoaFisController extends Controller
                 'numero' => 'integer|required',
                 'data_emissao' => 'required',
                 'emissor' => 'required|string|max:10',
-                'estado' => 'required|string|max:2|min:2'
+                'estado' => 'required|string|max:2|min:2',
+                'enderecos' => 'sometimes',
+                'telefones'=>'sometimes'
             ]);
 
             $cliente = new ClientePessoaFis();
@@ -69,7 +73,33 @@ class ClientePessoaFisController extends Controller
                 {
                     $cliente->fill($validado);
                     $cliente->rg = $rg->id;
-                    if($cliente->saveOrFail()) DB::commit();
+                    if($cliente->saveOrFail())
+                    {
+                        foreach ($validado['enderecos']??[] as $endereco)
+                        {
+                            Endereco::create([
+                                'logradouro'=>$endereco['logradouro'],
+                                'numero'=>$endereco['numero'],
+                                'cidade'=>$endereco['cidade'],
+                                'estado'=>$endereco['uf'],
+                                'cep'=>$endereco['cep'],
+                                'bairro'=>$endereco['bairro'],
+                                'complemento'=>$endereco['complemento'] ?? null,
+                                'pessoafis' => $cliente->id
+                            ]);
+                        }
+
+                        foreach ($validado['telefones']??[] as $telefone)
+                        {
+                            Telefone::create([
+                                'ddi'=>($telefone['ddi'] ?? '+55'),
+                                'ddd'=>$telefone['ddd'],
+                                'numero'=>$telefone['numero'],
+                                'pessoafis'=>$cliente->id
+                            ]);
+                        }
+                        DB::commit();
+                    }
                     else{
                         DB::rollBack();
                         return response()->json(['msg'=>'Erro interno'], 500);
@@ -92,11 +122,13 @@ class ClientePessoaFisController extends Controller
         {
             if($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: cpf, email e rg devem ser únicos'], 500);
+            if($e->getCode()==23502)
+                return response()->json(['msg'=>'Valores nulos enviado'], 500);
             return response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'], 500);
+            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
         }
     }
 
@@ -112,13 +144,43 @@ class ClientePessoaFisController extends Controller
                 'naturalidade_uf','sexo','estado_civil',
                 DB::raw("(SELECT json_build_object('numero',numero,'data_emissao', data_emissao, 'emissor', emissor, 'estado', estado)
                                 FROM rgs WHERE rgs.id = clientes_pessoa_fis.rg
-                                ) AS rg")
+                                ) AS rg"),
+                DB::raw("
+                    (SELECT JSON_AGG(JSON_BUILD_OBJECT(
+                        'xid', e.xid,
+                        'cep',e.cep,
+                        'logradouro', e.logradouro,
+                        'numero',e.numero,
+                        'bairro', e.bairro,
+                        'complemento', e.complemento,
+                        'cidade', city.nome,
+                        'estado', est.nome
+                    ))
+                    FROM enderecos e
+                    JOIN cidades city ON e.cidade = city.id
+                    JOIN estados est ON e.estado = est.uf
+                    WHERE e.pessoafis = clientes_pessoa_fis.id
+                    ) as enderecos
+                "),
+                DB::raw("
+                (SELECT JSON_AGG(JSON_BUILD_OBJECT(
+                    'xid',tel.xid,
+                    'ddi',tel.ddi,
+                    'ddd',tel.ddd,
+                    'numero',tel.numero
+                         )
+                    ) FROM telefones tel
+                    WHERE clientes_pessoa_fis.id = tel.pessoafis
+                ) as telefones
+                ")
             ])
             ->where('deleted_at', '=', null)
             ->where('xid', $xid)
             ->first();
         if(is_null($cliente)) return response()->json([], 404);
         $cliente->rg = json_decode($cliente->rg);
+        $cliente->enderecos = json_decode($cliente->enderecos);
+        $cliente->telefones = json_decode($cliente->telefones);
         return response()->json($cliente, 200);
     }
 
@@ -141,12 +203,43 @@ class ClientePessoaFisController extends Controller
                 'estado_civil' => 'sometimes',
                 'naturalidade' => 'sometimes',
                 'naturalidade_uf' => 'sometimes',
-                'rg' => 'sometimes'
+                'rg' => 'sometimes',
+                'novos_enderecos'=>'sometimes'
             ]);
 
             $cliente->rg()->first()->update($validado['rg']);
             $validado['rg'] = $cliente->rg;
             $cliente->update($validado);
+
+            if($request->has('novos_enderecos'))
+            {
+                foreach ($validado['novos_enderecos'] as $endereco)
+                {
+                    Endereco::create([
+                        'cep'=>$endereco['cep'],
+                        'logradouro'=>$endereco['logradouro'],
+                        'numero'=>$endereco['numero'],
+                        'bairro'=>$endereco['bairro'],
+                        'estado'=>$endereco['uf'],
+                        'cidade'=>$endereco['cidade'],
+                        'complemento'=>$endereco['complemento']??null,
+                        'pessoafis'=>$cliente->id
+                    ]);
+                }
+            }
+
+            if($request->has('novos_telefones'))
+            {
+                foreach ($request->input('novos_telefones') as $telefone)
+                {
+                    Telefone::create([
+                        'ddi'=>($telefone['ddi'] ?? '+55'),
+                        'ddd'=>$telefone['ddd'],
+                        'numero'=>$telefone['numero'],
+                        'pessoafis'=>$cliente->id
+                    ]);
+                }
+            }
 
             return response()->json($cliente, 200);
         }
@@ -158,11 +251,11 @@ class ClientePessoaFisController extends Controller
         {
             if($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: somente é permitido um único RG com mesmo número e Estado'], 500);
-            return response()->json($e->getMessage(), 500);
+            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'], 500);
+            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
         }
     }
 
@@ -181,13 +274,42 @@ class ClientePessoaFisController extends Controller
                 DB::raw('(SELECT estado_civil FROM estados_civis e WHERE clientes_pessoa_fis.estado_civil = e.id) AS estado_civil'),
                 DB::raw("(SELECT json_build_object('numero',numero,'data_emissao', data_emissao, 'emissor', emissor, 'estado', e.nome)
                                 FROM rgs, estados e WHERE rgs.id = clientes_pessoa_fis.rg AND rgs.estado=e.uf
-                                ) AS rg")
+                                ) AS rg"),
+                DB::raw("
+                    (SELECT JSON_AGG(JSON_BUILD_OBJECT(
+                        'xid', e.xid,
+                        'cep',e.cep,
+                        'logradouro', e.logradouro,
+                        'numero',e.numero,
+                        'bairro', e.bairro,
+                        'complemento', e.complemento,
+                        'cidade', city.nome,
+                        'estado', est.nome
+                    ))
+                    FROM enderecos e
+                    JOIN cidades city ON e.cidade = city.id
+                    JOIN estados est ON e.estado = est.uf
+                    WHERE e.pessoafis = clientes_pessoa_fis.id) as enderecos
+                "),
+                DB::raw("
+                (SELECT JSON_AGG(JSON_BUILD_OBJECT(
+                    'xid',tel.xid,
+                    'ddi',tel.ddi,
+                    'ddd',tel.ddd,
+                    'numero',tel.numero
+                         )
+                    ) FROM telefones tel
+                    WHERE clientes_pessoa_fis.id = tel.pessoafis
+                ) as telefones
+                ")
             ])
             ->where('deleted_at', '=', null)
             ->where('xid', $xid)
             ->first();
         if(is_null($xid)) return response()->json([], 404);
         $cliente->rg = json_decode($cliente->rg);
+        $cliente->enderecos = json_decode($cliente->enderecos);
+        $cliente->telefones = json_decode($cliente->telefones);
         return response()->json($cliente, 200);
     }
 

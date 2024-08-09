@@ -9,6 +9,7 @@ import NovoAtendimento from "@/componentes/atendimento/NovoAtendimento.jsx";
 import axios from "axios";
 import ViewAtendimento from "@/componentes/atendimento/ViewAtendimento.jsx";
 import EditAtendimento from "@/componentes/atendimento/EditAtendimento.jsx";
+import {useNavigate} from "react-router-dom";
 
 const Atendimentos = () => {
     const [loadingTable, setLoadingTable] = useState(true);
@@ -21,6 +22,7 @@ const Atendimentos = () => {
     const [atendimento, setAtendimento] = useState({});
     const [loadingView, setLoadingView] = useState(true);
     const [openEditAtendimento, setOpenEditAtendimento] = useState(false);
+    const navigate = useNavigate();
 
     const coluna = [
         {
@@ -58,14 +60,20 @@ const Atendimentos = () => {
                                 .then((resp)=>{
                                     setAtendimento(resp.data);
                                     setLoadingView(false);
-                                }).catch((error)=>mensagemErro('Erro em obter atendimento'))
+                                }).catch((error)=>{
+                                    if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                                    mensagemErro('Erro em obter atendimento');
+                                })
                         }}><GrView/></Button>&nbsp;
                         <Button onClick={ async ()=>{
                             const response = await axios.get('/api/atendimentos/'+record.xid)
                                 .then((resp)=>{
                                     setAtendimento(resp.data);
                                     setOpenEditAtendimento(true);
-                                }).catch((error)=>mensagemErro('Erro em obter atendimento'))
+                                }).catch((error)=>{
+                                    if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                                    mensagemErro('Erro em obter atendimento');
+                                })
                         }}><GrEdit/></Button>&nbsp;
                         <Popconfirm
                             title={'Remover atendimento'}
@@ -78,6 +86,7 @@ const Atendimentos = () => {
                                     .then(resp =>{
                                         mensagemSucesso('Atendimento removido com sucesso');
                                     }).catch(error=>{
+                                        if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                                         mensagemErro('Erro em remover atendimento');
                                     });
                             }}
@@ -108,7 +117,8 @@ const Atendimentos = () => {
                         setLoadingTable(false);
                         setAtendimentos(response.data);
                     }).catch((error)=>{
-                        mensagemErro('Erro em obter os atendimentos');
+                    if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                    mensagemErro('Erro em obter os atendimentos');
                 });
         }
 

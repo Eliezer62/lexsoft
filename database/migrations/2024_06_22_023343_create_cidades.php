@@ -17,14 +17,15 @@ return new class extends Migration
             $table->char('estado',2);
 
             //Constraint
-            $table->foreign('estado')
+            $table->foreign('estado', 'fk_cidade_estado')
                 ->references('uf')
-                ->on('estados');
+                ->on('estados')
+                ->onDelete('CASCADE');
 
             $table->unique(['nome','estado'], 'uc_cidade_nomeUF');
 
             //index
-            $table->index('nome');
+            $table->index('nome', 'index_cidade_nome');
         });
     }
 

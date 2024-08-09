@@ -36,19 +36,23 @@ return new class extends Migration
             //Constraints
             $table->foreign('tribunal')
                 ->references('id')
-                ->on('tribunais');
+                ->on('tribunais')
+                ->onDelete('SET NULL');
 
             $table->foreign('comarca')
                 ->references('id')
-                ->on('comarcas');
+                ->on('comarcas')
+                ->onDelete('SET NULL');
 
             $table->foreign('vara')
                 ->references('id')
-                ->on('varas');
+                ->on('varas')
+                ->onDelete('SET NULL');
 
             $table->foreign('classe_judicial')
                 ->references('id')
-                ->on('classes_judiciais');
+                ->on('classes_judiciais')
+                ->onDelete('SET NULL');
 
             //Indexes
             $table->index('numero', 'index_processos_numero');

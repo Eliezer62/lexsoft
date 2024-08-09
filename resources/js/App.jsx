@@ -18,6 +18,11 @@ import EditarPartesProcesso from "@/processos/EditarPartesProcesso.jsx";
 import MovimentarProcesso from "@/processos/MovimentarProcesso.jsx";
 import NovoDocumento from "@/componentes/documentos/NovoDocumento.jsx";
 import EditarDocumento from "@/componentes/documentos/EditarDocumento.jsx";
+import Dashboard from "@/Dashboard.jsx";
+import Login from "@/Login.jsx";
+import Erro403 from "./seguranca/Erro403";
+import Perfil from "@/Perfil.jsx";
+import EsqueciSenha from "@/EsqueciSenha.jsx";
 
 const RotaProcessos = () => {
     return (
@@ -41,13 +46,18 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <BrowserRouter>
             <Routes>
                 <Route path='*' element={<Erro404 />} />
-                <Route path='/' Component={LayoutBasico}/>
+                <Route path='/' Component={Dashboard}/>
+                <Route path='/dashboard' Component={Dashboard}/>
                 <Route path='/advogados' Component={Advogados}/>
                 <Route path={'/clientes'} Component={Clientes}/>
                 <Route path='/tarefas' Component={Tarefas}/>
                 <Route path={'/atendimentos'} Component={Atendimentos}/>
                 <Route path={'/documentos'} Component={Documentos}/>
                 <Route path={'/processos/*'} element={<RotaProcessos/>}/>
+                <Route path={'/login'} Component={Login}/>
+                <Route path='/403' Component={Erro403}/>
+                <Route path={'/perfil'} Component={Perfil}/>
+                <Route path={'/esqueci-senha/:token'} Component={EsqueciSenha}/>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>

@@ -6,6 +6,7 @@ import axios from "axios";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import dayjs from "dayjs";
 import {GrEdit} from "react-icons/gr";
+import {useNavigate} from "react-router-dom";
 
 export default function VincularDocs(props){
     const [documentos, setDocumentos] = useState([]);
@@ -19,6 +20,7 @@ export default function VincularDocs(props){
     const [pesquisa, setPesquisa] = useState('');
     const [pesquisaLoading, setPesquisaLoading] = useState(false);
     const [reload, setReload] = useState(true);
+    const navigate = useNavigate();
 
     const upload = {
         showUploadList:false,
@@ -29,7 +31,6 @@ export default function VincularDocs(props){
     }
 
     const handleUpload = () => {
-        let enviados = [];
         let promisses = [];
         setLoadingEnviar(true);
         fileList.forEach(async (file) => {
@@ -54,6 +55,7 @@ export default function VincularDocs(props){
 
                 }catch (resp)
                 {
+                    if(resp.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     const arq = await resp.config.data.get('arquivo');
                     arquivos.push(arq);
                 }
@@ -80,6 +82,9 @@ export default function VincularDocs(props){
             await axios.get(`/api/processos/${props.processo}/movimentar/${props.evento}/documentos`)
                 .then((resp)=>{
                     setDocumentos(resp.data);
+                }).catch((e)=>{
+                    if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                    messageApi.error('Erro em obter os documentos')
                 });
         }
         if(!props.open) setDocsVinculados([]);
@@ -148,6 +153,7 @@ export default function VincularDocs(props){
                                         setReload(!reload);
                                     })
                                     .catch((error)=>{
+                                        if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                                         messageApi.destroy(msg.id);
                                         messageApi.error('Erro em remover o documento')});
                             }}><IoIosRemoveCircleOutline/></Button>
@@ -181,7 +187,8 @@ export default function VincularDocs(props){
                         await setPesquisaLoading(true);
                         await axios.get('/api/documentos/pesquisa?query='+pesquisa).then((resp)=>{
                            setDocsPesquisa(resp.data);
-                        }).catch(()=>{
+                        }).catch((e)=>{
+                            if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                             messageApi.error('Erro em pesquisar')
                         }).finally(()=>{
                             setPesquisaLoading(false);

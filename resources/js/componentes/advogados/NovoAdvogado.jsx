@@ -2,15 +2,18 @@ import React, {useEffect, useState} from 'react';
 import {Form, Input, InputNumber, Modal, message, Select} from "antd";
 import {MaskedInput} from 'antd-mask-input';
 import axios from 'axios';
+import {useNavigate} from "react-router-dom";
 
 const NovoAdvogado = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
     const [estados, setEstados] = useState([]);
     const [grupousuarios, setGrupoUsuarios] = useState([]);
+    const navigate = useNavigate();
 
     useEffect( ()=>{
        const getEstados = async () => {
            const response = await axios.get('/api/estados').catch((e)=>{
+               if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                messageApi.error('Erro em obter dados');
            })
            let dados = [];
@@ -21,7 +24,10 @@ const NovoAdvogado = (props) => {
        }
        const getGrupos = async () => {
            const response = await axios.get('/api/grupo-usuarios')
-               .catch(e=>{messageApi.error('Erro em obter dados: '+e.message)});
+               .catch((e)=>{
+                   if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                   messageApi.error('Erro em obter dados: '+e.message);
+               });
            let dados = [];
            response.data.map(e => {
                dados.push({value:e.grupo, label:e.descricao});

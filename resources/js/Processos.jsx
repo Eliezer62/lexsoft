@@ -8,6 +8,7 @@ import {IoIosRemoveCircleOutline} from "react-icons/io";
 import {MdDriveFileMoveOutline} from "react-icons/md";
 import VisualizarProcesso from "@/processos/VisualizarProcesso.jsx";
 import DOMPurify from "dompurify";
+import {useNavigate} from "react-router-dom";
 
 function DownOutlined() {
     return null;
@@ -26,6 +27,7 @@ export default function Processos() {
     const [processo, setProcesso] = useState({});
     const [visualizarProcesso, setVisualizarProcesso] = useState(false);
     const [linha, setLinha] = useState({})
+    const navigate = useNavigate();
 
     const items = [
         {
@@ -63,6 +65,7 @@ export default function Processos() {
                             messageApi.success('Processo removido com sucesso');
                         }).catch((error)=>{
                             messageApi.destroy(msg.id);
+                            if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                             messageApi.error('Erro em remover o processo');
                         });
                 }}>Remover</a>
@@ -105,7 +108,7 @@ export default function Processos() {
             dataIndex: 'partes',
             render: (_, record) => {
                 let partes = '';
-                record.partes.forEach(p => partes = partes + '<br>' + p.parte);
+                record.partes.forEach(p => partes += p.parte + '<br>');
                 return (
                     <div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(partes)}}/>
                 )
@@ -137,6 +140,7 @@ export default function Processos() {
             await axios.get('/api/processos').then(resp => {
                 setProcessos(resp.data);
             }).catch((e)=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em obter os processos');
             });
         }

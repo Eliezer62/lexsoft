@@ -7,7 +7,7 @@ import { Button, Form, message, Modal, Popconfirm } from "antd";
 import NovoAdvogado from './componentes/advogados/NovoAdvogado';
 import EditarAdvogado from "@/componentes/advogados/EditarAdvogado.jsx";
 import axios from "axios";
-
+import {useNavigate} from "react-router-dom";
 
 const Advogados = () => {
     const [time, setTime] = useState(Date.now());
@@ -21,6 +21,7 @@ const Advogados = () => {
     const [openEditAdv, setOpenEditAdv] = useState(false);
     const [confirmEditAdv, setConfirmEditAdv] = useState(false);
     const [pesquisa, setPesquisa] = useState('');
+    const navigate = useNavigate();
 
     const colunas = [
         {
@@ -63,10 +64,11 @@ const Advogados = () => {
                             cancelText="Não"
                             onConfirm={async ()=>{
                                 const response = await axios.delete('/api/advogados/'+record.xid)
-                                    .catch(()=>{
+                                    .catch((e)=>{
+                                        if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                                         messageApi.error('Não foi possível remover o advogado, erro interno');
                                     });
-                                if(response.status==200) messageApi.success('Advogado removido com sucesso');
+                                if(response.status===200) messageApi.success('Advogado removido com sucesso');
                             }}
                         >
                             <Button danger><IoIosRemoveCircleOutline /></Button>
@@ -97,14 +99,16 @@ const Advogados = () => {
                 method:'POST',
                 url:'/api/advogados/',
                 data:advogado
-            }).catch(e=>{
+            }).catch((e)=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 const response = e.response;
                 messageApi.error('Erro em salvar o advogado: '+response.data.msg);
             });
             if(response.status==201) messageApi.success('Sucesso em salvar advogado');
             setConfirmNovoAdv(false);
             setOpenNovoAdv(false);
-        }).catch(e=>{
+        }).catch((e)=>{
+            if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
             setConfirmNovoAdv(false);
         });
     }
@@ -121,19 +125,24 @@ const Advogados = () => {
                 url:'/api/advogados/'+advogado.xid,
                 data:advogado
             }).catch((e)=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em atualizar o advogado: '+e.response.data.msg);
             })
             if(response.status==200) messageApi.success('Advogado atualizado com sucesso');
             setConfirmEditAdv(false);
             setOpenEditAdv(false);
-        }).catch(e=>{
+        }).catch((e)=>{
+            if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
             setConfirmEditAdv(false);
         });
     }
 
     useEffect(() => {
         const getAdvs = async () => {
-            const response = await axios.get('/api/advogados');
+            const response = await axios.get('/api/advogados')
+                .catch((e)=>{
+                    if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                });
             setAdvogados(await response.data);
         }
 

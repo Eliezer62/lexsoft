@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Storage;
 
 class Documento extends Model
 {
-    use SoftDeletes;
 
     /**
      * Tabela de Documentos

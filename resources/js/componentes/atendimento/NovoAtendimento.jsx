@@ -4,6 +4,7 @@ import {Form} from 'antd';
 import axios from "axios";
 import dayjs from "dayjs";
 import EditorSimples from "@/componentes/EditorSimples.jsx";
+import {useNavigate} from "react-router-dom";
 
 const NovoAtendimento = (props) => {
     const [form] = Form.useForm();
@@ -11,6 +12,7 @@ const NovoAtendimento = (props) => {
     const [loadingEnviar, setLoadingEnviar] = useState(false);
     const [clientes, setClientes] = useState([]);
     const [descricao, setDescricao] = useState(null);
+    const navigate = useNavigate();
 
     const enviar = () => {
         setLoadingEnviar(true);
@@ -35,6 +37,7 @@ const NovoAtendimento = (props) => {
                props.mensagemSucesso('Atendimento salvo com sucesso');
                props.cancelar();
            }).catch((error)=>{
+               if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                setLoadingEnviar(false);
                props.mensagemErro('Erro em salvar o atendimento');
            });
@@ -49,6 +52,8 @@ const NovoAtendimento = (props) => {
                     clientes.push({label: cliente.nome + ' ' + cliente.documento, value: cliente.xid, tipo:cliente.tipo})
                 });
                 setClientes(clientes);
+            }).catch((erro)=>{
+                if(erro.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
             });
         }
         getClientes();

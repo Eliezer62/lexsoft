@@ -22,15 +22,18 @@ return new class extends Migration
             //constraint
             $table->foreign('clientejur')
                 ->references('id')
-                ->on('clientes_pessoa_jur');
+                ->on('clientes_pessoa_jur')
+                ->onDelete('CASCADE');
 
             $table->foreign('processo')
                 ->references('id')
-                ->on('processos');
+                ->on('processos')
+                ->onDelete('CASCADE');
 
             $table->foreign('qualificacao')
                 ->references('id')
-                ->on('qualificacoes');
+                ->on('qualificacoes')
+                ->onDelete('SET NULL');
         });
     }
 

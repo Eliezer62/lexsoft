@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClientePessoaFis;
+use App\Models\Endereco;
+use App\Models\Telefone;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,12 +34,26 @@ class ClientePessoaJurController extends Controller
                 'razao_social'=>'required|max:255',
                 'nome_fantasia'=>'max:255',
                 'email'=>'email',
-                'administrador'=>'required'
+                'administrador'=>'required',
+                'enderecos'=>'sometimes'
             ]);
             $adm = ClientePessoaFis::firstWhere('xid', $validados['administrador']);
             if(is_null($adm)) throw new \Exception();
             $validados['administrador'] = $adm->id;
             $cliente = ClientePessoaJur::create($validados);
+            foreach ($validados['enderecos'] as $endereco)
+            {
+                Endereco::create([
+                    'logradouro'=>$endereco['logradouro'],
+                    'numero'=>$endereco['numero'],
+                    'cidade'=>$endereco['cidade'],
+                    'estado'=>$endereco['uf'],
+                    'cep'=>$endereco['cep'],
+                    'bairro'=>$endereco['bairro'],
+                    'complemento'=>$endereco['complemento'] ?? null,
+                    'pessoajur' => $cliente->id
+                ]);
+            }
             return response()->json($cliente, 201);
         }
         catch (ValidationException $e)
@@ -65,10 +81,40 @@ class ClientePessoaJurController extends Controller
             'email',
             'razao_social',
             'nome_fantasia',
-            'administrador'
+            'administrador',
+            DB::raw("
+                    (SELECT JSON_AGG(JSON_BUILD_OBJECT(
+                        'xid', e.xid,
+                        'cep',e.cep,
+                        'logradouro', e.logradouro,
+                        'numero',e.numero,
+                        'bairro', e.bairro,
+                        'complemento', e.complemento,
+                        'cidade', city.nome,
+                        'estado', est.nome
+                    ))
+                    FROM enderecos e
+                    JOIN cidades city ON e.cidade = city.id
+                    JOIN estados est ON e.estado = est.uf
+                    WHERE e.pessoajur = clientes_pessoa_jur.id
+                    ) as enderecos
+                "),
+            DB::raw("
+                (SELECT JSON_AGG(JSON_BUILD_OBJECT(
+                    'xid',tel.xid,
+                    'ddi',tel.ddi,
+                    'ddd',tel.ddd,
+                    'numero',tel.numero
+                         )
+                    ) FROM telefones tel
+                    WHERE clientes_pessoa_jur.id = tel.pessoajur
+                ) as telefones
+                ")
         ])
             ->with('administrador')
-            ->first();
+            ->firstWhere('xid', $xid);
+
+        $cliente->enderecos = json_decode($cliente->enderecos);
 
         return $cliente;
     }
@@ -82,13 +128,45 @@ class ClientePessoaJurController extends Controller
                 'razao_social'=>'max:255',
                 'nome_fantasia'=>'max:255',
                 'email'=>'email',
-                'administrador'=>'sometimes'
+                'administrador'=>'sometimes',
+                'novos_enderecos'=>'sometimes'
             ]);
             $adm = ClientePessoaFis::firstWhere('xid', $validados['administrador']);
             $cliente = ClientePessoaJur::firstWhere('xid', $xid);
             if(is_null($adm) or is_null($cliente)) return response()->json([], 404);
             $validados['administrador'] = $adm->id;
             $cliente->update($validados);
+
+            if($request->has('novos_enderecos'))
+            {
+                foreach ($validados['novos_enderecos'] as $endereco)
+                {
+                    Endereco::create([
+                        'cep'=>$endereco['cep'],
+                        'logradouro'=>$endereco['logradouro'],
+                        'numero'=>$endereco['numero'],
+                        'bairro'=>$endereco['bairro'],
+                        'estado'=>$endereco['uf'],
+                        'cidade'=>$endereco['cidade'],
+                        'complemento'=>$endereco['complemento']??null,
+                        'pessoajur'=>$cliente->id
+                    ]);
+                }
+            }
+
+            if($request->has('novos_telefones'))
+            {
+                foreach ($request->input('novos_telefones') as $telefone)
+                {
+                    Telefone::create([
+                        'ddi'=>($telefone['ddi'] ?? '+55'),
+                        'ddd'=>$telefone['ddd'],
+                        'numero'=>$telefone['numero'],
+                        'pessoajur'=>$cliente->id
+                    ]);
+                }
+            }
+
             return response()->json($cliente, 200);
         }
         catch (ValidationException $e)
@@ -103,7 +181,7 @@ class ClientePessoaJurController extends Controller
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'], 500);
+            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
         }
     }
 

@@ -24,9 +24,10 @@ return new class extends Migration
             $table->integer('administrador');
 
             //constraint
-            $table->foreign('administrador')
+            $table->foreign('administrador', 'fk_p_jur_adm')
                 ->references('id')
-                ->on('clientes_pessoa_fis');
+                ->on('clientes_pessoa_fis')
+                ->onDelete('SET NULL');
 
             //index
             $table->index('cnpj', 'index_cliente_jur_cnpj');

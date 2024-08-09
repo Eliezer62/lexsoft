@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Col, DatePicker, Flex, Form, Input, InputNumber, message, Row, Select} from 'antd';
 import dayjs from "dayjs";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 /**
  * Componente formulário para criar Processo
@@ -13,6 +14,7 @@ export default function FormProcesso(props){
     const [messageApi, contextHolder] = message.useMessage();
     const [classesJur, setClassesJur] = useState([]);
     const [tribunais, setTribunais] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getClasses = async () => {
@@ -25,6 +27,7 @@ export default function FormProcesso(props){
                     setClassesJur(classes);
                 })
                 .catch(e=>{
+                    if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     messageApi.error('Erro em obter classes judiciais');
                 });
         }
@@ -37,6 +40,9 @@ export default function FormProcesso(props){
                         t.push({label:tribunal.nome, value:tribunal.id});
                     });
                     setTribunais(t);
+                }).catch((erro)=>
+                {
+                    if(erro.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 })
         }
 

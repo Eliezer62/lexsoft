@@ -21,9 +21,10 @@ return new class extends Migration
             $table->bigInteger('processo');
 
             //constraint
-            $table->foreign('processo')
+            $table->foreign('processo', 'fk_eventos_processo')
                 ->references('id')
-                ->on('processos');
+                ->on('processos')
+                ->onDelete('CASCADE');
         });
         DB::statement('ALTER TABLE eventos ADD COLUMN xid public.xid DEFAULT xid()');
         DB::statement('ALTER TABLE eventos ADD CONSTRAINT uc_eventos_xid UNIQUE (xid)');

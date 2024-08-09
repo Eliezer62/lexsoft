@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Processo extends Model
 {
-    use SoftDeletes;
-
     /**
      * Tabela processos
      * @var string

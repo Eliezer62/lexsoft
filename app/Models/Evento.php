@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Evento extends Model
 {
-    use SoftDeletes;
-
     protected $table = 'eventos';
 
     protected $primaryKey = 'id';
@@ -30,6 +28,6 @@ class Evento extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function processo(){
-        return $this->belongsTo(Processo::class, 'id', 'processo');
+        return $this->belongsTo(Processo::class, 'processo', 'id');
     }
 }

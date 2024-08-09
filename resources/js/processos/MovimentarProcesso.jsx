@@ -23,6 +23,7 @@ import {MdDriveFolderUpload} from "react-icons/md";
 import { UploadOutlined } from '@ant-design/icons';
 import {IoCloudDownloadOutline} from "react-icons/io5";
 import VincularDocs from "@/componentes/processos/VincularDocs.jsx";
+import {useNavigate} from "react-router-dom";
 
 
 export default function MovimentarProcesso()
@@ -37,6 +38,7 @@ export default function MovimentarProcesso()
     const [intervalo, setIntervalo] = useState(0);
     const [vincularDocs, setVincularDocs] = useState(false);
     const [evento, setEvento] = useState({});
+    const navigate = useNavigate();
 
     const colunas = [
         {
@@ -149,6 +151,9 @@ export default function MovimentarProcesso()
                         e.fim = (e.fim)?dayjs(e.fim, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY HH:mm'):null;
                     });
                     setEventos(resp.data);
+                }).catch((e)=>{
+                    if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                    messageApi.error('Erro em obter os eventos do processo');
                 });
         }
         const intervaloFc = setInterval(()=>{

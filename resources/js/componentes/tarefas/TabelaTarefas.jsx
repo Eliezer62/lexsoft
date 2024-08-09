@@ -6,7 +6,7 @@ import DOMPurify from 'dompurify'
 import dayjs from "dayjs";
 import EditarTarefas from "@/componentes/tarefas/EditarTarefas.jsx";
 import axios from "axios";
-
+import {useNavigate} from "react-router-dom";
 
 export default function TabelaTarefas(props)
 {
@@ -14,6 +14,7 @@ export default function TabelaTarefas(props)
     const [openEditarTarefa, setOpenEditarTarefa] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const [tarefa, setTarefa] = useState({});
+    const navigate = useNavigate();
 
     const opcoes = [
         {label:'Nova', value:'nova'},
@@ -50,6 +51,7 @@ export default function TabelaTarefas(props)
                             messageApi.success('Status atualizado com sucesso');
                         })
                         .catch((e)=>{
+                            if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                             messageApi.destroy(m.id);
                             messageApi.error('Erro em atualizar o status '+e.response.data?.msg);
                         });
@@ -94,6 +96,7 @@ export default function TabelaTarefas(props)
                                     messageApi.destroy(m.id);
                                     messageApi.success('Tarefa removida com sucesso');
                                 }).catch((erro)=>{
+                                    if(erro.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                                     messageApi.destroy(m.id);
                                     messageApi.error('Erro em remvoer a tarefa');
                                 });

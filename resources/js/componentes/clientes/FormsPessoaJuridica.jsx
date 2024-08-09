@@ -2,16 +2,20 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {Form, Input, Select} from "antd";
 import {MaskedInput} from "antd-mask-input";
 import axios from "axios";
-
+import {useNavigate} from "react-router-dom";
 
 const FormsPessoaJuridica = (props) => {
     const [ adminFis, setAdminFis ] = React.useState(true);
     const [loadingAdmin, setLoadingAdmin] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getAdmins = async () => {
             let admin = [];
-            const response = await axios.get('/api/clientesfis');
+            const response = await axios.get('/api/clientesfis')
+                .catch((e)=>{
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+            });
             response.data.forEach(a=>{
                 admin.push({label: a.nome+" CPF:"+a.cpf, value:a.xid, cpf:a.cpf, email:a.email});
             });
@@ -44,7 +48,7 @@ const FormsPessoaJuridica = (props) => {
                 name={'cnpj'}
                 initialValue={props.cliente?.cnpj}
                 rules={[
-                    {required:true, message:'CPF é obrigatório'}
+                    {required:true, message:'CNPJ é obrigatório'}
                 ]}
             >
                 <MaskedInput mask={'00.000.000/0000-00'}/>

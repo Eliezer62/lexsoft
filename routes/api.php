@@ -29,6 +29,7 @@ Route::controller(GrupoUsuarioController::class)
 //Rotas para Advogado
 Route::controller(AdvogadoController::class)
     ->prefix('/advogados')
+    ->middleware(['auth:api'])
     ->group(function (){
         Route::get('/', 'index')
             ->name('advogados.index');
@@ -52,6 +53,7 @@ Route::controller(AdvogadoController::class)
 //Cliente
 Route::controller(ClienteController::class)
     ->prefix('/clientes')
+    ->middleware(['auth:api'])
     ->group(function (){
        Route::get('/', 'index')
             ->name('clientes.index');
@@ -60,6 +62,7 @@ Route::controller(ClienteController::class)
 //Cliente Pessoa Física
 Route::controller(ClientePessoaFisController::class)
     ->prefix('/clientesfis')
+    ->middleware(['auth:api'])
     ->group(function(){
         Route::get('/', 'index')
                 ->name('clientesfis.index');
@@ -83,6 +86,7 @@ Route::controller(ClientePessoaFisController::class)
 //Cliente Pessoa Jur
 Route::controller(ClientePessoaJurController::class)
     ->prefix('/clientesjur')
+    ->middleware(['auth:api'])
     ->group(function(){
        Route::get('/', 'index')
             ->name('clientesjur.index');
@@ -119,6 +123,7 @@ Route::get('/estados-civis', [EstadoCivilController::class, 'index']);
 //Tarefas Controller
 Route::controller(TarefaController::class)
     ->prefix('/tarefas')
+    ->middleware(['auth:api'])
     ->group(function (){
        Route::get('/{xid}', 'index')
             ->name('tarefas.index');
@@ -138,6 +143,7 @@ Route::controller(TarefaController::class)
 
 //Atendimento Controller
 Route::controller(AtendimentoController::class)
+    ->middleware(['auth:api'])
     ->prefix('/atendimentos')
     ->group(function (){
         Route::get('/', 'index')
@@ -156,11 +162,11 @@ Route::controller(AtendimentoController::class)
             ->name('atendimentos.delete');
     });
 
-Route::get('/documentos/pesquisa', [DocumentoController::class, 'search']);
+Route::get('/documentos/pesquisa', [DocumentoController::class, 'search'])->middleware(['auth:api']);
 
-Route::get('/storage/content/{xid}', [DocumentoController::class, 'show']);
+Route::get('/storage/content/{xid}', [DocumentoController::class, 'show'])->middleware(['auth:api']);
 
-Route::delete('/storage/content/{xid}', [DocumentoController::class, 'delete']);
+Route::delete('/storage/content/{xid}', [DocumentoController::class, 'delete'])->middleware(['auth:api']);
 
 //Rotas Processo
 Route::get('/classes_judiciais', [ClasseJudicialController::class, 'index'])
@@ -173,6 +179,7 @@ Route::get('/qualificacoes', [QualificacaoController::class, 'index'])
     ->name('qualificacao.index');
 
 Route::controller(ProcessoController::class)
+    ->middleware(['auth:api'])
     ->prefix('/processos')
     ->group(function (){
         Route::get('/', 'index')
@@ -215,17 +222,17 @@ Route::controller(ProcessoController::class)
             ->name('processos.removerEvento');
     });
 
-Route::post('/processos/{processo}/movimentar/{xid}/salvar-documento', [DocumentoController::class, 'salvar']);
+Route::post('/processos/{processo}/movimentar/{xid}/salvar-documento', [DocumentoController::class, 'salvar'])->middleware(['auth:api']);
 
-Route::get('/processos/{processo}/movimentar/{xid}/documento/{documento}', [DocumentoController::class, 'getContentDocumentoLex']);
+Route::get('/processos/{processo}/movimentar/{xid}/documento/{documento}', [DocumentoController::class, 'getContentDocumentoLex'])->middleware(['auth:api']);
 
-Route::post('/processos/{processo}/movimentar/{evento}/vincular-upload', [DocumentoController::class, 'uploadVincular']);
+Route::post('/processos/{processo}/movimentar/{evento}/vincular-upload', [DocumentoController::class, 'uploadVincular'])->middleware(['auth:api']);
 
-Route::get('/processos/{processo}/movimentar/{evento}/documentos', [DocumentoController::class, 'documentosVinculados']);
+Route::get('/processos/{processo}/movimentar/{evento}/documentos', [DocumentoController::class, 'documentosVinculados'])->middleware(['auth:api']);
 
-Route::post('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'vincularDocsPessoa']);
+Route::post('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'vincularDocsPessoa'])->middleware(['auth:api']);
 
-Route::delete('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'desvincularDocsPessoa']);
+Route::delete('/processos/{processo}/movimentar/{evento}/vincular/{documento}', [DocumentoController::class, 'desvincularDocsPessoa'])->middleware(['auth:api']);
 
 
 //AUTH controller
@@ -237,4 +244,54 @@ Route::controller(AuthController::class)
 
         Route::post('/logout', 'logout')
             ->name('auth.logout');
+
+        Route::get('/check', 'check')
+            ->name('auth.check');
+
+        Route::post('/esqueci-senha', 'tokenEsqueci')
+            ->name('auth.esqueci-senha');
+
+        Route::post('/alterar-senha', 'alterarSenha')
+            ->name('auth.alterar-senha');
+    });
+
+
+Route::controller(DashboardController::class)
+    ->middleware(['auth:api'])
+    ->prefix('/dashboard')
+    ->group(function (){
+        Route::get('/', 'dashboard')
+        ->name('dashboard.index');
+
+        Route::get('/prazos/{mes}/{ano}', 'prazos')
+            ->name('dashboard.prazos');
+    });
+
+Route::controller(AdvogadoController::class)
+    ->middleware(['auth:api'])
+    ->prefix('/perfil')
+    ->group(function (){
+        Route::get('/{xid}', 'show')
+            ->name('perfil.show');
+
+        Route::post('/', 'atualizarPerfil')
+            ->name('perfil.atualizar');
+    });
+
+
+Route::controller(EnderecoController::class)
+    ->prefix('enderecos')
+    ->middleware(['auth:api'])
+    ->group(function (){
+
+        Route::delete('/{xid}', 'delete')
+            ->name('enderecos.delete');
+    });
+
+Route::controller(TelefoneController::class)
+    ->prefix('telefones')
+    ->middleware(['auth:api'])
+    ->group(function (){
+       Route::delete('/{xid}', 'delete')
+            ->name('telefones.delete');
     });

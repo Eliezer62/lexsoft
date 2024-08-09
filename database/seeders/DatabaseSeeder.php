@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Advogado;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -20,5 +20,13 @@ class DatabaseSeeder extends Seeder
         CidadeSeeder::run();
         TribunalSeeder::run();
         QualificacaoSeeder::run();
+
+        Advogado::firstOrCreate([
+           'cpf'=>'99999999999',
+            'nome'=>'Administrador',
+            'email'=>'sample@google.com',
+            'password'=>'lexsoft',
+            'grupo'=>'administrador'
+        ]);
     }
 }

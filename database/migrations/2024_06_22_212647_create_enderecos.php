@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('enderecos', function (Blueprint $table) {
             $table->id();
-            $table->char('xid', 20)
-                ->unique('uc_endereco_xid');
             $table->timestamps();
             $table->string('logradouro');
             $table->smallInteger('numero');
@@ -22,27 +20,32 @@ return new class extends Migration
             $table->char('estado', 2);
             $table->char('cep', 8);
             $table->string('bairro', 60);
-            $table->string('complemento');
+            $table->string('complemento')->nullable();
             $table->integer('pessoafis')->nullable();
             $table->integer('pessoajur')->nullable();
 
             //constraint
-            $table->foreign('cidade')
+            $table->foreign('cidade', 'fk_end_cidade')
                 ->references('id')
                 ->on('cidades');
 
-            $table->foreign('estado')
+            $table->foreign('estado', 'fk_end_estado')
                 ->references('uf')
                 ->on('estados');
 
-            $table->foreign('pessoafis')
+            $table->foreign('pessoafis', 'fk_end_pessoa_fis')
                 ->references('id')
-                ->on('clientes_pessoa_fis');
+                ->on('clientes_pessoa_fis')
+                ->onDelete('CASCADE');
 
-            $table->foreign('pessoajur')
+            $table->foreign('pessoajur', 'fk_end_pessoajur')
                 ->references('id')
-                ->on('clientes_pessoa_jur');
+                ->on('clientes_pessoa_jur')
+                ->onDelete('CASCADE');
         });
+        DB::statement('ALTER TABLE enderecos ADD COLUMN xid public.xid DEFAULT xid()');
+        DB::statement('ALTER TABLE enderecos ADD CONSTRAINT uc_end_xid UNIQUE (xid)');
+
     }
 
     /**

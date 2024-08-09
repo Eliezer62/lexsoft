@@ -6,6 +6,7 @@ import {HomeOutlined} from '@ant-design/icons';
 import FormProcesso from "@/componentes/processos/FormProcesso.jsx";
 import dayjs from "dayjs";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 /**
  * Componente: tela de criação de processo
@@ -16,6 +17,7 @@ export default function NovoProcesso() {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
+    const navigate = useNavigate();
 
     const enviarProcesso = async () =>
     {
@@ -48,6 +50,7 @@ export default function NovoProcesso() {
                         location.href = '/processos/criar/'+resp.data.xid+'/partes';
                     }, 3000);
                 }).catch(erro=>{
+                    if(erro.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     setLoading(false);
                     messageApi.error('Erro em salvar o processo: '+erro.response?.data?.msg);
                 });
