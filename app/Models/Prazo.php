@@ -49,12 +49,12 @@ class Prazo extends Model
 
     public function tarefa()
     {
-        return $this->belongsTo(Tarefa::class, 'id', 'tarefa');
+        return $this->belongsTo(Tarefa::class, 'tarefa', 'id');
     }
 
 
     public function evento()
     {
-
+        return $this->belongsTo(Evento::class, 'evento', 'id');
     }
 }
