@@ -247,6 +247,12 @@ Route::controller(AuthController::class)
 
         Route::get('/check', 'check')
             ->name('auth.check');
+
+        Route::post('/esqueci-senha', 'tokenEsqueci')
+            ->name('auth.esqueci-senha');
+
+        Route::post('/alterar-senha', 'alterarSenha')
+            ->name('auth.alterar-senha');
     });
 
 
