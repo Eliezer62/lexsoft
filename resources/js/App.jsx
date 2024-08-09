@@ -22,6 +22,7 @@ import Dashboard from "@/Dashboard.jsx";
 import Login from "@/Login.jsx";
 import Erro403 from "./seguranca/Erro403";
 import Perfil from "@/Perfil.jsx";
+import EsqueciSenha from "@/EsqueciSenha.jsx";
 
 const RotaProcessos = () => {
     return (
@@ -56,6 +57,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Route path={'/login'} Component={Login}/>
                 <Route path='/403' Component={Erro403}/>
                 <Route path={'/perfil'} Component={Perfil}/>
+                <Route path={'/esqueci-senha/:token'} Component={EsqueciSenha}/>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>
