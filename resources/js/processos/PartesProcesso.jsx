@@ -21,7 +21,7 @@ export default function PartesProcesso(props){
             let data = {};
             const p = form.getFieldValue('partes');
             //Torna unique as partes - vale a ultima instancia
-            let partes = [...new Map(p.map(item =>
+            let partes = [...new Map(p?.map(item =>
                 [item['cliente'], item])).values()];
 
             data.partes = partes;
