@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Notifications\NotificarMudancaDados;
 use http\Env\Response;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -175,6 +176,7 @@ class AdvogadoController extends Controller
                 unset($validados['password']);
             }
             $advogado->updateOrFail($validados);
+            $advogado->notify(new NotificarMudancaDados());
             return response()->json(['msg' => 'atualizado'], 200);
         }
         catch (ValidationException $e)
