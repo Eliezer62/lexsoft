@@ -59,7 +59,7 @@ export default function Processos() {
             label: (
                 <a title={'remover'} onClick={async ()=>{
                     const msg = messageApi.loading('Removendo processo');
-                    await axios.delete('/api/processos/'+record.xid)
+                    await axios.delete('/api/processos/'+linha.xid)
                         .then((r)=>{
                             messageApi.destroy(msg.id);
                             messageApi.success('Processo removido com sucesso');
