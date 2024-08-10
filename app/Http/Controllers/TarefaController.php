@@ -32,8 +32,8 @@ class TarefaController extends Controller
     {
         try {
             $validado = $request->validate([
-                'assunto' => 'required|string|max:255',
-                'descricao' => 'sometimes|string',
+                'assunto' => 'required|max:255',
+                'descricao' => 'nullable',
                 'responsavel' => 'required',
                 'inicio' => 'nullable|date',
                 'fim' => 'nullable|date'
@@ -72,7 +72,7 @@ class TarefaController extends Controller
         }
         catch (ValidationException $e)
         {
-            return response()->json(['msg'=>'Campo assunto é obrigatório'], 422);
+            return response()->json(['msg'=>'Campo assunto é obrigatório'.$e->getMessage()], 422);
         }
         catch (\Exception $e)
         {
