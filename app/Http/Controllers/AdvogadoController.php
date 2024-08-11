@@ -78,10 +78,16 @@ class AdvogadoController extends Controller
             if($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: cpf, oab e email devem ser únicos'], 500);
 
-            if($e->getCode()=='P0001')
+            elseif($e->getCode()=='P0001')
                 return response()->json(['msg'=>'CPF inválido'], 422);
 
-            else return response()->json(['msg'=>'Erro interno'], 500);
+            elseif($e->getCode()=='P0002')
+                return response()->json(['msg'=>'CPF já cadastrado anteriormente'], 409);
+
+            elseif($e->getCode()=='P0003')
+                return response()->json(['msg'=>'E-MAIL já cadastrado anteriormente'], 409);
+
+            else return response()->json(['msg'=>'Erro interno'.$e->getCode()], 500);
         }
         catch (\Exception $e)
         {

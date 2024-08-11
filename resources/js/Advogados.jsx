@@ -97,11 +97,12 @@ const Advogados = () => {
         form.validateFields().then(async ()=>{
             const response = await axios({
                 method:'POST',
-                url:'/api/advogados/',
+                url:'/api/advogados',
                 data:advogado
             }).catch((e)=>{
                 if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 const response = e.response;
+                setConfirmNovoAdv(false);
                 messageApi.error('Erro em salvar o advogado: '+response.data.msg);
             });
             if(response.status==201) messageApi.success('Sucesso em salvar advogado');
