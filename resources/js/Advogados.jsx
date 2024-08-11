@@ -128,6 +128,7 @@ const Advogados = () => {
             }).catch((e)=>{
                 if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 messageApi.error('Erro em atualizar o advogado: '+e.response.data.msg);
+                setConfirmEditAdv(false);
             })
             if(response.status==200) messageApi.success('Advogado atualizado com sucesso');
             setConfirmEditAdv(false);
