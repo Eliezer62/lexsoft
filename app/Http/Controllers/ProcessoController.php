@@ -31,9 +31,9 @@ class ProcessoController extends Controller
                     (JSON_AGG(JSON_BUILD_OBJECT(\'advogado\', CONCAT(advs.nome)))) AS advogados
                     FROM processos p JOIN tribunais t ON t.id = tribunal
                     JOIN varas v ON v.id = p.vara
-                    JOIN view_partes_processo vpp ON vpp.processo = p.xid
-                    JOIN representa r ON r.processo =  p.id
-                    JOIN advogados advs ON advs.id = r.advogado
+                    LEFT JOIN view_partes_processo vpp ON vpp.processo = p.xid
+                    LEFT JOIN representa r ON r.processo =  p.id
+                    LEFT JOIN advogados advs ON advs.id = r.advogado
                     WHERE p.deleted_at IS NULL
                     GROUP BY p.xid, p.updated_at, p.xid, p.numero, p."numCNJ", t.nome, v.nome, (SELECT c.nome FROM comarcas c WHERE c.id = p.comarca) ORDER BY p.updated_at DESC;
             ');
@@ -49,9 +49,9 @@ class ProcessoController extends Controller
             FROM processos p
             JOIN tribunais t ON t.id = p.tribunal
             JOIN varas v ON v.id = p.vara
-            JOIN view_partes_processo vpp ON vpp.processo = p.xid
-			JOIN representa r ON r.processo = p.id
-            JOIN advogados advs ON advs.id = r.advogado
+            LEFT JOIN view_partes_processo vpp ON vpp.processo = p.xid
+			LEFT JOIN representa r ON r.processo = p.id
+            LEFT JOIN advogados advs ON advs.id = r.advogado
             WHERE p.deleted_at IS NULL AND r.advogado = :argumento AND p.id = r.processo
             GROUP BY p.xid, p.updated_at, p.xid, p.numero, p."numCNJ", t.nome, v.nome, (SELECT c.nome FROM comarcas c WHERE c.id = p.comarca) ORDER BY p.updated_at DESC;
             ', ['argumento'=>$advogado->id]);
@@ -188,7 +188,7 @@ class ProcessoController extends Controller
             //Atualizar vara
             $processo = Processo::firstWhere('xid', $xid);
             $usuario = Auth::user();
-            if(!$processo->advogados->contains($usuario) || $usuario->grupo != 'administrador')
+            if(!$processo->advogados->contains($usuario) && $usuario->grupo != 'administrador')
                 return response()->json(['msg'=>'Ação não permitida'], 403);
 
             $processo->vara()->first()->update(['nome'=>$validados['vara']]);
@@ -229,7 +229,7 @@ class ProcessoController extends Controller
     {
         $processo = Processo::firstWhere('xid', $xid);
         $usuario = Auth::user();
-        if(!$processo->advogados->contains($usuario) || $usuario->grupo != 'administrador')
+        if(!$processo->advogados->contains($usuario) && $usuario->grupo != 'administrador')
                 return response()->json(['msg'=>'Ação não permitida'], 403);
 
         if(!is_null($processo)) $processo->delete();
@@ -350,7 +350,7 @@ class ProcessoController extends Controller
             'advogados' => 'nullable|array'
         ]);
         $processo = Processo::firstWhere('xid', $xid);
-        if(!$processo->advogados->contains($usuario) || $usuario->grupo != 'administrador')
+        if(!$processo->advogados->contains($usuario) && $usuario->grupo != 'administrador')
                 return response()->json(['msg'=>'Ação não permitida'], 403);
 
         if($request->has('advogados'))
@@ -397,7 +397,7 @@ class ProcessoController extends Controller
     {
         $usuario = Auth::user();
         $processo = Processo::firstWhere('xid', $xid);
-        if(!$processo->advogados->contains($usuario) || $usuario->grupo != 'administrador')
+        if(!$processo->advogados->contains($usuario) && $usuario->grupo != 'administrador')
                 return response()->json(['msg'=>'Ação não permitida'], 403);
 
         $processos = DB::select('
@@ -439,7 +439,7 @@ class ProcessoController extends Controller
         try{
             $usuario = Auth::user();
             $processo = Processo::firstWhere('xid', $xid);
-            if(!$processo->advogados->contains($usuario) || $usuario->grupo != 'administrador')
+            if(!$processo->advogados->contains($usuario) && $usuario->grupo != 'administrador')
                 return response()->json(['msg'=>'Ação não permitida'], 403);
 
             $validados = $request->validate([
@@ -483,7 +483,7 @@ class ProcessoController extends Controller
     {
         $usuario = Auth::user();
         $processo = Processo::firstWhere('xid', $xid);
-        if(!$processo->advogados->contains($usuario) || $usuario->grupo != 'administrador')
+        if(!$processo->advogados->contains($usuario) && $usuario->grupo != 'administrador')
                 return response()->json(['msg'=>'Ação não permitida'], 403);
 
         $eventos = DB::select("
@@ -503,7 +503,7 @@ class ProcessoController extends Controller
         $processo = $evento->processo()->get()->first();
         $usuario = Auth::user();
 
-        if(!$processo->advogados->contains($usuario) || $usuario->grupo != 'administrador')
+        if(!$processo->advogados->contains($usuario) && $usuario->grupo != 'administrador')
                 return response()->json(['msg'=>'Ação não permitida'], 403);
 
         if(!is_null($evento)) $evento->delete();
