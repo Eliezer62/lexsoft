@@ -10,10 +10,12 @@ use App\Models\Evento;
 use App\Models\Prazo;
 use App\Models\Processo;
 use App\Models\Vara;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class ProcessoController extends Controller
 {
@@ -157,7 +159,25 @@ class ProcessoController extends Controller
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+            if($e->getCode()=='P0001')
+                    return response()->json(['msg'=>'Valor de condenação deve ser menor que o valor da causa'], 400);
+
+            elseif($e->getCode()=='P0002')
+                return response()->json(['msg'=>'Data de criação deve ocorrer antes da data de distribuição'], 400);
+
+            elseif($e->getCode()=='P0003')
+                return response()->json(['msg'=>'Valor da causa deve ser positiva'], 400);
+
+            elseif($e->getCode()=='P0004')
+                return response()->json(['msg'=>'Valor de condenação deve ser positivo'], 400);
+
+            elseif ($e->getCode()==23505)
+                return response()->json(['msg'=>'Número do processo já existe'], 409);
+
+            else {
+                Log::error($e->getMessage());
+                return response()->json(['msg' => 'Erro interno'], 500);
+            }
         }
     }
 
@@ -214,9 +234,32 @@ class ProcessoController extends Controller
         {
             return response()->json(['msg'=>'dados inválidos enviado'], 422);
         }
+        catch (QueryException $e)
+        {
+            if($e->getCode()=='P0001')
+                return response()->json(['msg'=>'Valor de condenação deve ser menor que o valor da causa'], 400);
+
+            elseif($e->getCode()=='P0002')
+                return response()->json(['msg'=>'Data de criação deve ocorrer antes da data de distribuição'], 400);
+
+            elseif($e->getCode()=='P0003')
+                return response()->json(['msg'=>'Valor da causa deve ser positiva'], 400);
+
+            elseif($e->getCode()=='P0004')
+                return response()->json(['msg'=>'Valor de condenação deve ser positivo'], 400);
+
+            elseif ($e->getCode()==23505)
+                return response()->json(['msg'=>'Número do processo já existe'], 409);
+
+            else {
+                Log::error($e->getMessage());
+                return response()->json(['msg' => 'Erro interno'], 500);
+            }
+        }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+            Log::error($e->getMessage());
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
 
@@ -263,6 +306,7 @@ class ProcessoController extends Controller
         }
         catch (\Exception $e)
         {
+            Log::error($e->getMessage());
             return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
