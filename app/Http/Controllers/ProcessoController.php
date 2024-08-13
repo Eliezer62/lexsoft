@@ -458,7 +458,7 @@ class ProcessoController extends Controller
         JOIN classes_judiciais cj ON cj.id = p.classe_judicial
         JOIN tribunais t ON t.id = p.tribunal
         JOIN varas v ON v.id = p.vara
-        JOIN view_partes_processo vpp ON vpp.processo = p.xid
+        LEFT JOIN view_partes_processo vpp ON vpp.processo = p.xid
         JOIN representa r ON r.processo = p.id
 
         WHERE xid = :xid

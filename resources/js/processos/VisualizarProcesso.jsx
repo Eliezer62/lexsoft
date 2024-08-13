@@ -4,6 +4,7 @@ import DescricaoItem from "@/componentes/DescricaoItem.jsx";
 import axios from "axios";
 import dayjs from "dayjs";
 import {useNavigate} from "react-router-dom";
+import Delimitador from "@/componentes/Delimitador.jsx";
 
 export default function VisualizarProcesso(props)
 {
@@ -56,14 +57,15 @@ export default function VisualizarProcesso(props)
             <DescricaoItem titulo={'Tribunal'} conteudo={dados_processo.tribunal}/>
             <DescricaoItem titulo={'Comarca'} conteudo={dados_processo.comarca}/>
             <DescricaoItem titulo={'Vara'} conteudo={dados_processo.vara}/>
-            <h4>Partes do processo</h4>
+            <h3>Partes do processo</h3>
             {dados_processo.partes?.map(parte => {
+                if(!parte?.cliente) return (<></>)
                 return(
                     <>
                         <p>Nome: {parte.cliente}</p>
                         <p>Documento: {parte.documento}</p>
                         <p>Qualificação: {parte.qualificacao}</p>
-                        <p>-----------------------</p>
+                        <Delimitador/>
                     </>
                 );
             })}
