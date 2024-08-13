@@ -29,8 +29,8 @@ class ProcessoController extends Controller
                 SELECT
                     p.xid, p.numero, p."numCNJ", t.nome AS tribunal, v.nome as vara,
                     (SELECT c.nome FROM comarcas c WHERE c.id = p.comarca) AS comarca,
-                    (JSON_AGG(JSON_BUILD_OBJECT(\'parte\', CONCAT(vpp.cliente) ))) AS partes,
-                    (JSON_AGG(JSON_BUILD_OBJECT(\'advogado\', CONCAT(advs.nome)))) AS advogados
+                    (JSON_AGG(DISTINCT JSONB_BUILD_OBJECT(\'parte\', CONCAT(vpp.cliente) ))) AS partes,
+                    (JSON_AGG(DISTINCT JSONB_BUILD_OBJECT(\'advogado\', CONCAT(advs.nome)))) AS advogados
                     FROM processos p JOIN tribunais t ON t.id = tribunal
                     JOIN varas v ON v.id = p.vara
                     LEFT JOIN view_partes_processo vpp ON vpp.processo = p.xid
@@ -46,8 +46,8 @@ class ProcessoController extends Controller
             SELECT
                  p.xid, p.numero, p."numCNJ", t.nome AS tribunal, v.nome as vara,
                 (SELECT c.nome FROM comarcas c WHERE c.id = p.comarca) AS comarca,
-                (JSON_AGG(JSON_BUILD_OBJECT(\'parte\', CONCAT(vpp.cliente) ))) AS partes,
-                (JSON_AGG(JSON_BUILD_OBJECT(\'advogado\', CONCAT(advs.nome)))) AS advogados
+                (JSON_AGG(DISTINCT JSONB_BUILD_OBJECT(\'parte\', CONCAT(vpp.cliente) ))) AS partes,
+                (JSON_AGG(DISTINCT JSONB_BUILD_OBJECT(\'advogado\', CONCAT(advs.nome)))) AS advogados
             FROM processos p
             JOIN tribunais t ON t.id = p.tribunal
             JOIN varas v ON v.id = p.vara
@@ -420,8 +420,8 @@ class ProcessoController extends Controller
                 $clientesjur[$cliente->id] = ['qualificacao'=>$parte['qualificacao']];
         }
 
-        $processo->partes()->sync($clientesfis);
-        $processo->partes_jur()->sync($clientesjur);
+        $processo->partes()->sync($clientesfis, false);
+        $processo->partes_jur()->sync($clientesjur, false);
     }
 
 
@@ -433,7 +433,7 @@ class ProcessoController extends Controller
             $advogados[] = Advogado::firstWhere('xid', $adv)->id;
         }
 
-        $processo->advogados()->sync($advogados);
+        $processo->advogados()->sync($advogados, false);
     }
 
 
@@ -450,7 +450,7 @@ class ProcessoController extends Controller
         p.data_distribuicao, concat(cj.id, \' \', cj.descricao) as classe_judicial,
         t.nome as tribunal, (SELECT nome FROM comarcas com WHERE com.id = p.comarca) as comarca,
         v.nome as vara,
-        JSON_AGG(JSON_BUILD_OBJECT(\'cliente\', vpp.cliente, \'documento\', vpp.documento,
+        JSON_AGG(DISTINCT JSONB_BUILD_OBJECT(\'cliente\', vpp.cliente, \'documento\', vpp.documento,
         \'qualificacao\', vpp.qualificacao
         )) AS partes
 
