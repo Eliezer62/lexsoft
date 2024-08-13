@@ -53,9 +53,8 @@ class Tarefa extends Model
     public static function boot()
     {
         parent::boot();
-        // cause a delete of a product to cascade to children so they are also deleted
         static::deleted(function ($tarefa) {
-            $tarefa->prazo->delete();
+            $tarefa->prazo?->delete();
         });
     }
 }
