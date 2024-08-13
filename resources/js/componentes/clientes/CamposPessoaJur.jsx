@@ -28,6 +28,7 @@ const CamposPessoaJur = (props) => {
                     <DescricaoItem titulo={'email'} conteudo={props.cliente.email}/>
                 </Col>
             </Row>
+            <Delimitador/>
             <Row>
                 <Col span={12}>
                     <h3 style={{margin:10}}>Administrador</h3>
@@ -48,6 +49,21 @@ const CamposPessoaJur = (props) => {
                     <DescricaoItem titulo={'email'} conteudo={props.cliente.administrador.email}/>
                 </Col>
             </Row>
+
+            <Delimitador/>
+            {(props.cliente?.telefones)?(<Row><h4 style={{fontSize:'1.2rem'}}>Telefones</h4></Row>):(null)}
+            {(props.cliente?.telefones)?.map((telefone, index) => (
+                <>
+                    <Row>
+                        <Col span={12}>
+                            <DescricaoItem titulo={'Telefone '+(index+1)} conteudo={`${telefone.ddi} (${telefone.ddd}) ${telefone.numero}`}/>
+                        </Col>
+                    </Row>
+                </>
+            ))
+
+            }
+
             <Delimitador/>
             {(props.cliente?.enderecos)?(<Row><h4 style={{fontSize:'1.2rem'}}>Endereços</h4></Row>):(null)}
             {(props.cliente?.enderecos?.map(endereco => (
