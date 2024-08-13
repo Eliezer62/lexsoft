@@ -62,8 +62,15 @@ class ClientePessoaJurController extends Controller
         }
         catch (QueryException $e)
         {
-            if($e->getCode()==23505)
+            if($e->getCode()=='P0002')
+                return response()->json(['msg'=>'Razão social já cadastrado anteriormente'], 409);
+
+            elseif($e->getCode()=='P0003')
+                return response()->json(['msg'=>'CNPJ já cadastrado anteriormente'], 409);
+
+            elseif($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: cnpj ou razão social devem ser únicos'], 500);
+
             return response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
@@ -175,8 +182,15 @@ class ClientePessoaJurController extends Controller
         }
         catch (QueryException $e)
         {
-            if($e->getCode()==23505)
+            if($e->getCode()=='P0002')
+                return response()->json(['msg'=>'Razão social já cadastrado anteriormente'], 409);
+
+            elseif($e->getCode()=='P0003')
+                return response()->json(['msg'=>'CNPJ já cadastrado anteriormente'], 409);
+
+            elseif($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: cnpj ou razão social devem ser únicos'], 500);
+
             return response()->json($e->getMessage(), 500);
         }
         catch (\Exception $e)
