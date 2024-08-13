@@ -102,7 +102,7 @@ export default function Dashboard()
                     style={{width:'100%', marginBottom:30}}
                 >
                     <Card title={'Processo '+(dados?.processos?.[0]?.numero ?? '')}  actions={[
-                        (dados?.processos?.[1])?(<Button type={'link'} onClick={()=>location.href=`/processos/${dados?.processos?.[0]?.xid}/movimentar`}>Acessar processo</Button>):(null)
+                        (dados?.processos?.[0])?(<Button type={'link'} onClick={()=>location.href=`/processos/${dados?.processos?.[0]?.xid}/movimentar`}>Acessar processo</Button>):(null)
                     ]}>
                         <Timeline style={{height:'50px'}} items={[
                             (dados?.processos?.[0])?{children:dados?.processos?.[0]?.descricao}:null,
