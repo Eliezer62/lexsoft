@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Col, Input, Layout, message, Row, Select, Table} from 'antd';
+import {Button, Col, Input, Layout, message, Popconfirm, Row, Select, Table} from 'antd';
 import {GrEdit} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import DOMPurify from 'dompurify'
@@ -88,19 +88,22 @@ export default function TabelaTarefas(props)
                                 console.log(tarefa);
                             }}
                         ><GrEdit/></Button>&nbsp;
-                        <Button title={'Remover'} danger onClick={async ()=>{
-                            const m = messageApi.loading('Removendo a tarefa',1);
-                            console.log('/api/tarefas/'+record.xid);
-                            await axios.delete('/api/tarefas/'+record.xid)
-                                .then((resp)=>{
-                                    messageApi.destroy(m.id);
-                                    messageApi.success('Tarefa removida com sucesso');
-                                }).catch((erro)=>{
-                                    if(erro.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
-                                    messageApi.destroy(m.id);
-                                    messageApi.error('Erro em remvoer a tarefa');
-                                });
-                        }}><IoIosRemoveCircleOutline/></Button>
+                        <Popconfirm title={'Remover Tarefa'} description={'Tem certeza que deseja remover essa tarefa?'}
+                                    onConfirm={async ()=>{
+                                        const m = messageApi.loading('Removendo a tarefa',10000);
+                                        await axios.delete('/api/tarefas/'+record.xid)
+                                            .then((resp)=>{
+                                                messageApi.destroy(m.id);
+                                                messageApi.success('Tarefa removida com sucesso');
+                                            }).catch((erro)=>{
+                                                if(erro.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                                                messageApi.destroy(m.id);
+                                                messageApi.error('Erro em remover a tarefa');
+                                            });
+                                    }}
+                        >
+                            <Button title={'Remover'} danger ><IoIosRemoveCircleOutline/></Button>
+                        </Popconfirm>
                     </>
                 );
             }

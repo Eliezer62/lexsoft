@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Input, List, Modal, Skeleton, message} from "antd";
+import {Button, Input, List, Modal, Skeleton, message, Popconfirm} from "antd";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import {IoCloudDownloadOutline} from "react-icons/io5";
 import axios from "axios";
@@ -12,24 +12,6 @@ const BuscarDocumentos = (props) => {
     const [messageApi, contextholder] = message.useMessage();
     const navigate = useNavigate();
 
-    const data = [
-        {
-            title: 'Ant Design Title 1',
-            cliente:'Cliente'
-        },
-        {
-            title: 'Ant Design Title 2',
-            cliente:'Cliente'
-        },
-        {
-            title: 'Ant Design Title 3',
-            cliente:'Cliente'
-        },
-        {
-            title: 'Ant Design Title 4',
-            cliente:'Cliente'
-        },
-    ];
 
     return (
         <Modal
@@ -61,27 +43,33 @@ const BuscarDocumentos = (props) => {
                     <List.Item
                         actions={[
                             <Button type={'primary'} onClick={()=>{window.open('/api/storage/content/'+item.xid, '_blank').focus()}}><IoCloudDownloadOutline /></Button>,
-                            <Button danger={true} onClick={async ()=>{
-                                messageApi.loading('Removendo...', 1);
-                                await axios.delete('/api/storage/content/'+item.xid)
-                                    .then(async (resp)=>{
-                                        messageApi.success('Documento removido com sucesso');
-                                        setLoading(true);
-                                        await axios.get('/api/documentos/pesquisa?query='+pesquisa)
-                                            .then((resp)=>{
-                                                setDocumentos(resp.data);
-                                                setLoading(false);
-                                            }).catch((err)=>{
-                                                if(err.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
-                                                setLoading(false);
-                                                setDocumentos([])
-                                            });
-                                    })
-                                    .catch((error)=>{
-                                        if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
-                                        messageApi.error('Erro em remover o documento');
-                                    });
-                            }}><IoIosRemoveCircleOutline/></Button>
+                            <Popconfirm title={'Remover documento'} description={'Tem certeza que deseja remover o documento?'}
+                                        onConfirm={async ()=>{
+                                            const msg = messageApi.loading('Removendo documento', 1000000);
+                                            await axios.delete('/api/storage/content/'+item.xid)
+                                                .then(async (resp)=>{
+                                                    messageApi.destroy(msg.id);
+                                                    messageApi.success('Documento removido com sucesso');
+                                                    setLoading(true);
+                                                    await axios.get('/api/documentos/pesquisa?query='+pesquisa)
+                                                        .then((resp)=>{
+                                                            setDocumentos(resp.data);
+                                                            setLoading(false);
+                                                        }).catch((err)=>{
+                                                            if(err.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                                                            setLoading(false);
+                                                            setDocumentos([])
+                                                        });
+                                                })
+                                                .catch((error)=>{
+                                                    messageApi.destroy(msg.id);
+                                                    if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                                                    messageApi.error('Erro em remover o documento');
+                                                });
+                                        }}
+                            >
+                                <Button danger={true} ><IoIosRemoveCircleOutline/></Button>
+                            </Popconfirm>
                         ]}
                     >
                         <Skeleton title={false} loading={loading}>

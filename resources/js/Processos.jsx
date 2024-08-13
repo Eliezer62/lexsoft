@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
 import axios from "axios";
-import {Button, Dropdown, message, Space} from "antd";
+import {Button, Dropdown, message, Popconfirm, Space} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import {MdDriveFileMoveOutline} from "react-icons/md";
@@ -57,35 +57,39 @@ export default function Processos() {
         {
             key: '5',
             label: (
-                <a title={'remover'} onClick={async ()=>{
-                    const msg = messageApi.loading('Removendo processo');
-                    await axios.delete('/api/processos/'+linha.xid)
-                        .then((r)=>{
-                            messageApi.destroy(msg.id);
-                            messageApi.success('Processo removido com sucesso');
-                        }).catch((error)=>{
-                            messageApi.destroy(msg.id);
-                            if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
-                            messageApi.error('Erro em remover o processo');
-                        });
-                }}>Remover</a>
+                <Popconfirm title={'Remover processo'} description={'Você tem certeza que deseja remover esse processo?'}
+                            onConfirm={async () => {
+                                const msg = messageApi.loading('Removendo processo');
+                                await axios.delete('/api/processos/' + linha.xid)
+                                    .then((r) => {
+                                        messageApi.destroy(msg.id);
+                                        messageApi.success('Processo removido com sucesso');
+                                    }).catch((error) => {
+                                        messageApi.destroy(msg.id);
+                                        if (error.response.status === 401) navigate('/login', {state: {anterior: location.pathname}});
+                                        messageApi.error('Erro em remover o processo');
+                                    });
+                            }}
+                >
+                    <a title={'remover'}>Remover</a>
+                </Popconfirm>
             ),
-            danger:true,
+            danger: true,
             icon: <IoIosRemoveCircleOutline/>
         },
     ];
 
     const colunas = [
         {
-            title:'Numeração',
-            key:'numero',
-            dataIndex:'numero',
+            title: 'Numeração',
+            key: 'numero',
+            dataIndex: 'numero',
             sorter: (a, b) => a.numero.localeCompare(b.numero),
             sortDirections: ['descend', 'ascend'],
-            filteredValue:[pesquisa],
+            filteredValue: [pesquisa],
             onFilter: (value, record) => record.numero.includes(value) || record.numCNJ.includes(value) || record.tribunal.toLowerCase().includes(value.toLowerCase())
-            || record.vara.toLowerCase().includes(value.toLowerCase()) || record?.comarca?.toLowerCase().includes(value.toLowerCase()) ||
-            record.partes?.find( parte => parte.parte.toLowerCase().includes(value.toLowerCase()))
+                || record.vara.toLowerCase().includes(value.toLowerCase()) || record?.comarca?.toLowerCase().includes(value.toLowerCase()) ||
+                record.partes?.find( parte => parte.parte.toLowerCase().includes(value.toLowerCase()))
         },
         {
             title:'Numeração CNJ',

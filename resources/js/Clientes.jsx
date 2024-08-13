@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
-import {Button, Col, Drawer, Form, message, Row} from "antd";
+import {Button, Col, Drawer, Form, message, Popconfirm, Row} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import axios from "axios";
@@ -92,17 +92,23 @@ const Clientes = () => {
                                 setOpenEditarCliente(false);
                             }
                         }}><GrEdit/></Button>&nbsp;
-                        <Button danger={true} onClick={(event)=>{
-                            messageApi.loading('Removendo cliente...', 1);
-                            let url = (record.tipo==='fisico')?'/api/clientesfis/':'/api/clientesjur/';
-                            url += record.xid;
-                            const response = axios.delete(url).then((response)=>{
-                                messageApi.success('Cliente Removido com sucesso');
-                            }).catch(e=>{
-                                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
-                                messageApi.error('Não foi possível remover o cliente');
-                            });
-                        }}><IoIosRemoveCircleOutline/></Button>
+                        <Popconfirm title={'Remover cliente'} description={'Tem certeza que deseja remover este cliente?'}
+                                    onConfirm={(event)=>{
+                                        const msg = messageApi.loading('Removendo cliente...', 10000);
+                                        let url = (record.tipo==='fisico')?'/api/clientesfis/':'/api/clientesjur/';
+                                        url += record.xid;
+                                        const response = axios.delete(url).then((response)=>{
+                                            messageApi.destroy(msg.id);
+                                            messageApi.success('Cliente Removido com sucesso');
+                                        }).catch(e=>{
+                                            if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                                            messageApi.destroy(msg.id);
+                                            messageApi.error('Não foi possível remover o cliente');
+                                        });
+                                    }}
+                        >
+                            <Button danger={true}><IoIosRemoveCircleOutline/></Button>
+                        </Popconfirm>
                     </>
                 )
             }
