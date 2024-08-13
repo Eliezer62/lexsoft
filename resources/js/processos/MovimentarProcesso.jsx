@@ -135,6 +135,8 @@ export default function MovimentarProcesso()
                 messageApi.success('Evento salvo com sucesso');
             }).catch((e)=>{
                 setConfirmLoading(false);
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                else if(e.response.status===403) navigate('/403');
                 messageApi.error('Erro em salvar o evento: '+e.response.data?.msg);
             });
         });
@@ -153,6 +155,7 @@ export default function MovimentarProcesso()
                     setEventos(resp.data);
                 }).catch((e)=>{
                     if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                    else if(e.response.status===403) navigate('/403');
                     messageApi.error('Erro em obter os eventos do processo');
                 });
         }
