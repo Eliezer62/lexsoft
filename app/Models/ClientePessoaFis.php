@@ -106,4 +106,12 @@ class ClientePessoaFis extends Model
     {
         return $this->hasMany(ClientePessoaJur::class, 'id', 'administrador');
     }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::deleted(function ($model) {
+            $model->rg()->first()->delete();
+        });
+    }
 }
