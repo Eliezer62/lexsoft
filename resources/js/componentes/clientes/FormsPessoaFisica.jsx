@@ -132,6 +132,7 @@ const FormsPessoaFisica = (props) => {
                     <DatePicker
                         placeholder={'Data de Nascimento'}
                         format={'DD/MM/YYYY'}
+                        maxDate={dayjs()}
                     />
                 </Form.Item>
 
@@ -270,6 +271,7 @@ const FormsPessoaFisica = (props) => {
                         <DatePicker
                             placeholder={'Data de emissão'}
                             format={'DD/MM/YYYY'}
+                            maxDate={dayjs()}
                         />
                     </Form.Item>
 

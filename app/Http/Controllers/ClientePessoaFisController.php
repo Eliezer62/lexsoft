@@ -120,10 +120,18 @@ class ClientePessoaFisController extends Controller
         }
         catch (QueryException $e)
         {
-            if($e->getCode()==23505)
-                return response()->json(['msg'=>'Valores duplicados: cpf, email e rg devem ser únicos'], 500);
             if($e->getCode()==23502)
                 return response()->json(['msg'=>'Valores nulos enviado'], 500);
+
+            elseif($e->getCode()=='P0001')
+                return response()->json(['msg'=>'Data de nascimento não pode ser futura'], 422);
+
+            elseif($e->getCode()=='P0002')
+                return response()->json(['msg'=>'CPF já cadastrado anteriormente'], 422);
+
+            elseif($e->getCode()==23505)
+                return response()->json(['msg'=>'Valores duplicados: rg deve ser único'], 500);
+
             return response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
@@ -251,6 +259,13 @@ class ClientePessoaFisController extends Controller
         {
             if($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: somente é permitido um único RG com mesmo número e Estado'], 500);
+
+            elseif($e->getCode()=='P0001')
+                return response()->json(['msg'=>'Data de nascimento não pode ser futura'], 422);
+
+            elseif($e->getCode()=='P0002')
+                return response()->json(['msg'=>'CPF já cadastrado anteriormente'], 422);
+
             return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
         }
         catch (\Exception $e)
