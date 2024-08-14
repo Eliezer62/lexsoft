@@ -17,10 +17,10 @@ return new class extends Migration
         RETURNS trigger AS
         \$BODY\$
         BEGIN
-        IF NEW.valor_causa <= NEW.valor_condenacao THEN
+        IF NEW.valor_causa < NEW.valor_condenacao THEN
             RAISE EXCEPTION 'Valor de condenação deve ser menor que o valor da causa' USING ERRCODE = 'P0001';
 
-        ELSIF NEW.data_criacao::DATE >= NEW.data_distribuicao::DATE THEN
+        ELSIF NEW.data_criacao::DATE > NEW.data_distribuicao::DATE THEN
             RAISE EXCEPTION 'Data de criação deve ocorrer antes da data de distribuição' USING ERRCODE = 'P0002';
 
         ELSIF NEW.valor_causa < 0.0 THEN
@@ -47,6 +47,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('DROP TRIGGER IF EXISTS check_processos CASCADE');
+        DB::statement('DROP FUNCTION IF EXISTS check_processos CASCADE');
     }
 };
