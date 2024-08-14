@@ -8,8 +8,10 @@ use App\Models\Telefone;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\RG;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class ClientePessoaFisController extends Controller
@@ -325,6 +327,8 @@ class ClientePessoaFisController extends Controller
         $cliente->rg = json_decode($cliente->rg);
         $cliente->enderecos = json_decode($cliente->enderecos);
         $cliente->telefones = json_decode($cliente->telefones);
+        $advogado = Auth::user();
+        Log::channel('auditoria')->info("O advogado {$advogado->xid} nome {$advogado->nome} visualizou os dados do cliente {$cliente->xid} nome {$cliente->nome} cpf {$cliente->cpf}");
         return response()->json($cliente, 200);
     }
 

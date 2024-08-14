@@ -127,6 +127,12 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'auditoria' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/auditoria/laravel.log'),
+            'level' => 'info',
+        ]
+
     ],
 
 ];
