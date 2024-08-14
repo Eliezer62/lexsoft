@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
-import {Flex, Form, Input, InputNumber, Select, message, Button} from "antd";
-import {MaskedInput} from "antd-mask-input";
+import {Flex, Form, Input, InputNumber, Select, message, Button, Skeleton} from "antd";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
@@ -10,7 +9,7 @@ export default function Perfil()
     const [estados, setEstados] = useState([]);
     const navigate = useNavigate();
     const [messageApi, context] = message.useMessage();
-    const [advogado, setAdv] = useState({});
+    const [loading, setLoading] = useState(true);
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -39,7 +38,7 @@ export default function Perfil()
                     messageApi.destroy(msg.id);
                     if(e.response?.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     messageApi.error('Erro em obter dados');
-                });
+                }).finally(() => setLoading(false));
         }
         getEstados();
         getAdvogado();
@@ -66,69 +65,71 @@ export default function Perfil()
 
     return (
         <LayoutBasico titulo={'Editar Perfil'}>
-            <Flex justify={'center'}>
-                {context}
-                <Form
-                    layout={'vertical'}
-                    form={form}
-                >
-                    <Form.Item
-                        label={'Nome'}
-                        name={'nome'}
-                        rules={[
-                            {required:true, message:'Nome é obrigatório'},
-                            {max:60, message:'Tamanho máximo é 60 caracteres'}
-                        ]}
+            <Skeleton loading={loading}>
+                <Flex justify={'center'}>
+                    {context}
+                    <Form
+                        layout={'vertical'}
+                        form={form}
                     >
-                        <Input style={{ width: 400 }} placeholder={'Digite o nome...'} />
-                    </Form.Item>
-                    <Form.Item
-                        label={'CPF'}
-                        name={'cpf'}
-                        rules={[
-                            {required:true, message:'CPF é obrigatório'}
-                        ]}
-                    >
-                        <Input disabled/>
-                    </Form.Item>
+                        <Form.Item
+                            label={'Nome'}
+                            name={'nome'}
+                            rules={[
+                                {required:true, message:'Nome é obrigatório'},
+                                {max:60, message:'Tamanho máximo é 60 caracteres'}
+                            ]}
+                        >
+                            <Input style={{ width: 400 }} placeholder={'Digite o nome...'} />
+                        </Form.Item>
+                        <Form.Item
+                            label={'CPF'}
+                            name={'cpf'}
+                            rules={[
+                                {required:true, message:'CPF é obrigatório'}
+                            ]}
+                        >
+                            <Input disabled/>
+                        </Form.Item>
 
-                    <Form.Item
-                        label={'E-MAIL'}
-                        name={'email'}
-                        rules={[
-                            {required:true, message:'E-MAIL é obrigatório'},
-                            {type:'email', message:'Formato inválido'}
-                        ]}
-                    >
-                        <Input disabled/>
-                    </Form.Item>
-                    <Form.Item
-                        label={'OAB'}
-                        name={'oab'}
-                    >
-                        <InputNumber/>
-                    </Form.Item>
-                    <Form.Item
-                        label={'Estado'}
-                        name={'uf_oab'}
-                    >
-                        <Select options={estados} showSearch optionFilterProp={'label'}/>
-                    </Form.Item>
+                        <Form.Item
+                            label={'E-MAIL'}
+                            name={'email'}
+                            rules={[
+                                {required:true, message:'E-MAIL é obrigatório'},
+                                {type:'email', message:'Formato inválido'}
+                            ]}
+                        >
+                            <Input disabled/>
+                        </Form.Item>
+                        <Form.Item
+                            label={'OAB'}
+                            name={'oab'}
+                        >
+                            <InputNumber/>
+                        </Form.Item>
+                        <Form.Item
+                            label={'Estado'}
+                            name={'uf_oab'}
+                        >
+                            <Select options={estados} showSearch optionFilterProp={'label'}/>
+                        </Form.Item>
 
-                    <Form.Item
-                        label={'Alterar Senha'}
-                        name={'password'}
-                        rules={[
-                            {min:8, message:'Mínimo de 8 caracteres'}
-                        ]}
-                    >
-                        <Input.Password/>
-                    </Form.Item>
-                </Form>
-            </Flex>
-            <Flex justify={'right'}>
-                <Button type={'primary'} onClick={enviar} style={{marginBottom:'30px'}}>Salvar</Button>
-            </Flex>
+                        <Form.Item
+                            label={'Alterar Senha'}
+                            name={'password'}
+                            rules={[
+                                {min:8, message:'Mínimo de 8 caracteres'}
+                            ]}
+                        >
+                            <Input.Password/>
+                        </Form.Item>
+                    </Form>
+                </Flex>
+                <Flex justify={'right'}>
+                    <Button type={'primary'} onClick={enviar} style={{marginBottom:'30px'}}>Salvar</Button>
+                </Flex>
+            </Skeleton>
         </LayoutBasico>
     )
 }

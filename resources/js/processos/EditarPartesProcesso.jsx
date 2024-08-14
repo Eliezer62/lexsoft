@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import FormPartes from "@/componentes/processos/FormPartes.jsx";
-import {Breadcrumb, Button, Flex, Form, message} from "antd";
+import {Breadcrumb, Button, Flex, Form, message, Skeleton} from "antd";
 import {HomeOutlined} from "@ant-design/icons";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
@@ -11,6 +11,7 @@ export default function EditarPartesProcesso(props){
     const {xid} = useParams();
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const [loadingSke, setLoadingSke] = useState(true);
     const [clientes, setClientes] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
@@ -42,7 +43,6 @@ export default function EditarPartesProcesso(props){
     }
 
     useEffect(() => {
-        const msg = messageApi.loading('Obtendo dados', 1);
         const getPartes = async () => {
             await axios.get('/api/processos/'+xid+'/partes')
                 .then(resp=>{
@@ -55,6 +55,9 @@ export default function EditarPartesProcesso(props){
                 }).catch((erro)=>{
                     if(erro.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     messageApi.error('Erro em obter dados');
+                })
+                .finally(() => {
+                    setLoadingSke(false);
                 });
         }
         const getAdvs = async () => {
@@ -82,11 +85,13 @@ export default function EditarPartesProcesso(props){
             ]}
             />
             {contextHolder}
-            <FormPartes form={form}/>
-            <Flex justify={'right'}>
-                <Button type={'default'} style={{margin:'5px'}} onClick={()=>location.href='/processos/'+xid+'/editar'}>Voltar</Button>
-                <Button type={'primary'} style={{margin:'5px'}} onClick={enviar} loading={loading}>Salvar</Button>
-            </Flex>
+            <Skeleton loading={loadingSke}>
+                <FormPartes form={form}/>
+                <Flex justify={'right'}>
+                    <Button type={'default'} style={{margin:'5px'}} onClick={()=>location.href='/processos/'+xid+'/editar'}>Voltar</Button>
+                    <Button type={'primary'} style={{margin:'5px'}} onClick={enviar} loading={loading}>Salvar</Button>
+                </Flex>
+            </Skeleton>
         </LayoutBasico>
     )
 }

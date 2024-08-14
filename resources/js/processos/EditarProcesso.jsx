@@ -13,13 +13,13 @@ export default function EditarProcesso()
     const [form] = Form.useForm();
     const [messageApi, context] = message.useMessage();
     const [loading, setLoading] = useState(false);
+    const [loadingSke, setLoadingSke] = useState(true);
     const [reload, setReload] = useState(false);
     const navigate = useNavigate();
     let {xid} = useParams();
 
     useEffect(() => {
         const getProcesso = async () => {
-            setLoading(true);
             await axios.get('/api/processos/'+xid)
                 .then((resp)=>{
                     let dados = resp.data;
@@ -45,7 +45,7 @@ export default function EditarProcesso()
                     if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     messageApi.error('Erro em obter os dados', 10)
                 }).finally(()=>{
-                    setLoading(false);
+                    setLoadingSke(false);
                 });
         }
         getProcesso();
@@ -100,7 +100,7 @@ export default function EditarProcesso()
             />
             {context}
             <Skeleton
-                loading={loading}
+                loading={loadingSke}
             >
                 <FormProcesso form={form}/>
                 <Flex justify={'right'}>

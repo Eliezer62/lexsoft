@@ -11,17 +11,13 @@ import {
     Modal,
     message,
     Table,
-    Popover,
     Popconfirm,
-    Upload, List, Skeleton
 } from "antd";
 import {HomeOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
 import axios from "axios";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import {MdDriveFolderUpload} from "react-icons/md";
-import { UploadOutlined } from '@ant-design/icons';
-import {IoCloudDownloadOutline} from "react-icons/io5";
 import VincularDocs from "@/componentes/processos/VincularDocs.jsx";
 import {useNavigate} from "react-router-dom";
 
@@ -39,6 +35,7 @@ export default function MovimentarProcesso()
     const [vincularDocs, setVincularDocs] = useState(false);
     const [evento, setEvento] = useState({});
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     const colunas = [
         {
@@ -157,6 +154,8 @@ export default function MovimentarProcesso()
                     if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     else if(e.response.status===403) navigate('/403');
                     messageApi.error('Erro em obter os eventos do processo');
+                }).finally(() => {
+                    setLoading(false);
                 });
         }
         const intervaloFc = setInterval(()=>{
@@ -194,6 +193,7 @@ export default function MovimentarProcesso()
                 pagination={{
                     pageSize: 7
                 }}
+                loading={loading}
             />
             <Modal
                 open={novoEvento}
