@@ -140,7 +140,7 @@ export default function Dashboard()
                         <Statistic title="Quantidade de processos vinculados" value={dados?.estatistica?.qtd_processos??0} />
                         <Statistic title="Quantidade de atendimentos no mês" value={dados?.estatistica?.qtd_atendimentos??0} />
                     </Card>
-                    <Card title={'Produtividade do mês'} style={{width:500, height:200}}>
+                    <Card title={'Produtividade do mês'} style={{width:500, height:350}}>
                         <Area {...produtividade} />
                     </Card>
                     <Skeleton loading={loadAgenda} style={{width:'300px'}} active={true}>
