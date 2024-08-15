@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {  UserOutlined } from '@ant-design/icons';
 import {ConfigProvider, Layout, Menu, Avatar, theme, Flex, Button, Affix} from 'antd';
 import img from '../../img/logo-nobg.png'
@@ -61,7 +61,17 @@ const LayoutBasico = (props) => {
     const { defaultAlgorithm, darkAlgorithm, useToken } = theme;
     const navigate = useNavigate();
     const {token} = useToken();
-    const [noturno, setNoturno] = useState(true);
+    const [noturno, setNoturno] = useState(false);
+
+
+    useEffect(() => {
+        if (window.matchMedia)
+        {
+            const query = window.matchMedia('(prefers-color-scheme: dark)');
+            setNoturno(query?.matches);
+        }
+    }, []);
+
     const tema = {
         algorithm: noturno ? darkAlgorithm : defaultAlgorithm,
     };
