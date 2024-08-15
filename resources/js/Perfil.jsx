@@ -10,6 +10,7 @@ export default function Perfil()
     const navigate = useNavigate();
     const [messageApi, context] = message.useMessage();
     const [loading, setLoading] = useState(true);
+    const [confirmLoading, setConfirmLoading] = useState(false);
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -53,13 +54,14 @@ export default function Perfil()
             if(form.getFieldValue('password'))
                 formData.append('password', form.getFieldValue('password'));
 
+            setConfirmLoading(true);
             axios.post('/api/perfil', formData)
                 .then((resp)=>{
                     messageApi.success('Perfil atualizado com sucesso');
                 }).catch((error)=>{
                     if(error.response?.status===401) navigate('/login', {state:{anterior:location.pathname}});
-                    messageApi.error('Erro em atualizar o perfil');
-            });
+                    messageApi.error('Erro em atualizar o perfil: '+error?.response?.data?.msg);
+            }).finally(() => setConfirmLoading(false));
         });
     }
 
@@ -127,7 +129,7 @@ export default function Perfil()
                     </Form>
                 </Flex>
                 <Flex justify={'right'}>
-                    <Button type={'primary'} onClick={enviar} style={{marginBottom:'30px'}}>Salvar</Button>
+                    <Button type={'primary'} onClick={enviar} style={{marginBottom:'30px'}} loading={confirmLoading}>Salvar</Button>
                 </Flex>
             </Skeleton>
         </LayoutBasico>

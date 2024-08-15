@@ -199,6 +199,9 @@ class AdvogadoController extends Controller
         }
         catch (\Exception $e)
         {
+            if($e->getCode()==23505)
+                return response()->json(['msg' => 'OAB já cadastrada anteriormente'], 409);
+
             return response()->json(['msg' => 'Erro interno'], 500);
         }
     }

@@ -15,7 +15,7 @@ return new class extends Migration
         RETURNS trigger AS
         \$BODY\$
         BEGIN
-            IF EXISTS( SELECT 1 FROM advogados adv WHERE adv.oab = NEW.oab AND adv.uf_oab = NEW.uf_oab) THEN
+            IF EXISTS( SELECT 1 FROM advogados adv WHERE adv.oab = NEW.oab AND adv.uf_oab = NEW.uf_oab) AND TG_OP = 'INSERT' THEN
                 RAISE EXCEPTION 'OAB JÁ FOI VINCULADA A UM ADVOGADO' USING ERRCODE = 'P0004';
 
             END IF;
