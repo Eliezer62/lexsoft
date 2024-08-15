@@ -13,3 +13,6 @@ Route::controller(DocumentoController::class)
     ->group(function (){
         Route::post('/upload', 'store');
     });
+
+
+Route::redirect('/', '/login')->name('login');
