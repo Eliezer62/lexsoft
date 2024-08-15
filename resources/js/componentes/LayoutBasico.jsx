@@ -96,8 +96,8 @@ const LayoutBasico = (props) => {
                             breakpoint="lg"
                             collapsedWidth="0"
                             style={{
-                                background: noturno ? token.darkColorBgBase:'#f5f5f5',
-                                border: '5px solid '+(noturno ? '#0000':'#f9f9f9'),
+                                background: noturno ? token.darkColorBgBase:'#EFEFEF',
+                                borderRight: '5px solid '+(noturno ? '#0000':'#E4E4E4'),
                                 fontFamily: 'Roboto'
                             }}
                         >
@@ -117,7 +117,7 @@ const LayoutBasico = (props) => {
                                 style={{
                                     height: '70%',
                                     borderRight: 0,
-                                    background: noturno ? token.darkColorBgBase:'#f5f5f5'
+                                    background: noturno ? token.darkColorBgBase:'#EFEFEF'
                                 }}
                                 items={items}
                                 onClick={handleMenu}
@@ -149,7 +149,7 @@ const LayoutBasico = (props) => {
                                 padding: 24,
                                 margin: 0,
                                 minHeight: 280,
-                                background: (noturno)?token.darkColorBgContainer:'#fff',
+                                background: (noturno)?token.darkColorBgContainer:'#F9F9F9',
                             }}
                         >
                             <h1 style={{padding:15}}>{props.titulo}</h1>
