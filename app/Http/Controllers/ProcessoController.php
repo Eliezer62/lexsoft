@@ -461,8 +461,6 @@ class ProcessoController extends Controller
         JOIN tribunais t ON t.id = p.tribunal
         JOIN varas v ON v.id = p.vara
         LEFT JOIN view_partes_processo vpp ON vpp.processo = p.xid
-        JOIN representa r ON r.processo = p.id
-
         WHERE xid = :xid
         GROUP BY p.xid, p.xid, p.numero, p."numCNJ", p.valor_causa, p.valor_condenacao, p.justica_gratuita, p.prioridade, p.instancia, p.data_criacao, p.data_distribuicao, concat(cj.id, \' \', cj.descricao), t.nome, (SELECT nome FROM comarcas com WHERE com.id = p.comarca), v.nome
         ', ['xid'=>$xid]);
@@ -471,6 +469,7 @@ class ProcessoController extends Controller
         {
             $processo->partes = json_decode($processo->partes);
         }
+
         return response()->json($processos[0], 200);
     }
 
