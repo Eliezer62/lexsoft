@@ -78,10 +78,12 @@ class ProcessoController extends Controller
         ])
             ->selectRaw('(SELECT nome FROM comarcas WHERE comarcas.id = processos.comarca) as comarca')
             ->selectRaw('varas.nome as vara')
-            ->join('varas', 'processos.vara', 'varas.id')
-            ->join('representa', 'processos.id', 'representa.processo')
-            ->where('representa.advogado', '=', $advogado->id)
-            ->firstWhere('xid', $xid);
+            ->join('varas', 'processos.vara', 'varas.id');
+
+        if($advogado->grupo == 'administrador') $processo = $processo->firstWhere('xid', $xid);
+        else $processo = $processo->join('representa', 'processos.id', 'representa.processo')
+                                ->where('representa.advogado', '=', $advogado->id)
+                                ->firstWhere('xid', $xid);
 
         return response()->json($processo, 200);
     }
