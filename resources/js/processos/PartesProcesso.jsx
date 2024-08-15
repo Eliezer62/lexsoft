@@ -6,6 +6,7 @@ import {Breadcrumb, Button, Flex, Form, message} from "antd";
 import {HomeOutlined} from "@ant-design/icons";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import NovoCliente from "@/componentes/clientes/NovoCliente.jsx";
 
 export default function PartesProcesso(props){
     const {xid} = useParams();
@@ -14,6 +15,7 @@ export default function PartesProcesso(props){
     const [clientes, setClientes] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
+    const [openNovoCliente, setOpenNovoCliente] = useState(false);
 
     const enviar = () => {
         form.validateFields().then(async ()=>{
@@ -51,10 +53,20 @@ export default function PartesProcesso(props){
             ]}
             />
             {contextHolder}
+            <Flex justify={'right'}>
+                <Button onClick={() => setOpenNovoCliente(true)}>Novo cliente</Button>
+            </Flex>
             <FormPartes form={form}/>
             <Flex justify={'right'}>
                 <Button type={'primary'} size={'large'} onClick={enviar} loading={loading}>Enviar</Button>
             </Flex>
+
+            <NovoCliente
+                open={openNovoCliente}
+                handleCancel={() => setOpenNovoCliente(false)}
+                sucessoMsg={ () => messageApi.success('Cliente criado com sucesso')}
+                erroMsg={(erro) => messageApi.error('Erro em criar o cliente: '+erro)}
+            />
         </LayoutBasico>
     )
 }

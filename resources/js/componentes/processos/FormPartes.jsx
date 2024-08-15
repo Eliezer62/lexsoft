@@ -10,6 +10,7 @@ export default function FormPartes(props){
     const [clientes, setClientes] = useState([]);
     const [qualificacoes, setQualificacoes] = useState([]);
     const navigate = useNavigate();
+    const [timeout, setTimeout] = useState(0);
 
     useEffect(() => {
         const getAdvs = async () => {
@@ -36,6 +37,19 @@ export default function FormPartes(props){
                 messageApi.error('Erro em obter os clientes');
             });
         }
+
+        const intervalo = setInterval(() => {
+            getClientes();
+            getAdvs();
+            setTimeout(3000);
+        }, timeout)
+
+        return () => {
+            clearInterval(intervalo);
+        }
+    });
+
+    useEffect(() => {
         const getQual = async () =>{
             await axios.get('/api/qualificacoes').then((response)=> {
                 let qual = [];
@@ -48,10 +62,10 @@ export default function FormPartes(props){
                 messageApi.error('Erro em obter as qualificações');
             });
         }
-        getClientes();
-        getAdvs();
         getQual();
     }, []);
+
+
     return (
         <Flex justify={'center'} style={{marginTop:'25px'}}>
             {contextHolder}
