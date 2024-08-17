@@ -1,4 +1,5 @@
 # LEXSOFT
+A proposta do software LexSoft visa oferecer uma solução completa para advogados, centralizando e otimizando a gestão de processos e documentos. O sistema permitirá o cadastro e a consulta de processos com campos detalhados, além da gestão eficiente de documentos relacionados, como boletins de ocorrência.
 
 ## Instalação
 Clonando o repositório
@@ -28,9 +29,6 @@ php artisan storage:link
 ```
 Configurar o .env para o ambiente local<br>
 Configurando o sistema de Login
-```bash
-php artisan vendor:publish --provider="PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider"
-```
 ```bash
 php artisan jwt:secret
 ```
