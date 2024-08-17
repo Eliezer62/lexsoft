@@ -21,6 +21,8 @@
         "antd-mask-input": "^2.0.7",
         "babel-preset-react": "^6.24.1",
         "bootstrap": "^5.3.3",
+        "ckeditor4-plugin-exportpdf": "^1.0.6",
+        "ckeditor4-react": "^4.3.0",
         "ckeditor5": "^42.0.0",
         "dayjs": "^1.11.11",
         "dompurify": "^3.1.6",
