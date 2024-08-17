@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
-import {Breadcrumb, Button, Flex, Form, message} from "antd";
+import {Breadcrumb, Button, Flex, Form, message, Skeleton} from "antd";
 import FormProcesso from "@/componentes/processos/FormProcesso.jsx";
 import axios from "axios";
 import {HomeOutlined} from "@ant-design/icons";
@@ -13,12 +13,12 @@ export default function EditarProcesso()
     const [form] = Form.useForm();
     const [messageApi, context] = message.useMessage();
     const [loading, setLoading] = useState(false);
+    const [loadingSke, setLoadingSke] = useState(true);
     const [reload, setReload] = useState(false);
     const navigate = useNavigate();
     let {xid} = useParams();
 
     useEffect(() => {
-        let loading = messageApi.loading('Carregando dados', 1000);
         const getProcesso = async () => {
             await axios.get('/api/processos/'+xid)
                 .then((resp)=>{
@@ -44,8 +44,9 @@ export default function EditarProcesso()
                 }).catch((e)=>{
                     if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                     messageApi.error('Erro em obter os dados', 10)
+                }).finally(()=>{
+                    setLoadingSke(false);
                 });
-            messageApi.destroy(loading.id);
         }
         getProcesso();
     }, []);
@@ -98,12 +99,16 @@ export default function EditarProcesso()
             ]}
             />
             {context}
-            <FormProcesso form={form}/>
-            <Flex justify={'right'}>
-                <Button type={'default'} style={{margin:'5px'}} onClick={()=>location.href='/processos'}>Voltar</Button>
-                <Button type={'default'} style={{margin:'5px'}} onClick={()=>location.href = location.href+'/partes'}>Alterar Partes</Button>
-                <Button type={'primary'} style={{margin:'5px'}} onClick={enviarProcesso} loading={loading}>Salvar</Button>
-            </Flex>
+            <Skeleton
+                loading={loadingSke}
+            >
+                <FormProcesso form={form}/>
+                <Flex justify={'right'}>
+                    <Button type={'default'} style={{margin:'5px'}} onClick={()=>location.href='/processos'}>Voltar</Button>
+                    <Button type={'default'} style={{margin:'5px'}} onClick={()=>location.href = location.href+'/partes'}>Alterar Partes</Button>
+                    <Button type={'primary'} style={{margin:'5px'}} onClick={enviarProcesso} loading={loading}>Salvar</Button>
+                </Flex>
+            </Skeleton>
         </LayoutBasico>
     )
 }

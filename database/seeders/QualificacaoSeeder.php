@@ -98,5 +98,7 @@ class QualificacaoSeeder extends Seeder
         Qualificacao::firstOrCreate(['descricao'=>'Suscitado']);
 
         Qualificacao::firstOrCreate(['descricao'=>'Suscitante']);
+
+        Qualificacao::firstOrCreate(['descricao'=>'Réu']);
     }
 }

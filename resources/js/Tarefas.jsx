@@ -34,6 +34,8 @@ const Tarefas = () => {
         const getTarefas = async () => {
             const response = await axios.get('/api/tarefas/'+user.xid)
                 .then((response)=>{
+                    response.data.forEach(data => data.key = data.xid);
+                    console.log(response.data);
                     setTarefas(response.data);
                     setLoadingTable(false);
                 }).catch((error)=>{

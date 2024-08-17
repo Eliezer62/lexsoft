@@ -10,17 +10,18 @@ use App\Models\Processo;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Exception;
 use Barryvdh\DomPDF\Facade\Pdf;
-use PhpParser\Comment\Doc;
+use Illuminate\Support\Facades\Log;
 
 class DocumentoController extends Controller
 {
     public function __construct()
     {
-        
+
     }
     public function store(Request $request)
     {
@@ -129,6 +130,11 @@ class DocumentoController extends Controller
                 ->stream($documento->descricao.'.pdf');
         }
 
+        $advogado = Auth::user();
+        $id = ($documento->pessoafis)?$documento->pessoafis:$documento->pessoajur;
+        Log::channel('auditoria')->info("O advogado xid {$advogado->xid}
+        nome {$advogado->nome} visualizou o documento {$documento->xid}
+        descricao {$documento->descricao} do cliente id {$id}");
         return Storage::disk('local')->response($documento->src);
     }
 

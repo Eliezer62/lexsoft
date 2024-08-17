@@ -8,8 +8,10 @@ use App\Models\Telefone;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\RG;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class ClientePessoaFisController extends Controller
@@ -120,10 +122,18 @@ class ClientePessoaFisController extends Controller
         }
         catch (QueryException $e)
         {
-            if($e->getCode()==23505)
-                return response()->json(['msg'=>'Valores duplicados: cpf, email e rg devem ser únicos'], 500);
             if($e->getCode()==23502)
                 return response()->json(['msg'=>'Valores nulos enviado'], 500);
+
+            elseif($e->getCode()=='P0001')
+                return response()->json(['msg'=>'Data de nascimento não pode ser futura'], 422);
+
+            elseif($e->getCode()=='P0002')
+                return response()->json(['msg'=>'CPF já cadastrado anteriormente'], 422);
+
+            elseif($e->getCode()==23505)
+                return response()->json(['msg'=>'Valores duplicados: rg deve ser único'], 500);
+
             return response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
@@ -251,6 +261,13 @@ class ClientePessoaFisController extends Controller
         {
             if($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: somente é permitido um único RG com mesmo número e Estado'], 500);
+
+            elseif($e->getCode()=='P0001')
+                return response()->json(['msg'=>'Data de nascimento não pode ser futura'], 422);
+
+            elseif($e->getCode()=='P0002')
+                return response()->json(['msg'=>'CPF já cadastrado anteriormente'], 422);
+
             return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
         }
         catch (\Exception $e)
@@ -310,6 +327,8 @@ class ClientePessoaFisController extends Controller
         $cliente->rg = json_decode($cliente->rg);
         $cliente->enderecos = json_decode($cliente->enderecos);
         $cliente->telefones = json_decode($cliente->telefones);
+        $advogado = Auth::user();
+        Log::channel('auditoria')->info("O advogado {$advogado->xid} nome {$advogado->nome} visualizou os dados do cliente {$cliente->xid} nome {$cliente->nome} cpf {$cliente->cpf}");
         return response()->json($cliente, 200);
     }
 

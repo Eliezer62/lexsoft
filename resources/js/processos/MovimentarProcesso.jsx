@@ -11,17 +11,13 @@ import {
     Modal,
     message,
     Table,
-    Popover,
     Popconfirm,
-    Upload, List, Skeleton
 } from "antd";
 import {HomeOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
 import axios from "axios";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import {MdDriveFolderUpload} from "react-icons/md";
-import { UploadOutlined } from '@ant-design/icons';
-import {IoCloudDownloadOutline} from "react-icons/io5";
 import VincularDocs from "@/componentes/processos/VincularDocs.jsx";
 import {useNavigate} from "react-router-dom";
 
@@ -39,6 +35,7 @@ export default function MovimentarProcesso()
     const [vincularDocs, setVincularDocs] = useState(false);
     const [evento, setEvento] = useState({});
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     const colunas = [
         {
@@ -57,7 +54,8 @@ export default function MovimentarProcesso()
         {
             title:'Data',
             key:'data',
-            dataIndex: 'data'
+            dataIndex: 'data',
+            sorter: (a, b) => dayjs(a.data, 'DD/MM/YYYY').diff(dayjs(b.data, 'DD/MM/YYYY'))
         },
         {
             title:'Prazo',
@@ -65,12 +63,14 @@ export default function MovimentarProcesso()
                 {
                     title:'Início',
                     key:'inicio',
-                    dataIndex:'inicio'
+                    dataIndex:'inicio',
+                    sorter: (a, b) => dayjs(a.inicio, 'DD/MM/YYYY').diff(dayjs(b.inicio, 'DD/MM/YYYY'))
                 },
                 {
                     title: 'Fim',
                     key:'fim',
-                    dataIndex: 'fim'
+                    dataIndex: 'fim',
+                    sorter: (a, b) => dayjs(a.fim, 'DD/MM/YYYY').diff(dayjs(b.fim, 'DD/MM/YYYY'))
                 }
             ]
         },
@@ -135,6 +135,8 @@ export default function MovimentarProcesso()
                 messageApi.success('Evento salvo com sucesso');
             }).catch((e)=>{
                 setConfirmLoading(false);
+                if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                else if(e.response.status===403) navigate('/403');
                 messageApi.error('Erro em salvar o evento: '+e.response.data?.msg);
             });
         });
@@ -153,7 +155,10 @@ export default function MovimentarProcesso()
                     setEventos(resp.data);
                 }).catch((e)=>{
                     if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
+                    else if(e.response.status===403) navigate('/403');
                     messageApi.error('Erro em obter os eventos do processo');
+                }).finally(() => {
+                    setLoading(false);
                 });
         }
         const intervaloFc = setInterval(()=>{
@@ -191,6 +196,7 @@ export default function MovimentarProcesso()
                 pagination={{
                     pageSize: 7
                 }}
+                loading={loading}
             />
             <Modal
                 open={novoEvento}

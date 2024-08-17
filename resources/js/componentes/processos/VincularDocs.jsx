@@ -90,7 +90,7 @@ export default function VincularDocs(props){
         if(!props.open) setDocsVinculados([]);
         else getDocs();
 
-    }, [docsVinculados, props.open, reload]);
+    }, [props.open, reload]);
 
     return (
         <Modal

@@ -100,9 +100,6 @@ export default function NovoDocumento()
     return (
         <LayoutBasico menu={'processos'}>
             <Flex justify={'right'}>
-                <Button style={{marginRight:'10px'}} onClick={()=>{
-                    if(documento)window.open('/api/storage/content/'+documento.xid, '_blank');
-                }}>Exportar PDF</Button>
                 <Button type={'primary'} onClick={salvar}>Salvar</Button>
             </Flex>
             <br/>

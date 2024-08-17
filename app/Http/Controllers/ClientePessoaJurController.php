@@ -7,7 +7,9 @@ use App\Models\Endereco;
 use App\Models\Telefone;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use App\Models\ClientePessoaJur;
 
@@ -41,19 +43,34 @@ class ClientePessoaJurController extends Controller
             if(is_null($adm)) throw new \Exception();
             $validados['administrador'] = $adm->id;
             $cliente = ClientePessoaJur::create($validados);
-            foreach ($validados['enderecos'] as $endereco)
+            if($request->has('enderecos'))
+                foreach ($validados['enderecos'] as $endereco)
+                {
+                    Endereco::create([
+                        'logradouro'=>$endereco['logradouro'],
+                        'numero'=>$endereco['numero'],
+                        'cidade'=>$endereco['cidade'],
+                        'estado'=>$endereco['uf'],
+                        'cep'=>$endereco['cep'],
+                        'bairro'=>$endereco['bairro'],
+                        'complemento'=>$endereco['complemento'] ?? null,
+                        'pessoajur' => $cliente->id
+                    ]);
+                };
+
+            if($request->has('telefones'))
             {
-                Endereco::create([
-                    'logradouro'=>$endereco['logradouro'],
-                    'numero'=>$endereco['numero'],
-                    'cidade'=>$endereco['cidade'],
-                    'estado'=>$endereco['uf'],
-                    'cep'=>$endereco['cep'],
-                    'bairro'=>$endereco['bairro'],
-                    'complemento'=>$endereco['complemento'] ?? null,
-                    'pessoajur' => $cliente->id
-                ]);
+                foreach ($request->input('telefones') as $telefone)
+                {
+                    Telefone::create([
+                        'ddi'=>($telefone['ddi'] ?? '+55'),
+                        'ddd'=>$telefone['ddd'],
+                        'numero'=>$telefone['numero'],
+                        'pessoajur'=>$cliente->id
+                    ]);
+                }
             }
+
             return response()->json($cliente, 201);
         }
         catch (ValidationException $e)
@@ -62,13 +79,20 @@ class ClientePessoaJurController extends Controller
         }
         catch (QueryException $e)
         {
-            if($e->getCode()==23505)
+            if($e->getCode()=='P0002')
+                return response()->json(['msg'=>'Razão social já cadastrado anteriormente'], 409);
+
+            elseif($e->getCode()=='P0003')
+                return response()->json(['msg'=>'CNPJ já cadastrado anteriormente'], 409);
+
+            elseif($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: cnpj ou razão social devem ser únicos'], 500);
+
             return response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'], 500);
+            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
         }
     }
 
@@ -115,6 +139,10 @@ class ClientePessoaJurController extends Controller
             ->firstWhere('xid', $xid);
 
         $cliente->enderecos = json_decode($cliente->enderecos);
+        $cliente->telefones = json_decode($cliente->telefones);
+
+        $advogado = Auth::user();
+        Log::channel('auditoria')->info("O advogado {$advogado->xid} nome {$advogado->nome} visualizou os dados do cliente {$cliente->xid} razão social {$cliente->razao_social} cnpj {$cliente->cnpj}");
 
         return $cliente;
     }
@@ -175,8 +203,15 @@ class ClientePessoaJurController extends Controller
         }
         catch (QueryException $e)
         {
-            if($e->getCode()==23505)
+            if($e->getCode()=='P0002')
+                return response()->json(['msg'=>'Razão social já cadastrado anteriormente'], 409);
+
+            elseif($e->getCode()=='P0003')
+                return response()->json(['msg'=>'CNPJ já cadastrado anteriormente'], 409);
+
+            elseif($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: cnpj ou razão social devem ser únicos'], 500);
+
             return response()->json($e->getMessage(), 500);
         }
         catch (\Exception $e)

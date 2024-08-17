@@ -99,7 +99,7 @@ const NovoCliente = (props) => {
                             })
                             .catch((error) => {
                                 if (error.response.status === 401) navigate('/login', {state: {anterior: location.pathname}});
-                                props.erroMsg(error.response.msg);
+                                props.erroMsg(error.response?.data?.msg);
                             });
                         setLoading(false);
                     } else {
@@ -120,7 +120,7 @@ const NovoCliente = (props) => {
                             data: cliente
                         }).catch((error) => {
                             if (error.response.status === 401) navigate('/login', {state: {anterior: location.pathname}});
-                            props.erroMsg(error.response.msg);
+                            props.erroMsg(error.response?.data?.msg);
                         });
                         setLoading(false);
                         if (response.status === 201) {

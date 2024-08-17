@@ -10,10 +10,12 @@ use App\Models\Evento;
 use App\Models\Prazo;
 use App\Models\Processo;
 use App\Models\Vara;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class ProcessoController extends Controller
 {
@@ -27,8 +29,8 @@ class ProcessoController extends Controller
                 SELECT
                     p.xid, p.numero, p."numCNJ", t.nome AS tribunal, v.nome as vara,
                     (SELECT c.nome FROM comarcas c WHERE c.id = p.comarca) AS comarca,
-                    (JSON_AGG(JSON_BUILD_OBJECT(\'parte\', CONCAT(vpp.cliente) ))) AS partes,
-                    (JSON_AGG(JSON_BUILD_OBJECT(\'advogado\', CONCAT(advs.nome)))) AS advogados
+                    (JSON_AGG(DISTINCT JSONB_BUILD_OBJECT(\'parte\', CONCAT(vpp.cliente) ))) AS partes,
+                    (JSON_AGG(DISTINCT JSONB_BUILD_OBJECT(\'advogado\', CONCAT(advs.nome)))) AS advogados
                     FROM processos p JOIN tribunais t ON t.id = tribunal
                     JOIN varas v ON v.id = p.vara
                     LEFT JOIN view_partes_processo vpp ON vpp.processo = p.xid
@@ -44,8 +46,8 @@ class ProcessoController extends Controller
             SELECT
                  p.xid, p.numero, p."numCNJ", t.nome AS tribunal, v.nome as vara,
                 (SELECT c.nome FROM comarcas c WHERE c.id = p.comarca) AS comarca,
-                (JSON_AGG(JSON_BUILD_OBJECT(\'parte\', CONCAT(vpp.cliente) ))) AS partes,
-                (JSON_AGG(JSON_BUILD_OBJECT(\'advogado\', CONCAT(advs.nome)))) AS advogados
+                (JSON_AGG(DISTINCT JSONB_BUILD_OBJECT(\'parte\', CONCAT(vpp.cliente) ))) AS partes,
+                (JSON_AGG(DISTINCT JSONB_BUILD_OBJECT(\'advogado\', CONCAT(advs.nome)))) AS advogados
             FROM processos p
             JOIN tribunais t ON t.id = p.tribunal
             JOIN varas v ON v.id = p.vara
@@ -76,10 +78,12 @@ class ProcessoController extends Controller
         ])
             ->selectRaw('(SELECT nome FROM comarcas WHERE comarcas.id = processos.comarca) as comarca')
             ->selectRaw('varas.nome as vara')
-            ->join('varas', 'processos.vara', 'varas.id')
-            ->join('representa', 'processos.id', 'representa.processo')
-            ->where('representa.advogado', '=', $advogado->id)
-            ->firstWhere('xid', $xid);
+            ->join('varas', 'processos.vara', 'varas.id');
+
+        if($advogado->grupo == 'administrador') $processo = $processo->firstWhere('xid', $xid);
+        else $processo = $processo->join('representa', 'processos.id', 'representa.processo')
+                                ->where('representa.advogado', '=', $advogado->id)
+                                ->firstWhere('xid', $xid);
 
         return response()->json($processo, 200);
     }
@@ -157,7 +161,25 @@ class ProcessoController extends Controller
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+            if($e->getCode()=='P0001')
+                    return response()->json(['msg'=>'Valor de condenação deve ser menor que o valor da causa'], 400);
+
+            elseif($e->getCode()=='P0002')
+                return response()->json(['msg'=>'Data de criação deve ocorrer antes da data de distribuição'], 400);
+
+            elseif($e->getCode()=='P0003')
+                return response()->json(['msg'=>'Valor da causa deve ser positiva'], 400);
+
+            elseif($e->getCode()=='P0004')
+                return response()->json(['msg'=>'Valor de condenação deve ser positivo'], 400);
+
+            elseif ($e->getCode()==23505)
+                return response()->json(['msg'=>'Número do processo já existe'], 409);
+
+            else {
+                Log::error($e->getMessage());
+                return response()->json(['msg' => 'Erro interno'], 500);
+            }
         }
     }
 
@@ -214,9 +236,32 @@ class ProcessoController extends Controller
         {
             return response()->json(['msg'=>'dados inválidos enviado'], 422);
         }
+        catch (QueryException $e)
+        {
+            if($e->getCode()=='P0001')
+                return response()->json(['msg'=>'Valor de condenação deve ser menor que o valor da causa'], 400);
+
+            elseif($e->getCode()=='P0002')
+                return response()->json(['msg'=>'Data de criação deve ocorrer antes da data de distribuição'], 400);
+
+            elseif($e->getCode()=='P0003')
+                return response()->json(['msg'=>'Valor da causa deve ser positiva'], 400);
+
+            elseif($e->getCode()=='P0004')
+                return response()->json(['msg'=>'Valor de condenação deve ser positivo'], 400);
+
+            elseif ($e->getCode()==23505)
+                return response()->json(['msg'=>'Número do processo já existe'], 409);
+
+            else {
+                Log::error($e->getMessage());
+                return response()->json(['msg' => 'Erro interno'], 500);
+            }
+        }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+            Log::error($e->getMessage());
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
 
@@ -263,6 +308,7 @@ class ProcessoController extends Controller
         }
         catch (\Exception $e)
         {
+            Log::error($e->getMessage());
             return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
@@ -376,8 +422,8 @@ class ProcessoController extends Controller
                 $clientesjur[$cliente->id] = ['qualificacao'=>$parte['qualificacao']];
         }
 
-        $processo->partes()->sync($clientesfis);
-        $processo->partes_jur()->sync($clientesjur);
+        $processo->partes()->sync($clientesfis, false);
+        $processo->partes_jur()->sync($clientesjur, false);
     }
 
 
@@ -389,7 +435,7 @@ class ProcessoController extends Controller
             $advogados[] = Advogado::firstWhere('xid', $adv)->id;
         }
 
-        $processo->advogados()->sync($advogados);
+        $processo->advogados()->sync($advogados, false);
     }
 
 
@@ -406,7 +452,7 @@ class ProcessoController extends Controller
         p.data_distribuicao, concat(cj.id, \' \', cj.descricao) as classe_judicial,
         t.nome as tribunal, (SELECT nome FROM comarcas com WHERE com.id = p.comarca) as comarca,
         v.nome as vara,
-        JSON_AGG(JSON_BUILD_OBJECT(\'cliente\', vpp.cliente, \'documento\', vpp.documento,
+        JSON_AGG(DISTINCT JSONB_BUILD_OBJECT(\'cliente\', vpp.cliente, \'documento\', vpp.documento,
         \'qualificacao\', vpp.qualificacao
         )) AS partes
 
@@ -414,9 +460,7 @@ class ProcessoController extends Controller
         JOIN classes_judiciais cj ON cj.id = p.classe_judicial
         JOIN tribunais t ON t.id = p.tribunal
         JOIN varas v ON v.id = p.vara
-        JOIN view_partes_processo vpp ON vpp.processo = p.xid
-        JOIN representa r ON r.processo = p.id
-
+        LEFT JOIN view_partes_processo vpp ON vpp.processo = p.xid
         WHERE xid = :xid
         GROUP BY p.xid, p.xid, p.numero, p."numCNJ", p.valor_causa, p.valor_condenacao, p.justica_gratuita, p.prioridade, p.instancia, p.data_criacao, p.data_distribuicao, concat(cj.id, \' \', cj.descricao), t.nome, (SELECT nome FROM comarcas com WHERE com.id = p.comarca), v.nome
         ', ['xid'=>$xid]);
@@ -425,6 +469,7 @@ class ProcessoController extends Controller
         {
             $processo->partes = json_decode($processo->partes);
         }
+
         return response()->json($processos[0], 200);
     }
 

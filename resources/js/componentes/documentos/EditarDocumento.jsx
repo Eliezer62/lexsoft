@@ -66,9 +66,6 @@ export default function EditarDocumento(props)
             ]}
             />
             <Flex justify={'right'}>
-                <Button style={{marginRight:'10px'}} onClick={()=>{
-                    if(documento)window.open('/api/storage/content/'+documento, '_blank');
-                }}>Exportar PDF</Button>
                 <Button type={'primary'} onClick={salvar}>Salvar</Button>
             </Flex>
             <br/>

@@ -8,6 +8,7 @@ use App\Models\Tarefa;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -119,7 +120,10 @@ class TarefaController extends Controller
 
     public function delete(string $xid)
     {
-        Tarefa::firstWhere('xid', $xid)?->delete();
+        $advogado = Auth::user();
+        $tarefa = Tarefa::firstWhere('xid', $xid);
+        if(!is_null($tarefa) and $tarefa->responsavel == $advogado->id)
+            $tarefa->delete();
 
         return response(status: 200);
     }
