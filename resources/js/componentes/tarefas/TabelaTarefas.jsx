@@ -14,6 +14,7 @@ export default function TabelaTarefas(props)
     const [openEditarTarefa, setOpenEditarTarefa] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const [tarefa, setTarefa] = useState({});
+    const [expandedRowKeys, setExpandedRowKeys] = useState([]);
     const navigate = useNavigate();
 
     const opcoes = [
@@ -65,12 +66,14 @@ export default function TabelaTarefas(props)
                     key:'inicio',
                     dataIndex:'prazo',
                     render: item => (item?.inicio)?dayjs(item.inicio, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY HH:mm'):null,
+                    sorter: (a, b) => dayjs(a.prazo.inicio, 'YYYY-MM-DD hh:mi').diff(dayjs(b.prazo.inicio, 'YYYY-MM-DD hh:mi'))
                 },
                 {
                     title: 'Fim',
                     key:'fim',
                     dataIndex: 'prazo',
                     render: item => (item?.fim)?dayjs(item.fim, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY HH:mm'):null,
+                    sorter: (a, b) => dayjs(a.prazo.fim, 'YYYY-MM-DD hh:mi').diff(dayjs(b.prazo.fim, 'YYYY-MM-DD hh:mi'))
                 }
             ]
         },
@@ -143,12 +146,13 @@ export default function TabelaTarefas(props)
                 size={'small'}
                 pagination={
                     {
-                        pageSize: 4
+                        pageSize: 7
                     }
                 }
                 loading={props.loading}
                 expandable={{
-                    expandedRowRender: (record) => (
+                    expandedRowKeys: expandedRowKeys,
+                    expandedRowRender: (record) =>
                         <div
                             style={{
                                 margin: 0,
@@ -156,8 +160,12 @@ export default function TabelaTarefas(props)
                             dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(record.descricao)}}
                         >
                         </div>
-                    ),
-                    rowExpandable: (record) => record.name !== 'Not Expandable',
+                    ,
+                    onExpand: (expanded, record) => {
+                        const keys = [];
+                        if(expanded) keys.push(record.key);
+                        setExpandedRowKeys(keys);
+                    }
                 }}
             />
             {contextHolder}
