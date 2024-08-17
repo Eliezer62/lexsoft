@@ -54,7 +54,8 @@ export default function MovimentarProcesso()
         {
             title:'Data',
             key:'data',
-            dataIndex: 'data'
+            dataIndex: 'data',
+            sorter: (a, b) => dayjs(a.data, 'DD/MM/YYYY').diff(dayjs(b.data, 'DD/MM/YYYY'))
         },
         {
             title:'Prazo',
@@ -62,12 +63,14 @@ export default function MovimentarProcesso()
                 {
                     title:'Início',
                     key:'inicio',
-                    dataIndex:'inicio'
+                    dataIndex:'inicio',
+                    sorter: (a, b) => dayjs(a.inicio, 'DD/MM/YYYY').diff(dayjs(b.inicio, 'DD/MM/YYYY'))
                 },
                 {
                     title: 'Fim',
                     key:'fim',
-                    dataIndex: 'fim'
+                    dataIndex: 'fim',
+                    sorter: (a, b) => dayjs(a.fim, 'DD/MM/YYYY').diff(dayjs(b.fim, 'DD/MM/YYYY'))
                 }
             ]
         },
