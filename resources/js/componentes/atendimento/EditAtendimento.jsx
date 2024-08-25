@@ -119,16 +119,6 @@ const EditAtendimento = (props) => {
                 </Form.Item>
 
                 <Form.Item
-                    label={'Processo'}
-                    name={'processo'}
-                    initialValue={props.atendimento.processo}
-                >
-                    <Select
-
-                    />
-                </Form.Item>
-
-                <Form.Item
                     label={'Descrição'}
                     name={'descricao'}
                     initialValue={props.atendimento.descricao}

@@ -32,7 +32,6 @@ class Atendimento extends Model
         'clientejur',
         'data',
         'assunto',
-        'processo',
         'descricao'
     ];
 

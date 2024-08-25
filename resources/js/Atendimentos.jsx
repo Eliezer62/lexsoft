@@ -81,11 +81,13 @@ const Atendimentos = () => {
                             okText={'Sim'}
                             cancelText={'Não'}
                             onConfirm={async ()=>{
-                                messageApi.loading('Removendo atendimento...');
+                                const msg = messageApi.loading('Removendo atendimento');
                                 const response = axios.delete('/api/atendimentos/'+record.xid)
                                     .then(resp =>{
+                                        messageApi.destroy(msg.id);
                                         mensagemSucesso('Atendimento removido com sucesso');
                                     }).catch(error=>{
+                                        messageApi.destroy(msg.id);
                                         if(error.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                                         mensagemErro('Erro em remover atendimento');
                                     });

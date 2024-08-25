@@ -19,7 +19,6 @@ return new class extends Migration
             $table->bigInteger('clientejur')->nullable();
             $table->dateTime('data')->nullable();
             $table->string('assunto');
-            $table->bigInteger('processo')->nullable();
 
             $table->text('descricao')->nullable();
 
@@ -33,11 +32,6 @@ return new class extends Migration
                 ->references('id')
                 ->on('clientes_pessoa_jur')
                 ->onDelete('CASCADE');
-
-            $table->foreign('processo', 'fk_atendimentos_processo')
-                ->references('id')
-                ->on('processos')
-                ->onDelete('SET NULL');
         });
         DB::statement('ALTER TABLE atendimentos ADD COLUMN xid public.xid DEFAULT xid()');
         DB::statement('ALTER TABLE atendimentos ADD CONSTRAINT uc_atendimentos_xid UNIQUE (xid)');
