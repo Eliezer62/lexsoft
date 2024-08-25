@@ -80,10 +80,7 @@ const FormsPessoaJuridica = (props) => {
             <Form.Item
                 label={'Administrador'}
                 name={'administrador'}
-                initialValue={props.cliente?.administrador.xid}
-                rules={[
-                    {required:true, message:'Administrador é obrigatório'}
-                ]}
+                initialValue={props.cliente?.administrador?.xid}
             >
                 <Select
                     placeholder={'Selecione o administrador'}

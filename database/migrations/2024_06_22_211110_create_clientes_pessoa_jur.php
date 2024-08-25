@@ -21,7 +21,7 @@ return new class extends Migration
                 ->unique('uc_cliente_jur_cnpj');
             $table->string('nome_fantasia')->nullable();
             $table->string('email')->nullable();
-            $table->integer('administrador');
+            $table->integer('administrador')->nullable();
 
             //constraint
             $table->foreign('administrador', 'fk_p_jur_adm')

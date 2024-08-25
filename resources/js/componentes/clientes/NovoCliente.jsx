@@ -228,6 +228,7 @@ const NovoCliente = (props) => {
             <Form
                 layout={'vertical'}
                 form={formEnd}
+                preserve={false}
             >
                 <h3>Endereços</h3>
                 <Form.List

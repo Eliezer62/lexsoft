@@ -36,12 +36,15 @@ class ClientePessoaJurController extends Controller
                 'razao_social'=>'required|max:255',
                 'nome_fantasia'=>'max:255',
                 'email'=>'email',
-                'administrador'=>'required',
+                'administrador'=>'sometimes',
                 'enderecos'=>'sometimes'
             ]);
-            $adm = ClientePessoaFis::firstWhere('xid', $validados['administrador']);
-            if(is_null($adm)) throw new \Exception();
-            $validados['administrador'] = $adm->id;
+            if($request->has('administrador')){
+                $adm = ClientePessoaFis::firstWhere('xid', $validados['administrador']);
+                if(is_null($adm)) throw new \Exception();
+                $validados['administrador'] = $adm->id;
+            }
+
             $cliente = ClientePessoaJur::create($validados);
             if($request->has('enderecos'))
                 foreach ($validados['enderecos'] as $endereco)
@@ -159,10 +162,13 @@ class ClientePessoaJurController extends Controller
                 'administrador'=>'sometimes',
                 'novos_enderecos'=>'sometimes'
             ]);
-            $adm = ClientePessoaFis::firstWhere('xid', $validados['administrador']);
             $cliente = ClientePessoaJur::firstWhere('xid', $xid);
-            if(is_null($adm) or is_null($cliente)) return response()->json([], 404);
-            $validados['administrador'] = $adm->id;
+            if($request->has('administrador')){
+                $adm = ClientePessoaFis::firstWhere('xid', $validados['administrador']);
+                if(is_null($adm) or is_null($cliente)) return response()->json([], 404);
+                $validados['administrador'] = $adm->id;
+            }
+
             $cliente->update($validados);
 
             if($request->has('novos_enderecos'))
@@ -212,11 +218,11 @@ class ClientePessoaJurController extends Controller
             elseif($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: cnpj ou razão social devem ser únicos'], 500);
 
-            return response()->json($e->getMessage(), 500);
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
 
