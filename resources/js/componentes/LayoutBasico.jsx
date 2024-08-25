@@ -90,7 +90,11 @@ const LayoutBasico = (props) => {
             <Middleware/>
             <Layout>
                 <Layout>
-                    <Affix>
+                    <Layout style={{
+                        height: '100vh',
+                        position: 'fixed',
+                        zIndex: 1
+                    }}>
                         <Sider
                             width={200}
                             breakpoint="lg"
@@ -140,7 +144,7 @@ const LayoutBasico = (props) => {
                                 }}><IoIosLogOut /></Button>
                             </Flex>
                         </Sider>
-                    </Affix>
+                    </Layout>
                     <Layout
                         className={'layout'}
                     >
