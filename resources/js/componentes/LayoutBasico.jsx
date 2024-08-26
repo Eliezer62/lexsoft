@@ -152,7 +152,7 @@ const LayoutBasico = (props) => {
                             style={{
                                 padding: 24,
                                 margin: 0,
-                                minHeight: 280,
+                                minHeight: '100vh',
                                 background: (noturno)?token.darkColorBgContainer:'#F9F9F9',
                             }}
                         >
