@@ -98,7 +98,7 @@ class ClientePessoaJurController extends Controller
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
 
