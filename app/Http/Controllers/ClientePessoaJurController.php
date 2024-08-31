@@ -88,6 +88,9 @@ class ClientePessoaJurController extends Controller
             elseif($e->getCode()=='P0003')
                 return response()->json(['msg'=>'CNPJ já cadastrado anteriormente'], 409);
 
+            elseif($e->getCode()=='P7777')
+                return response()->json(['msg'=>'E-MAIL já inválido'], 422);
+
             elseif($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: cnpj ou razão social devem ser únicos'], 500);
 
@@ -214,6 +217,9 @@ class ClientePessoaJurController extends Controller
 
             elseif($e->getCode()=='P0003')
                 return response()->json(['msg'=>'CNPJ já cadastrado anteriormente'], 409);
+
+            elseif($e->getCode()=='P7777')
+                return response()->json(['msg'=>'E-MAIL já inválido'], 422);
 
             elseif($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: cnpj ou razão social devem ser únicos'], 500);

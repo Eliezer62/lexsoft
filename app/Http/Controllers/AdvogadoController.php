@@ -132,6 +132,9 @@ class AdvogadoController extends Controller
             elseif($e->getCode()=='P0004')
                 return response()->json(['msg'=>'OAB já cadastrado anteriormente'], 409);
 
+            elseif($e->getCode()=='P7777')
+                return response()->json(['msg'=>'E-MAIL inválido'], 409);
+
             else return response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
