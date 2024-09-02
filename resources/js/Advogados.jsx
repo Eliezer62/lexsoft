@@ -109,7 +109,6 @@ const Advogados = () => {
             setConfirmNovoAdv(false);
             setOpenNovoAdv(false);
         }).catch((e)=>{
-            if(e.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
             setConfirmNovoAdv(false);
         });
     }
