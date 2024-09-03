@@ -15,6 +15,7 @@ const EditarTarefas = (props) => {
     const enviar = ()=>{
         form.validateFields().then(async ()=>{
             setConfirmLoading(true);
+            const tarefa = {};
             //alterar para cookies
             tarefa.responsavel = user.xid;
             tarefa.assunto = form.getFieldValue('assunto');

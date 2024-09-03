@@ -15,6 +15,8 @@ const NovaTarefas = (props) => {
     const enviar = ()=>{
         form.validateFields().then(async ()=>{
             setConfirmLoading(true);
+            const tarefa = {};
+
             //alterar para cookies
             tarefa.responsavel = user.xid;
             tarefa.assunto = form.getFieldValue('assunto');
@@ -24,6 +26,7 @@ const NovaTarefas = (props) => {
                 tarefa.inicio = dayjs(prazo[0], 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm');
                 tarefa.fim = dayjs(prazo[1], 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm');
             }
+            console.log(tarefa);
 
             await axios({
                 method: "POST",
