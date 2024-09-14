@@ -28,27 +28,32 @@ const CamposPessoaJur = (props) => {
                     <DescricaoItem titulo={'email'} conteudo={props.cliente.email}/>
                 </Col>
             </Row>
-            <Delimitador/>
-            <Row>
-                <Col span={12}>
-                    <h3 style={{margin:10}}>Administrador</h3>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={12}>
-                    <DescricaoItem titulo={'Nome'} conteudo={props.cliente.administrador.nome}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={12}>
-                    <DescricaoItem titulo={'CPF'} conteudo={props.cliente.administrador.cpf}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={12}>
-                    <DescricaoItem titulo={'email'} conteudo={props.cliente.administrador.email}/>
-                </Col>
-            </Row>
+            {(props.cliente.administrador)?(
+                <>
+                    <Delimitador/>
+                    <Row>
+                        <Col span={12}>
+                            <h3 style={{margin:10}}>Administrador</h3>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <DescricaoItem titulo={'Nome'} conteudo={props.cliente.administrador.nome}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <DescricaoItem titulo={'CPF'} conteudo={props.cliente.administrador.cpf}/>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <DescricaoItem titulo={'email'} conteudo={props.cliente.administrador.email}/>
+                        </Col>
+                    </Row>
+                </>
+            ):(null)
+            }
 
             <Delimitador/>
             {(props.cliente?.telefones)?(<Row><h4 style={{fontSize:'1.2rem'}}>Telefones</h4></Row>):(null)}

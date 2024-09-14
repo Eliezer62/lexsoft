@@ -9,6 +9,7 @@
 
 .layout{
     height: 100vh;
+    margin-left: 200px;
 }
 
 .conteudo{
@@ -50,4 +51,9 @@
 
 .card-kanban{
     color: red;
+}
+@media (max-width: 990px) {
+    .layout{
+        margin-left: 0;
+    }
 }

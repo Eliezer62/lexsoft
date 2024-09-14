@@ -122,6 +122,7 @@ class ClientePessoaFisController extends Controller
         }
         catch (QueryException $e)
         {
+            DB::rollBack();
             if($e->getCode()==23502)
                 return response()->json(['msg'=>'Valores nulos enviado'], 500);
 
@@ -131,6 +132,9 @@ class ClientePessoaFisController extends Controller
             elseif($e->getCode()=='P0002')
                 return response()->json(['msg'=>'CPF já cadastrado anteriormente'], 422);
 
+            elseif($e->getCode()=='P7777')
+                return response()->json(['msg'=>'E-MAIL já inválido'], 422);
+
             elseif($e->getCode()==23505)
                 return response()->json(['msg'=>'Valores duplicados: rg deve ser único'], 500);
 
@@ -138,7 +142,8 @@ class ClientePessoaFisController extends Controller
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+            DB::rollBack();
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
 
@@ -268,11 +273,14 @@ class ClientePessoaFisController extends Controller
             elseif($e->getCode()=='P0002')
                 return response()->json(['msg'=>'CPF já cadastrado anteriormente'], 422);
 
-            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+            elseif($e->getCode()=='P7777')
+                return response()->json(['msg'=>'E-MAIL já inválido'], 422);
+
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'.$e->getMessage()], 500);
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
 

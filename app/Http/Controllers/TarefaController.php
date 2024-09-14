@@ -73,7 +73,7 @@ class TarefaController extends Controller
         }
         catch (ValidationException $e)
         {
-            return response()->json(['msg'=>'Campo assunto é obrigatório'.$e->getMessage()], 422);
+            return response()->json(['msg'=>'Campo assunto é obrigatório'], 422);
         }
         catch (\Exception $e)
         {

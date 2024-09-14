@@ -11,13 +11,17 @@ const NovaTarefas = (props) => {
     const [tarefa, setTarefa] = useState({});
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
+    const [descricao, setDescricao] = useState('');
 
     const enviar = ()=>{
         form.validateFields().then(async ()=>{
             setConfirmLoading(true);
+            const tarefa = {};
+
             //alterar para cookies
             tarefa.responsavel = user.xid;
             tarefa.assunto = form.getFieldValue('assunto');
+            tarefa.descricao = descricao;
             let prazo = form.getFieldValue('prazo');
             if(prazo)
             {
@@ -42,8 +46,7 @@ const NovaTarefas = (props) => {
     }
 
     const changeDescricao = (descricao) => {
-        tarefa.descricao = descricao;
-        setTarefa(tarefa);
+        setDescricao(descricao);
     }
 
     return (

@@ -9,15 +9,18 @@ const EditarTarefas = (props) => {
     const [form] = Form.useForm();
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [tarefa, setTarefa] = useState({});
+    const [descricao, setDescricao] = useState('');
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
 
     const enviar = ()=>{
         form.validateFields().then(async ()=>{
             setConfirmLoading(true);
+            const tarefa = {};
             //alterar para cookies
             tarefa.responsavel = user.xid;
             tarefa.assunto = form.getFieldValue('assunto');
+            tarefa.descricao = descricao;
             let prazo = form.getFieldValue('prazo');
             if(prazo)
             {
@@ -42,8 +45,7 @@ const EditarTarefas = (props) => {
     }
 
     const editorChange = (descricao)=>{
-        tarefa.descricao = descricao;
-        setTarefa(tarefa);
+        setDescricao(descricao);
     }
 
     return (

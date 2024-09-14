@@ -20,7 +20,6 @@ const ViewAtendimento = (props) => {
           <DescricaoItem titulo={'Assunto'} conteudo={props.atendimento?.assunto}/>
           <DescricaoItem titulo={'Data'} conteudo={dayjs(props.atendimento?.data, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY HH:mm')}/>
           <DescricaoItem titulo={'Cliente'} conteudo={props.atendimento?.cliente}/>
-          <DescricaoItem titulo={'Processo'} conteudo={props.atendimento?.processo}/>
           <p>Descrição</p>
           <EditorSimples dados={props.atendimento?.descricao} disabled={true}/>
       </Drawer>

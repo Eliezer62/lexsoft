@@ -28,8 +28,7 @@ class AtendimentoController extends Controller
     {
         $atendimento = DB::select('SELECT xid, data, assunto, descricao,
         COALESCE((SELECT nome FROM clientes_pessoa_fis cf WHERE att.clientefis = cf.id),
-        (SELECT razao_social FROM clientes_pessoa_jur cj WHERE att.clientejur = cj.id)) AS cliente,
-        (SELECT numero FROM processos WHERE att.processo = id) AS processo
+        (SELECT razao_social FROM clientes_pessoa_jur cj WHERE att.clientejur = cj.id)) AS cliente
         FROM atendimentos att WHERE att.xid = :xid;
         ', ['xid'=>$xid]);
         if($atendimento == []) return response()->json([], 404);
@@ -49,7 +48,6 @@ class AtendimentoController extends Controller
                 'clientejur'=>'sometimes',
                 'data'=>'required|date',
                 'assunto'=>'required|string',
-                'processo'=>'sometimes',
                 'descricao'=>'sometimes',
             ]);
 
@@ -64,10 +62,7 @@ class AtendimentoController extends Controller
         }
         catch (QueryException $e)
         {
-            if($e->getCode()==23505)
-                return response()->json(['msg'=>'Valores duplicados: cpf, oab e email devem ser únicos'], 500);
-            else
-                return response()->json(['msg'=>'Erro interno'], 500);
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
         catch (\Exception $e)
         {

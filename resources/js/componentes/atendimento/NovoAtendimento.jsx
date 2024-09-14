@@ -117,15 +117,6 @@ const NovoAtendimento = (props) => {
                 </Form.Item>
 
                 <Form.Item
-                    label={'Processo'}
-                    name={'processo'}
-                >
-                    <Select
-
-                    />
-                </Form.Item>
-
-                <Form.Item
                     label={'Descrição'}
                     name={'descricao'}
                 >
