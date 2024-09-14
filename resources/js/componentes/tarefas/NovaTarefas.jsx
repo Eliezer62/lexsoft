@@ -11,6 +11,7 @@ const NovaTarefas = (props) => {
     const [tarefa, setTarefa] = useState({});
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
+    const [descricao, setDescricao] = useState('');
 
     const enviar = ()=>{
         form.validateFields().then(async ()=>{
@@ -20,13 +21,13 @@ const NovaTarefas = (props) => {
             //alterar para cookies
             tarefa.responsavel = user.xid;
             tarefa.assunto = form.getFieldValue('assunto');
+            tarefa.descricao = descricao;
             let prazo = form.getFieldValue('prazo');
             if(prazo)
             {
                 tarefa.inicio = dayjs(prazo[0], 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm');
                 tarefa.fim = dayjs(prazo[1], 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm');
             }
-            console.log(tarefa);
 
             await axios({
                 method: "POST",
@@ -45,8 +46,7 @@ const NovaTarefas = (props) => {
     }
 
     const changeDescricao = (descricao) => {
-        tarefa.descricao = descricao;
-        setTarefa(tarefa);
+        setDescricao(descricao);
     }
 
     return (
