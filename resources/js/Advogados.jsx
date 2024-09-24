@@ -66,7 +66,7 @@ const Advogados = () => {
                                 const response = await axios.delete('/api/advogados/'+record.xid)
                                     .catch((e)=>{
                                         if(e.response?.status===401) navigate('/login', {state:{anterior:location.pathname}});
-                                        messageApi.error('Não foi possível remover o advogado, erro interno');
+                                        messageApi.error((e.response?.data?.msg)?e.response?.data?.msg:'Não foi possível remover o advogado, erro interno');
                                     });
                                 if(response.status===200) messageApi.success('Advogado removido com sucesso');
                             }}
