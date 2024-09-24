@@ -33,6 +33,7 @@ const Clientes = () => {
             dataIndex:'nome',
             sorter: (a,b) => a.nome.localeCompare(b.nome),
             sortDirections: ['descend', 'ascend'],
+            defaultSortOrder: 'ascend'
         },
         {
             title:'CPF/CNPJ',

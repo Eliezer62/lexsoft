@@ -29,7 +29,9 @@ class AdvogadoController extends Controller
             'oab',
             'uf_oab',
             'grupo',
-        ])->where('deleted_at', null)->get(), 200);
+        ])->where('deleted_at', null)
+            ->orderBy('nome', 'ASC')
+            ->get(), 200);
     }
 
     /**
