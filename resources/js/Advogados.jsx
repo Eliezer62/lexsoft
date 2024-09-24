@@ -30,6 +30,7 @@ const Advogados = () => {
             key:'nome',
             sorter: (a, b) => a.nome.localeCompare(b.nome),
             sortDirections: ['descend', 'ascend'],
+            defaultSortOrder: 'ascend'
         },
         {
             title:'CPF',
