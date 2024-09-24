@@ -147,7 +147,11 @@ class AdvogadoController extends Controller
     public function delete($xid)
     {
         $adv = Advogado::firstWhere('xid', $xid);
-        if(is_null($adv)) return \response()->json([], 404);
+        if(is_null($adv)) return \response()->json(['msg' => 'Não foi possível encontrar o usuário'], 404);
+
+        if(\auth()->user()->xid == $adv->xid)
+            return response()->json(['msg' => "Não é possível remover seu próprio usuário"], 403);
+
         $adv->delete();
         return \response()->json([], 200);
     }
@@ -161,9 +165,10 @@ class AdvogadoController extends Controller
     public function updatePassword(Request $request, $xid)
     {
         try {
+            $validado = $request->validate(['password' => 'required|min:8']);
+            $validado['password'] = Hash::make($validado['password']);
             $adv = Advogado::firstWhere('xid', $xid);
             if (is_null($adv)) return response()->json([], 404);
-            $validado = $request->validate(['password' => 'required|min:8']);
             $adv->update($validado);
         }
         catch (ValidationException $e)
