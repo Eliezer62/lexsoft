@@ -173,8 +173,14 @@ class ProcessoController extends Controller
             elseif($e->getCode()=='P0004')
                 return response()->json(['msg'=>'Valor de condenação deve ser positivo'], 400);
 
+            elseif($e->getCode()=='P0005')
+                return response()->json(['msg'=>'Número do processo já foi vinculado a um outro processo'], 400);
+
+            elseif($e->getCode()=='P0006')
+                return response()->json(['msg'=>'Número CNJ já foi vinculado a um outro processo'], 400);
+
             elseif ($e->getCode()==23505)
-                return response()->json(['msg'=>'Número do processo já existe'], 409);
+                return response()->json(['msg'=>'Valores duplicados: Número do processo e número CNJ já existe'], 409);
 
             else {
                 Log::error($e->getMessage());
@@ -251,7 +257,7 @@ class ProcessoController extends Controller
                 return response()->json(['msg'=>'Valor de condenação deve ser positivo'], 400);
 
             elseif ($e->getCode()==23505)
-                return response()->json(['msg'=>'Número do processo já existe'], 409);
+                return response()->json(['msg'=>'Número do processo ou número CNJ já existe'], 409);
 
             else {
                 Log::error($e->getMessage());
