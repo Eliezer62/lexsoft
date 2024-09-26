@@ -94,6 +94,7 @@ const NovoCliente = (props) => {
                             data: cliente
                         })
                             .then((resp) => {
+                                form.resetFields();
                                 props.handleCancel();
                                 props.sucessoMsg();
                             })
@@ -124,6 +125,7 @@ const NovoCliente = (props) => {
                         });
                         setLoading(false);
                         if (response.status === 201) {
+                            form.resetFields();
                             props.handleCancel();
                             props.sucessoMsg();
                         }
@@ -142,6 +144,11 @@ const NovoCliente = (props) => {
             onCancel={props.handleCancel}
             destroyOnClose={true}
             confirmLoading={loading}
+            footer={[
+                <Button onClick={() => form.resetFields()}>Limpar Campos</Button>,
+                <Button onClick={props.handleCancel}>Cancelar</Button>,
+                <Button type={'primary'} onClick={enviarNovoCliente}>Salvar</Button>
+            ]}
         >
             <Radio.Group
                 style={{margin: 10}}

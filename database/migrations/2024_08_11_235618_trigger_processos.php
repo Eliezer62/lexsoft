@@ -29,6 +29,12 @@ return new class extends Migration
         ELSIF NEW.valor_condenacao < 0.0 THEN
             RAISE EXCEPTION 'Valor de condenação deve ser positivo' USING ERRCODE = 'P0004';
 
+        ELSIF EXISTS(SELECT 1 FROM processos p WHERE p.numero = NEW.numero) AND TG_OP = 'INSERT' THEN
+            RAISE EXCEPTION 'Número do processo já foi vinculado a um outro processo' USING ERRCODE = 'P0005';
+
+        ELSIF EXISTS(SELECT 1 FROM processos p WHERE P.\"numCNJ\" = NEW.\"numCNJ\") AND TG_OP = 'INSERT' THEN
+            RAISE EXCEPTION 'Número CNJ já foi vinculado a um outro processo' USING ERRCODE = 'P0006';
+
         END IF;
 
         RETURN NEW;

@@ -28,7 +28,6 @@ const FormsPessoaJuridica = (props) => {
     return (
         <Form
             layout={'vertical'}
-            preserve={false}
             form={props.form}
         >
             <Form.Item

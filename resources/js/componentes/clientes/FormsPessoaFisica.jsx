@@ -72,7 +72,6 @@ const FormsPessoaFisica = (props) => {
         <>
             <Form
                 layout={'vertical'}
-                preserve={false}
                 form={props.form}
             >
                 <Form.Item
