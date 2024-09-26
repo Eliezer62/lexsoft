@@ -180,7 +180,7 @@ class ProcessoController extends Controller
                 return response()->json(['msg'=>'Número CNJ já foi vinculado a um outro processo'], 400);
 
             elseif ($e->getCode()==23505)
-                return response()->json(['msg'=>'Valores duplicados: Número do processo e número CNJ já existe'], 409);
+                return response()->json(['msg'=>'Valores duplicados: Número do processo ou número CNJ já existe'], 409);
 
             else {
                 Log::error($e->getMessage());
