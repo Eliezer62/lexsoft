@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {Button, Form, Input, InputNumber, List, message, Modal, Radio, Select, Skeleton} from 'antd';
+import {Button, Form, Input, InputNumber, List, message, Modal, Popconfirm, Radio, Select, Skeleton} from 'antd';
 import FormsPessoaFisica from "@/componentes/clientes/FormsPessoaFisica.jsx";
 import FormsPessoaJuridica from "@/componentes/clientes/FormsPessoaJuridica.jsx";
 import axios from "axios";
@@ -160,14 +160,20 @@ const EditarCliente = (props) => {
                 <List dataSource={props.cliente?.telefones??[]} renderItem={(item, index) => (
                     <List.Item
                         actions={[
-                            <Button danger onClick={()=>{
-                                axios.delete('/api/telefones/'+item.xid)
-                                    .then((resp)=>{
-                                        props.cliente.telefones = props.cliente?.telefones?.filter((tel) => tel.xid !== item.xid);
-                                        props.setCliente(props.cliente);
-                                        props.sucessoMsg('Telefone removido');
-                                    }).catch((e)=>props.erro2Msg('Erro em remover o telefone'));
-                            }}><IoIosRemoveCircleOutline/></Button>
+                            <Popconfirm
+                                title={'Remover o telefone'}
+                                description={'Tem certeja que deseja remover o telefone?'}
+                                onConfirm={()=>{
+                                    axios.delete('/api/telefones/'+item.xid)
+                                        .then((resp)=>{
+                                            props.cliente.telefones = props.cliente?.telefones?.filter((tel) => tel.xid !== item.xid);
+                                            props.setCliente(props.cliente);
+                                            props.sucessoMsg('Telefone removido');
+                                        }).catch((e)=>props.erro2Msg('Erro em remover o telefone'));
+                                }}
+                            >
+                                <Button danger><IoIosRemoveCircleOutline/></Button>
+                            </Popconfirm>
                         ]}>
                         <Skeleton loading={false}>
                             <List.Item.Meta title={'Telefone '+(index+1)} description={`${item.ddi} ${item.ddd} ${item.numero}`}/>
@@ -253,14 +259,20 @@ const EditarCliente = (props) => {
                   renderItem={(item, index) => (
                       <List.Item
                         actions={[
-                            <Button danger onClick={()=>{
-                                axios.delete('/api/enderecos/'+item.xid)
-                                    .then((resp)=>{
-                                        props.cliente.enderecos = props.cliente?.enderecos?.filter((end) => end.xid !== item.xid);
-                                        props.setCliente(props.cliente);
-                                        props.sucessoMsg('Endereço removido');
-                                    }).catch((e)=>props.erro2Msg('Erro em remover o endereço'));
-                            }}><IoIosRemoveCircleOutline/></Button>
+                            <Popconfirm
+                                title={'Remover o endereço'}
+                                description={"Tem certeza que deseja remover o endereço?"}
+                                onConfirm={()=>{
+                                    axios.delete('/api/enderecos/'+item.xid)
+                                        .then((resp)=>{
+                                            props.cliente.enderecos = props.cliente?.enderecos?.filter((end) => end.xid !== item.xid);
+                                            props.setCliente(props.cliente);
+                                            props.sucessoMsg('Endereço removido');
+                                        }).catch((e)=>props.erro2Msg('Erro em remover o endereço'));
+                                }}
+                            >
+                                <Button danger><IoIosRemoveCircleOutline/></Button>
+                            </Popconfirm>
                         ]}
                       >
                           <Skeleton loading={false}>
