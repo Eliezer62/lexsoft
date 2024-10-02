@@ -25,7 +25,7 @@ return new class extends Migration
                 ->references('uf')
                 ->on('estados')
                 ->onDelete('SET NULL');
-            $table->unique(['emissor','numero', 'estado']);
+            $table->unique(['numero', 'estado']);
         });
     }
 
