@@ -8,12 +8,13 @@ import { GoLaw } from "react-icons/go";
 import {IoChatbubbles, IoChatbubblesOutline} from "react-icons/io5";
 import { GrGroup, GrDocumentStore } from "react-icons/gr";
 import { BiTask } from "react-icons/bi";
-import { LiaUserCogSolid } from "react-icons/lia";
+import {LiaFileContractSolid, LiaUserCogSolid} from "react-icons/lia";
 import Auth from "@/seguranca/Auth.jsx";
 import {IoIosLogOut} from "react-icons/io";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import Middleware from '../seguranca/Middleware';
+import {MdDeveloperBoard} from "react-icons/md";
 
 const { Content, Sider } = Layout;
 
@@ -39,9 +40,20 @@ const items = [
         icon: <BiTask/>
     },
     {
-        label: 'Clientes',
-        key:'clientes',
-        icon: <GrGroup/>
+        label: "CRM",
+        icon: <MdDeveloperBoard />,
+        children: [
+            {
+                label: 'Clientes',
+                key:'clientes',
+                icon: <GrGroup/>
+            },
+            {
+                label: 'Negócios',
+                key:'negocios',
+                icon: <LiaFileContractSolid />
+            },
+        ]
     },
     {
         label: 'Documentos',
