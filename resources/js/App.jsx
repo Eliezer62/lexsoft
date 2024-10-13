@@ -23,6 +23,7 @@ import Login from "@/Login.jsx";
 import Erro403 from "./seguranca/Erro403";
 import Perfil from "@/Perfil.jsx";
 import EsqueciSenha from "@/EsqueciSenha.jsx";
+import Negocios from "@/Negocios.tsx";
 
 const RotaProcessos = () => {
     return (
@@ -50,6 +51,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Route path='/dashboard' Component={Dashboard}/>
                 <Route path='/advogados' Component={Advogados}/>
                 <Route path={'/clientes'} Component={Clientes}/>
+                <Route path={"/negocios"} Component={Negocios}/>
                 <Route path='/tarefas' Component={Tarefas}/>
                 <Route path={'/atendimentos'} Component={Atendimentos}/>
                 <Route path={'/documentos'} Component={Documentos}/>
