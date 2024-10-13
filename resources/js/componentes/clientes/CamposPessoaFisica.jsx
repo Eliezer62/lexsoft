@@ -20,7 +20,7 @@ const CamposPessoaFisica = (props) => {
             </Row>
             <Row>
                 <Col span={12}>
-                    <DescricaoItem titulo={'email'} conteudo={props.cliente.email}/>
+                    <DescricaoItem titulo={'E-mail'} conteudo={props.cliente.email}/>
                 </Col>
             </Row>
             <Row>
@@ -30,7 +30,7 @@ const CamposPessoaFisica = (props) => {
             </Row>
             <Row>
                 <Col span={12}>
-                    <DescricaoItem titulo={'sexo'} conteudo={props.cliente.sexo}/>
+                    <DescricaoItem titulo={'Sexo'} conteudo={props.cliente.sexo}/>
                 </Col>
             </Row>
             <Row>
@@ -40,7 +40,7 @@ const CamposPessoaFisica = (props) => {
             </Row>
             <Row>
                 <Col span={12}>
-                    <DescricaoItem titulo={'Nome do Pai'} conteudo={props.cliente.nome_pai}/>
+                    <DescricaoItem titulo={'Nome do pai'} conteudo={props.cliente.nome_pai}/>
                 </Col>
             </Row>
             <Row>
@@ -50,41 +50,52 @@ const CamposPessoaFisica = (props) => {
             </Row>
             <Row>
                 <Col span={12}>
-                    <DescricaoItem titulo={'Naturalidade'} conteudo={props.cliente.naturalidade}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={12}>
-                    <DescricaoItem titulo={'Estado de naturalidade'} conteudo={props.cliente.naturalidade_uf}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={12}>
                     <DescricaoItem titulo={'Profissão'} conteudo={props.cliente.profissao}/>
                 </Col>
             </Row>
-            <Delimitador/>
             <Row>
                 <Col span={12}>
-                    <DescricaoItem titulo={'RG número'} conteudo={props.cliente.rg.numero}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={12}>
-                    <DescricaoItem titulo={'RG: emissor'} conteudo={props.cliente.rg.emissor}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={12}>
-                    <DescricaoItem titulo={'RG: data de emissão'} conteudo={dayjs(props.cliente.rg.data_emissao, 'YYYY-MM-DD').format('DD/MM/YYYY')}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col span={12}>
-                    <DescricaoItem titulo={'RG: estado'} conteudo={props.cliente.rg.estado}/>
+                    <DescricaoItem titulo={'Estrangeiro'} conteudo={props.cliente.estrangeiro?'Sim':'Não'}/>
                 </Col>
             </Row>
             <Delimitador/>
+            {
+                (!props.cliente?.estrangeiro)?
+                    (<>
+                        <Row>
+                            <Col span={12}>
+                                <DescricaoItem titulo={'Naturalidade'} conteudo={props.cliente?.naturalidade}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={12}>
+                                <DescricaoItem titulo={'Estado de naturalidade'} conteudo={props.cliente?.naturalidade_uf}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={12}>
+                                <DescricaoItem titulo={'RG número'} conteudo={props.cliente.rg?.numero}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={12}>
+                                <DescricaoItem titulo={'RG: emissor'} conteudo={props.cliente.rg?.emissor}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={12}>
+                                <DescricaoItem titulo={'RG: data de emissão'} conteudo={dayjs(props.cliente.rg?.data_emissao, 'YYYY-MM-DD').format('DD/MM/YYYY')}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={12}>
+                                <DescricaoItem titulo={'RG: estado'} conteudo={props.cliente.rg?.estado}/>
+                            </Col>
+                        </Row>
+                        <Delimitador/>
+                    </>):
+                    (null)
+            }
             {(props.cliente?.telefones)?(<Row><h4 style={{fontSize:'1.2rem'}}>Telefones</h4></Row>):(null)}
             {(props.cliente?.telefones)?.map((telefone, index) => (
                 <>

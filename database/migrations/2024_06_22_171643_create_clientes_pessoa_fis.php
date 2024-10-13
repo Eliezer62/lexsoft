@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('nome_social', 60)->nullable();
             $table->char('cpf', 11)
                 ->unique('uc_cliente_cpf');
-            $table->integer('rg');
+            $table->integer('rg')->nullable();
             $table->string('email')->nullable();
             $table->smallInteger('sexo');
             $table->smallInteger('estado_civil');
@@ -34,7 +34,8 @@ return new class extends Migration
             //constraints
             $table->foreign('rg', 'fk_p_fis_rg')
                 ->references('id')
-                ->on('rgs');
+                ->on('rgs')
+                ->onDelete('SET NULL');
 
             $table->foreign('sexo', 'fk_p_fis_sexo')
                 ->references('id')

@@ -53,16 +53,17 @@ class ClientePessoaFisController extends Controller
                 'email' => 'required|max:255|email',
                 'sexo' => 'required',
                 'estado_civil' => 'required',
-                'naturalidade' => 'required',
-                'naturalidade_uf' => 'required',
+                'estrangeiro'=>'required',
+                'naturalidade' => 'required_if:estrangeiro,==,false',
+                'naturalidade_uf' => 'required_if:estrangeiro,==,false',
                 'profissao' => 'required',
                 'data_nascimento' => 'required|date',
                 'nome_pai'=>'sometimes',
                 'nome_mae'=>'sometimes',
-                'numero' => 'integer|required',
-                'data_emissao' => 'required',
-                'emissor' => 'required|string|max:10',
-                'estado' => 'required|string|max:2|min:2',
+                'numero' => 'required_if:estrangeiro,==,false|integer',
+                'data_emissao' => 'required_if:estrangeiro,==,false',
+                'emissor' => 'required_if:estrangeiro,==,false|string|max:10',
+                'estado' => 'required_if:estrangeiro,==,false|string|max:2|min:2',
                 'enderecos' => 'sometimes',
                 'telefones'=>'sometimes'
             ]);
@@ -70,48 +71,46 @@ class ClientePessoaFisController extends Controller
             $cliente = new ClientePessoaFis();
             $rg = new RG();
             DB::transaction(function () use ($cliente, $rg, $validado){
-                $rg->fill($validado);
-                if($rg->saveOrFail())
+                $cliente->fill($validado);
+                if(!$validado['estrangeiro'])
                 {
-                    $cliente->fill($validado);
+                    $rg->fill($validado);
+                    $rg->saveOrFail();
                     $cliente->rg = $rg->id;
-                    if($cliente->saveOrFail())
-                    {
-                        foreach ($validado['enderecos']??[] as $endereco)
-                        {
-                            Endereco::create([
-                                'logradouro'=>$endereco['logradouro'],
-                                'numero'=>$endereco['numero'],
-                                'cidade'=>$endereco['cidade'],
-                                'estado'=>$endereco['uf'],
-                                'cep'=>$endereco['cep'],
-                                'bairro'=>$endereco['bairro'],
-                                'complemento'=>$endereco['complemento'] ?? null,
-                                'pessoafis' => $cliente->id
-                            ]);
-                        }
+                }
 
-                        foreach ($validado['telefones']??[] as $telefone)
-                        {
-                            Telefone::create([
-                                'ddi'=>($telefone['ddi'] ?? '+55'),
-                                'ddd'=>$telefone['ddd'],
-                                'numero'=>$telefone['numero'],
-                                'pessoafis'=>$cliente->id
-                            ]);
-                        }
-                        DB::commit();
-                    }
-                    else{
-                        DB::rollBack();
-                        return response()->json(['msg'=>'Erro interno'], 500);
-                    }
-                }
-                else
+                if($cliente->saveOrFail())
                 {
-                    DB::rollBack();
-                    return response()->json(['msg'=>'erro interno'], 500);
+                    foreach ($validado['enderecos']??[] as $endereco)
+                    {
+                        Endereco::create([
+                            'logradouro'=>$endereco['logradouro'],
+                            'numero'=>$endereco['numero'],
+                            'cidade'=>$endereco['cidade'],
+                            'estado'=>$endereco['uf'],
+                            'cep'=>$endereco['cep'],
+                            'bairro'=>$endereco['bairro'],
+                            'complemento'=>$endereco['complemento'] ?? null,
+                            'pessoafis' => $cliente->id
+                        ]);
+                    }
+
+                    foreach ($validado['telefones']??[] as $telefone)
+                    {
+                        Telefone::create([
+                            'ddi'=>($telefone['ddi'] ?? '+55'),
+                            'ddd'=>$telefone['ddd'],
+                            'numero'=>$telefone['numero'],
+                            'pessoafis'=>$cliente->id
+                        ]);
+                    }
+                    DB::commit();
                 }
+                else{
+                    DB::rollBack();
+                    return response()->json(['msg'=>'Erro interno'], 500);
+                }
+
             });
 
             return response()->json($cliente, 201);
@@ -156,7 +155,7 @@ class ClientePessoaFisController extends Controller
                 'nome','nome_social','cpf',
                 'email','nome_mae','nome_pai',
                 'profissao','data_nascimento','naturalidade',
-                'naturalidade_uf','sexo','estado_civil',
+                'naturalidade_uf','sexo','estado_civil', 'estrangeiro',
                 DB::raw("(SELECT json_build_object('numero',numero,'data_emissao', data_emissao, 'emissor', emissor, 'estado', estado)
                                 FROM rgs WHERE rgs.id = clientes_pessoa_fis.rg
                                 ) AS rg"),
@@ -216,14 +215,30 @@ class ClientePessoaFisController extends Controller
                 'profissao' => 'max:60|string',
                 'sexo' => 'sometimes',
                 'estado_civil' => 'sometimes',
+                'estrangeiro' => 'required',
                 'naturalidade' => 'sometimes',
                 'naturalidade_uf' => 'sometimes',
                 'rg' => 'sometimes',
                 'novos_enderecos'=>'sometimes'
             ]);
 
-            $cliente->rg()->first()->update($validado['rg']);
-            $validado['rg'] = $cliente->rg;
+            if(!$validado['estrangeiro'])
+                if($cliente->rg)
+                    $cliente->rg()->first()->update($validado['rg']);
+                else
+                {
+                    $rg = RG::create($validado['rg']);
+                    $cliente->update(['rg' => $rg->id]);
+                }
+            else
+            {
+                if($cliente->rg)
+                    $cliente->rg()->first()->delete();
+                $cliente->naturalidade = null;
+                $cliente->naturalidade_uf = null;
+            }
+
+            unset($validado['rg']);
             $cliente->update($validado);
 
             if($request->has('novos_enderecos'))
@@ -265,7 +280,7 @@ class ClientePessoaFisController extends Controller
         catch (QueryException $e)
         {
             if($e->getCode()==23505)
-                return response()->json(['msg'=>'Valores duplicados: somente é permitido um único RG com mesmo número e Estado'], 500);
+                return response()->json(['msg'=>'Valores duplicados: somente é permitido um único RG com mesmo número e Estado'.$e], 500);
 
             elseif($e->getCode()=='P0001')
                 return response()->json(['msg'=>'Data de nascimento não pode ser futura'], 422);
@@ -276,11 +291,11 @@ class ClientePessoaFisController extends Controller
             elseif($e->getCode()=='P7777')
                 return response()->json(['msg'=>'E-MAIL já inválido'], 422);
 
-            return response()->json(['msg'=>'Erro interno'], 500);
+            return response()->json(['msg'=>'Erro interno'.$e], 500);
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'], 500);
+            return response()->json(['msg'=>'Erro interno'.$e], 500);
         }
     }
 
@@ -292,7 +307,7 @@ class ClientePessoaFisController extends Controller
                 'xid',
                 'nome','nome_social','cpf',
                 'email','nome_mae','nome_pai',
-                'profissao','data_nascimento',
+                'profissao','data_nascimento','estrangeiro',
                 DB::raw('(SELECT nome FROM cidades c WHERE c.id=clientes_pessoa_fis.naturalidade) AS naturalidade'),
                 DB::raw('(SELECT nome FROM estados e WHERE e.uf=clientes_pessoa_fis.naturalidade_uf) AS naturalidade_uf'),
                 DB::raw('(SELECT sexo FROM sexos s WHERE s.id = clientes_pessoa_fis.sexo) AS sexo'),
