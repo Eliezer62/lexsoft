@@ -295,3 +295,24 @@ Route::controller(TelefoneController::class)
        Route::delete('/{xid}', 'delete')
             ->name('telefones.delete');
     });
+
+
+Route::controller(NegocioController::class)
+    ->prefix('negocios')
+    ->middleware(['auth:api'])
+    ->group(function (){
+        Route::post('/', 'store')
+                ->name('negocios.store');
+
+        Route::get('/', 'index')
+                ->name('negocios.index');
+
+        Route::get('/{xid}', 'show')
+                ->name('negocios.show');
+
+        Route::put('/{xid}', 'update')
+                ->name('negocios.update');
+
+        Route::delete('/{xid}', 'delete')
+                ->name('negocios.delete');
+    });
