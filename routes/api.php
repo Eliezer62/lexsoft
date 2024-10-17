@@ -315,4 +315,7 @@ Route::controller(NegocioController::class)
 
         Route::delete('/{xid}', 'delete')
                 ->name('negocios.delete');
+
+        Route::get('/{xid}/atualizar-fase/{fase}', 'atualizarFase')
+                ->name('negocios.atualizarFase');
     });

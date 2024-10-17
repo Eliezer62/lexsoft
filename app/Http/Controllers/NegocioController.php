@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\FaseNegocio;
 use App\Models\Advogado;
 use App\Models\Negocio;
 use Illuminate\Database\QueryException;
@@ -145,5 +146,21 @@ class NegocioController extends Controller
             $negocio->delete();
 
         return response($status=200);
+    }
+
+    public function atualizarFase(String $id, FaseNegocio $fase)
+    {
+        try{
+            $negocio = Negocio::firstWhere('xid', $id);
+            if (is_null($negocio))
+                return response()->json(['msg' => 'Negócio não encontrado'], status: 404);
+
+            $negocio->fase = $fase;
+            $negocio->updateOrFail();
+            return response(status: 200);
+        }catch (\Exception $e)
+        {
+            return response()->json(['msg' => 'Erro interno'], status: 500);
+        }
     }
 }
