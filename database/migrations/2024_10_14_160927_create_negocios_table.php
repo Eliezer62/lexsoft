@@ -15,9 +15,14 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-            $table->text('descricao')->nullable();
+            $table->text('descricao');
             $table->dateTime('data')->default('NOW()');
             $table->bigInteger('responsavel')->nullable();
+
+            $table->enum('fase', ['inicial', 'qualificacao', 'avaliacao', 'proposta', 'negociacao', 'fechado', 'perdido'])
+                ->default('inicial');
+            $table->enum('prioridade', ['baixa', 'média','alta', 'urgente'])
+                ->default('baixa');
 
             //CONSTRAINT
             $table->foreign('responsavel', 'fk_negocios_resp')
