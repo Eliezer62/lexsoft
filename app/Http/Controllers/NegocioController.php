@@ -56,11 +56,27 @@ class NegocioController extends Controller
      */
     public function index()
     {
-        $negocios = DB::table('negocios')
-            ->select(['negocios.xid', 'descricao', 'data', 'responsavel', 'advogados.xid as responsavel'])
-            ->leftJoin('advogados', 'negocios.responsavel','advogados.id')
-            ->whereRaw('negocios.deleted_at IS NULL')
-            ->get();
+        $negocios = DB::select("
+            WITH consulta_por_fase AS (
+            SELECT n.fase as fase FROM negocios n
+            GROUP BY n.fase)
+            SELECT cf.fase, JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT(
+                'xid', n.xid,
+                'descricao', n.descricao,
+                'data', n.data,
+                'responsavel', adv.xid,
+                'fase', n.fase,
+                'prioridade', n.prioridade
+            )) as negocios
+            FROM consulta_por_fase cf
+            JOIN negocios n ON n.fase = cf.fase
+            LEFT JOIN advogados adv on adv.id = n.responsavel
+            GROUP BY cf.fase
+        ");
+
+        foreach ($negocios as $fase) {
+            $fase->negocios = json_decode($fase->negocios);
+        }
 
         return response()->json($negocios);
     }
@@ -73,7 +89,15 @@ class NegocioController extends Controller
     public function show(String $id)
     {
         $negocio = DB::table('negocios')
-            ->select(['negocios.xid', 'descricao', 'data', 'responsavel', 'advogados.xid as responsavel'])
+            ->select([
+                'negocios.xid',
+                'descricao',
+                'data',
+                'responsavel',
+                'advogados.xid as responsavel',
+                'fase',
+                'prioridade'
+            ])
             ->leftJoin('advogados', 'negocios.responsavel','advogados.id')
             ->where('negocios.xid', $id)
             ->whereRaw('negocios.deleted_at IS NULL')
