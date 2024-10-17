@@ -24,6 +24,7 @@ class Negocio extends Model
         'descricao',
         'data',
         'responsavel',
+        'valor'
     ];
 
     /**
@@ -45,6 +46,7 @@ class Negocio extends Model
             'created_at' => 'datetime:d/m/Y H:i:s',
             'updated_at' => 'datetime:d/m/Y H:i:s',
             'data' => 'datetime:d/m/Y H:i:s',
+            'valor' => 'float'
         ];
     }
 

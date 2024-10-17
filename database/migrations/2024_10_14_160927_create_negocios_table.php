@@ -24,6 +24,8 @@ return new class extends Migration
             $table->enum('prioridade', ['baixa', 'média','alta', 'urgente'])
                 ->default('baixa');
 
+            $table->decimal('valor', 15,2);
+
             //CONSTRAINT
             $table->foreign('responsavel', 'fk_negocios_resp')
                 ->references('id')
@@ -35,6 +37,7 @@ return new class extends Migration
         DB::statement('ALTER TABLE negocios ADD COLUMN xid public.xid DEFAULT xid()');
         DB::statement('ALTER TABLE negocios ADD CONSTRAINT uc_negocios_xid UNIQUE (xid)');
         DB::statement('ALTER TABLE negocios ADD CONSTRAINT chk_negocios_data_passada CHECK (data <= NOW())');
+        DB::statement('ALTER TABLE negocios ADD CONSTRAINT chk_negocios_valor CHECK ( valor >= 0 )');
     }
 
     /**

@@ -26,6 +26,7 @@ class NegocioController extends Controller
                 'descricao' => 'sometimes|nullable|string',
                 'data' => 'required|date',
                 'responsavel' => 'nullable|string',
+                'valor'=>'required|numeric|min:0'
             ]);
 
             $validado['responsavel'] = Advogado::firstWhere('xid', $validado['responsavel'])?->id;
@@ -46,7 +47,7 @@ class NegocioController extends Controller
         }
         catch (\Exception $e)
         {
-            return response()->json(['msg'=>'Erro interno'], 500);
+            return response()->json(['msg'=>'Erro interno'.$e], 500);
         }
     }
 
@@ -64,9 +65,10 @@ class NegocioController extends Controller
                 'xid', n.xid,
                 'descricao', n.descricao,
                 'data', n.data,
-                'responsavel', adv.xid,
+                'responsavel', adv.nome,
                 'fase', n.fase,
-                'prioridade', n.prioridade
+                'prioridade', n.prioridade,
+                'valor', n.valor
             )) as negocios
             FROM consulta_por_fase cf
             JOIN negocios n ON n.fase = cf.fase
@@ -119,6 +121,7 @@ class NegocioController extends Controller
                 'descricao' => 'sometimes|nullable|string',
                 'data' => 'required|date',
                 'responsavel' => 'nullable|string',
+                'valor'=>'required|numeric|min:0'
             ]);
 
             $negocio = Negocio::firstWhere('xid', $id);
