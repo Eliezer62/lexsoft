@@ -1,11 +1,12 @@
 import LayoutBasico  from './componentes/LayoutBasico'
 import {DndContext, useDraggable, useDroppable} from '@dnd-kit/core';
 import {CSS} from '@dnd-kit/utilities';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Board from './componentes/negocios/Board';
 import {Button, Flex, message, Modal, Segmented} from "antd";
 import {AppstoreOutlined, BarsOutlined} from "@ant-design/icons";
 import NovoNegocio from "./componentes/negocios/NovoNegocio";
+import axios from "axios";
 function Draggable(props) {
     const {attributes, listeners, setNodeRef, transform} = useDraggable({
         id: props.id,
@@ -45,6 +46,35 @@ export default function Negocios()
     const [exibicao, setExibicao] = useState('Kanban');
     const [openNovo, setOpenNovo] = useState(true);
     const [messageApi, context] = message.useMessage();
+    const [inter, setInter] = useState(0);
+    //Por itens
+    const [inicial, setInicial] = useState([]);
+
+
+    useEffect(() => {
+        const negocios = async () => {
+            await axios.get('/api/negocios')
+                .then((response) => {
+                    response.data.forEach(item => {
+                        switch (item.fase)
+                        {
+                            case 'inicial':
+                                setInicial(item.negocios)
+                                break;
+                        }
+                    });
+                })
+        }
+
+        const invervalo = setInterval(() => {
+            negocios();
+        }, inter);
+
+        return () => {
+            setInter(3000);
+            clearInterval(invervalo);
+        }
+    })
 
     const draggable = (
         <Draggable id="draggable">
@@ -71,7 +101,9 @@ export default function Negocios()
             </Flex>
             {(exibicao=='Kanban')?
                 (<div className={"board"}>
-                    <Board/>
+                    <Board inicial={inicial}
+                           totalInicial={inicial.reduce((acumulador, negocio) => acumulador + negocio.valor, 0)}
+                    />
                 </div>):
                 (<></>)}
         </LayoutBasico>

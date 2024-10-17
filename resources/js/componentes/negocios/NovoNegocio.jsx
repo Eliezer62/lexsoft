@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {DatePicker, Form, Modal, Select} from "antd";
+import {DatePicker, Form, Modal, Select, Input, InputNumber} from "antd";
 import EditorSimples from "../EditorSimples";
 import dayjs from "dayjs";
 import axios from "axios";
@@ -19,6 +19,7 @@ export default function NovoNegocio(props)
             negocio.data = dayjs(form.getFieldValue('data')).format('YYYY-MM-DD HH:mm');
             negocio.responsavel = form.getFieldValue('responsavel')??null;
             negocio.contatos = form.getFieldValue('contatos')??null;
+            negocio.valor = form.getFieldValue('valor');
 
             await axios.post('/api/negocios', negocio)
                 .then((response) => {
@@ -68,6 +69,7 @@ export default function NovoNegocio(props)
         onCancel={props.onCancel}
         onOk={enviar}
         confirmLoading={confirm}
+        destroyOnClose={true}
       >
         <Form
             form={form}
@@ -110,6 +112,12 @@ export default function NovoNegocio(props)
                 name={'contatos'}
             >
                 <Select options={clientes} showSearch optionFilterProp={'label'} mode={'multiple'}/>
+            </Form.Item>
+            <Form.Item
+                label={'Valor R$'}
+                name={'valor'}
+            >
+                <InputNumber min={0} precision={2} decimalSeparator={','} style={{width:'475px'}}/>
             </Form.Item>
         </Form>
       </Modal>

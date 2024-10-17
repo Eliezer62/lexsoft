@@ -4,6 +4,7 @@ import {Button, Flex, Segmented} from "antd";
 import { AppstoreOutlined, BarsOutlined } from '@ant-design/icons';
 import {DndContext} from "@dnd-kit/core";
 import Item from "@/componentes/negocios/board/Item";
+import dayjs from "dayjs";
 
 
 const estilo = {
@@ -19,7 +20,7 @@ const contentCSS = {
     minHeight:'60%'
 }
 
-export default function Board()
+export default function Board(props)
 {
     const [exibicao, setExibicao] = useState('Kanban');
 
@@ -40,7 +41,15 @@ export default function Board()
                     whiteSpace: 'nowrap'
                 }}>
                 <DndContext onDragEnd={dndEnd}>
-                    <Coluna titulo={'Contato Inicial'} total={100} id={'inicial'} content={[<Item descricao={'Teste'} id={'1'}/>]}/>
+                    <Coluna titulo={'Contato Inicial'} total={props.totalInicial} id={'inicial'}
+                            content={props.inicial.map(item => (<Item descricao={item.descricao}
+                                                                      id={item.xid}
+                                                                      data={dayjs(item.data).format('DD/MM/YYYY HH:mm')}
+                                                                      responsavel={item.responsavel}
+                                                                      prioridade={item.prioridade}
+                                                                      valor={item.valor}
+                            />))}
+                    />
                     <Coluna titulo={'Qualificação'} id={'qualificacao'}/>
                     <Coluna titulo={'Avaliação'} id={'avaliacao'}/>
                     <Coluna titulo={'Proposta'} id={'proposta'}/>
