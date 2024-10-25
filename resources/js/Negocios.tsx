@@ -3,9 +3,10 @@ import {DndContext, useDraggable, useDroppable} from '@dnd-kit/core';
 import {CSS} from '@dnd-kit/utilities';
 import {useEffect, useReducer, useState} from "react";
 import Board from './componentes/negocios/Board';
-import {Button, Flex, message, Modal, Segmented} from "antd";
+import {Button, Flex, message, Modal, Segmented, Table} from "antd";
 import {AppstoreOutlined, BarsOutlined} from "@ant-design/icons";
 import NovoNegocio from "./componentes/negocios/NovoNegocio";
+import TabelaNegocio from './componentes/negocios/TabelaNegocio';
 import axios from "axios";
 function Draggable(props) {
     const {attributes, listeners, setNodeRef, transform} = useDraggable({
@@ -156,7 +157,12 @@ export default function Negocios()
                            totalPerdido={perdido.reduce((acum, negocio) => acum + negocio.valor,0)}
                     />
                 </div>):
-                (<></>)}
+                (<>
+                    <TabelaNegocio
+
+                    />
+
+                </>)}
         </LayoutBasico>
     );
 }
