@@ -18,7 +18,13 @@ export default function NovoNegocio(props)
             negocio.descricao = form.getFieldValue('descricao');
             negocio.data = dayjs(form.getFieldValue('data')).format('YYYY-MM-DD HH:mm');
             negocio.responsavel = form.getFieldValue('responsavel')??null;
-            negocio.contatos = form.getFieldValue('contatos')??null;
+            const contatos = form.getFieldValue('contatos')??null;
+            negocio.contatos = [];
+            contatos?.forEach(neg => {
+                const cliente = clientes.find(({value}) => (neg === value));
+                negocio.contatos.push(cliente);
+            });
+            console.log(negocio.contatos);
             negocio.valor = form.getFieldValue('valor');
 
             await axios.post('/api/negocios', negocio)
