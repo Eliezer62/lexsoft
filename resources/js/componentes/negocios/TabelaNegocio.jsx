@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import dayjs from "dayjs";
-import {Button, Divider, Drawer, Flex, Input, List, Popconfirm, Table} from "antd";
-import {MdDriveFolderUpload} from "react-icons/md";
+import {Button, Divider, Drawer, Flex, Input, List, message, Popconfirm, Table} from "antd";
 import axios from "axios";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import DOMPurify from "dompurify";
@@ -12,9 +11,10 @@ import EditorSimples from "@/componentes/EditorSimples.jsx";
 export default function TabelaNegocio(props)
 {
     const [pesquisa, setPesquisa] = useState('');
-    const [visualizar, setVisualizar] = useState(true);
+    const [visualizar, setVisualizar] = useState(false);
     const [loadingView, setLoadingView] = useState(true);
     const [negocio, setNegocio] = useState({});
+    const [messageApi, context] = message.useMessage();
 
     const colunas = [
         {
@@ -32,7 +32,8 @@ export default function TabelaNegocio(props)
             title:'Data',
             key:'data',
             dataIndex: 'data',
-            sorter: (a, b) => dayjs(a.data, 'DD/MM/YYYY').diff(dayjs(b.data, 'DD/MM/YYYY'))
+            sorter: (a, b) => dayjs(a.data, 'YYYY-MM-DD HH:mm').diff(dayjs(b.data, 'YYYY-MM-DD HH:mm')),
+            render: (value, record) => (dayjs(value, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY HH:mm')),
         },
         {
             title:'Responsável',
@@ -67,7 +68,15 @@ export default function TabelaNegocio(props)
                         }}><GrEdit/></Button>&nbsp;
                         <Popconfirm title={'Remover Negócio'} description={'Tem certeza que deseja remover este negócio?'}
                                     onConfirm={(event)=>{
-
+                                        const msg = messageApi.loading('Removendo negócio');
+                                        axios.delete('/api/negocios/'+record.xid)
+                                        .then((response) => {
+                                            messageApi.destroy(msg.id);
+                                            messageApi.success('Negócio removido com sucesso');
+                                        }).catch((error)=>{
+                                            messageApi.destroy(msg.id);
+                                            messageApi.error('Erro em remover o negócio');
+                                        })
                                     }}
                         >
                             <Button danger={true}><IoIosRemoveCircleOutline/></Button>
@@ -80,6 +89,7 @@ export default function TabelaNegocio(props)
 
     return (
         <>
+            {context}
             <Flex justify={'end'} align={'middle'}>
                 <Input.Search placeholder={'Pesquisar'}
                               style={{width:'250px', marginRight: '10px'}}

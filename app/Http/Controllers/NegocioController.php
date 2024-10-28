@@ -222,7 +222,7 @@ class NegocioController extends Controller
         if (!is_null($negocio))
             $negocio->delete();
 
-        return response($status=200);
+        return response(status:200);
     }
 
     public function atualizarFase(String $id, FaseNegocio $fase)
