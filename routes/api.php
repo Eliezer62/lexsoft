@@ -307,6 +307,9 @@ Route::controller(NegocioController::class)
         Route::get('/', 'index')
                 ->name('negocios.index');
 
+        Route::get('/lista', 'listar')
+            ->name('negocios.listar');
+
         Route::get('/{xid}', 'show')
                 ->name('negocios.show');
 

@@ -56,7 +56,9 @@ export default function Negocios()
     const [negociacao, setNegociacao] = useState([]);
     const [fechado, setFechado] = useState([]);
     const [perdido, setPerdido] = useState([]);
+    const [negocios, setNegocios] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingList, setLoadingList] = useState(true);
 
     useEffect(() => {
         const negocios = async () => {
@@ -100,8 +102,17 @@ export default function Negocios()
                 })
         }
 
+        const negociosList = async () => {
+            await axios.get('/api/negocios/lista').then((resp) => {
+                setNegocios(resp.data);
+                setLoadingList(false);
+            })
+        }
         const invervalo = setInterval(async () => {
-            await negocios();
+            if(exibicao === 'Kanban')
+                await negocios();
+            else
+                await negociosList();
         }, inter);
 
         return () => {
@@ -110,15 +121,6 @@ export default function Negocios()
         }
     })
 
-    const draggable = (
-        <Draggable id="draggable">
-            Go ahead, drag me.
-        </Draggable>
-    );
-
-    function handleDragEnd({over}) {
-        setParent(over ? over.id : null);
-    }
     return (
         <LayoutBasico titulo = "Negócios" menu={"negocios"}>
             {context}
@@ -159,7 +161,8 @@ export default function Negocios()
                 </div>):
                 (<>
                     <TabelaNegocio
-
+                        itens={negocios}
+                        loading={loadingList}
                     />
 
                 </>)}
