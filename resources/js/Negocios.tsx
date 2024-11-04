@@ -43,7 +43,6 @@ function Droppable(props) {
 
 export default function Negocios()
 {
-    const [parent, setParent] = useState(null);
     const [exibicao, setExibicao] = useState('Kanban');
     const [openNovo, setOpenNovo] = useState(false);
     const [messageApi, context] = message.useMessage();
