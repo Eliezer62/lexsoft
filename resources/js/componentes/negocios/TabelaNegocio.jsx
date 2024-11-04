@@ -7,6 +7,7 @@ import DOMPurify from "dompurify";
 import {GrEdit, GrView} from "react-icons/gr";
 import DescricaoItem from "@/componentes/DescricaoItem.jsx";
 import EditorSimples from "@/componentes/EditorSimples.jsx";
+import EditarNegocio from "@/componentes/negocios/EditarNegocio.jsx";
 
 export default function TabelaNegocio(props)
 {
@@ -15,6 +16,8 @@ export default function TabelaNegocio(props)
     const [loadingView, setLoadingView] = useState(true);
     const [negocio, setNegocio] = useState({});
     const [messageApi, context] = message.useMessage();
+    const [editarModal, setEditarModal] = useState(false);
+
 
     const colunas = [
         {
@@ -64,7 +67,15 @@ export default function TabelaNegocio(props)
                         }}
                         ><GrView/></Button>&nbsp;
                         <Button onClick={ async ()=>{
-
+                            setLoadingView(true);
+                            setEditarModal(true);
+                            axios.get('/api/negocios/editar/'+record.xid)
+                                .then((response) => {
+                                    setNegocio(response.data);
+                                    setLoadingView(false);
+                                }).catch((erro) => {
+                                setEditarModal(false);
+                            })
                         }}><GrEdit/></Button>&nbsp;
                         <Popconfirm title={'Remover Negócio'} description={'Tem certeza que deseja remover este negócio?'}
                                     onConfirm={(event)=>{
@@ -97,6 +108,13 @@ export default function TabelaNegocio(props)
                               onChange={e=>setPesquisa(e.target.value)}
                 />
             </Flex>
+            <EditarNegocio
+                open={editarModal}
+                onCancel={()=>setEditarModal(false)}
+                message={messageApi}
+                negocio={negocio}
+                loading={loadingView}
+            />
             <Drawer
                 title={'Visualizar negócio'}
                 open={visualizar}
@@ -129,7 +147,7 @@ export default function TabelaNegocio(props)
                                     <>
                                         <DescricaoItem titulo={'CPF'} conteudo={item.cpf}/>
                                         <DescricaoItem titulo={'E-MAIL'} conteudo={item.email}/>
-                                        {item.telefone.map((tel, index) => (
+                                        {item.telefone?.map((tel, index) => (
                                             <>
                                                 <DescricaoItem titulo={'Telefone ' + (index + 1)}
                                                                conteudo={`${tel.DDI}(${tel.DDD?.trim()})${tel.numero?.trim()}`}/>
@@ -154,7 +172,7 @@ export default function TabelaNegocio(props)
                                     <>
                                         <DescricaoItem titulo={'CNPJ'} conteudo={item.cnpj}/>
                                         <DescricaoItem titulo={'E-MAIL'} conteudo={item.email}/>
-                                        {item.telefone.map((tel, index) => (
+                                        {item.telefone?.map((tel, index) => (
                                             <>
                                                 <DescricaoItem titulo={'Telefone ' + (index + 1)}
                                                                conteudo={`${tel.DDI}(${tel.DDD?.trim()})${tel.numero?.trim()}`}/>
