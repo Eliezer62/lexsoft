@@ -310,6 +310,9 @@ Route::controller(NegocioController::class)
         Route::get('/lista', 'listar')
             ->name('negocios.listar');
 
+        Route::get('/editar/{xid}', 'editar')
+            ->name('negocios.editar');
+
         Route::get('/{xid}', 'show')
                 ->name('negocios.show');
 

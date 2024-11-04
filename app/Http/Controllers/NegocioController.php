@@ -194,25 +194,66 @@ class NegocioController extends Controller
      */
     public function update(Request $request, String $id)
     {
-        try {
+        try{
             $validado = $request->validate([
                 'descricao' => 'sometimes|nullable|string',
                 'data' => 'required|date',
                 'responsavel' => 'nullable|string',
-                'valor'=>'required|numeric|min:0'
+                'valor'=>'required|numeric|min:0',
+                'contatos'=>'sometimes|nullable|array',
             ]);
 
             $negocio = Negocio::firstWhere('xid', $id);
+            if(is_null($negocio)) return response()->json(['msg'=>'Negócio não encontrado'], status: 404);
 
             $validado['responsavel'] = Advogado::firstWhere('xid', $validado['responsavel'])?->id;
-            $negocio->updateOrFail($validado);
+
+            DB::transaction(function () use ($validado, $request, $negocio) {
+                $negocio->fill($validado);
+                $negocio->saveOrFail();
+
+                if($request->has('contatos'))
+                {
+                    $negocio->clientes()->detach();
+                    $negocio->clientesJur()->detach();
+                    foreach ($request->input('contatos')??[] as $contato)
+                    {
+                        if($contato['tipo']=='fisico')
+                        {
+                            $cliente = ClientePessoaFis::firstWhere('xid', $contato['value']);
+                            if(!is_null($cliente))
+                                $negocio->clientes()->sync($cliente->id);
+                        }
+                        else if($contato['tipo']=='juridico')
+                        {
+                            $cliente = ClientePessoaJur::firstWhere('xid', $contato['value']);
+                            if(!is_null($cliente))
+                                $negocio->clientesJur()->sync($cliente->id);
+                        }
+                    }
+                }
+                DB::commit();
+            });
 
             return response()->json($negocio, 200);
-
         }
         catch (ValidationException $e)
         {
+            DB::rollBack();
             return response()->json(['msg'=>'Dados obrigatórios não fornecidos ou inválidos'], 422);
+        }
+        catch (QueryException $e)
+        {
+            DB::rollBack();
+            switch ($e->getCode()) {
+                case 23514:
+                    return response()->json(['msg'=>'A data do negócio não pode ser futura']);
+            }
+        }
+        catch (\Exception $e)
+        {
+            DB::rollBack();
+            return response()->json(['msg'=>'Erro interno'], 500);
         }
     }
 
@@ -251,5 +292,39 @@ class NegocioController extends Controller
         ");
 
         return response()->json($negocios);
+    }
+
+    public function editar(string $xid)
+    {
+        $negocio = DB::select("
+        WITH temp AS (
+            (SELECT cont.negocio, cf.xid, cf.nome
+            FROM contatos cont
+            LEFT JOIN clientes_pessoa_fis cf ON cf.id = cont.cliente
+            GROUP BY cont.negocio, cf.xid, cf.nome
+            ) UNION ALL
+            (SELECT cont.negocio, cf.xid, cf.razao_social
+            FROM contatos_jur cont
+            LEFT JOIN clientes_pessoa_jur cf ON cf.id = cont.cliente_jur
+            GROUP BY cont.negocio, cf.xid, cf.razao_social
+            )
+        )
+        SELECT
+            n.xid, n.descricao, n.data, adv.xid as responsavel, n.valor,
+            JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT(
+                'xid', tt.xid,
+                'nome', tt.nome
+            )) as contatos
+        FROM negocios n
+        LEFT JOIN advogados adv on adv.id = n.responsavel
+        LEFT JOIN temp tt ON tt.negocio = n.id
+        WHERE n.xid = :xid
+        GROUP BY n.xid, n.descricao, n.data, adv.xid, n.valor
+        ", ['xid'=>$xid]);
+
+        $negocio = $negocio[0];
+        $negocio->contatos = json_decode($negocio->contatos);
+
+        return response()->json($negocio);
     }
 }
