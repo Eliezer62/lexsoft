@@ -8,6 +8,7 @@ import {AppstoreOutlined, BarsOutlined} from "@ant-design/icons";
 import NovoNegocio from "./componentes/negocios/NovoNegocio";
 import TabelaNegocio from './componentes/negocios/TabelaNegocio';
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 function Draggable(props) {
     const {attributes, listeners, setNodeRef, transform} = useDraggable({
         id: props.id,
@@ -58,6 +59,7 @@ export default function Negocios()
     const [negocios, setNegocios] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loadingList, setLoadingList] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const negocios = async () => {
@@ -98,6 +100,8 @@ export default function Negocios()
                         }
                         setLoading(false);
                     });
+                }).catch((err) => {
+                    if(err.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
                 })
         }
 
@@ -105,6 +109,8 @@ export default function Negocios()
             await axios.get('/api/negocios/lista').then((resp) => {
                 setNegocios(resp.data);
                 setLoadingList(false);
+            }).catch((err) => {
+                if(err.response.status===401) navigate('/login', {state:{anterior:location.pathname}});
             })
         }
         const invervalo = setInterval(async () => {
