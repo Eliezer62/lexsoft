@@ -24,7 +24,6 @@ export default function NovoNegocio(props)
                 const cliente = clientes.find(({value}) => (neg === value));
                 negocio.contatos.push(cliente);
             });
-            console.log(negocio.contatos);
             negocio.valor = form.getFieldValue('valor');
 
             await axios.post('/api/negocios', negocio)
@@ -122,6 +121,10 @@ export default function NovoNegocio(props)
             <Form.Item
                 label={'Valor R$'}
                 name={'valor'}
+                rules={[
+                    {required:true, message:'Valor é obrigatório'},
+                    {type:'number', message:'Valor inválido'}
+                ]}
             >
                 <InputNumber min={0} precision={2} decimalSeparator={','} style={{width:'475px'}}/>
             </Form.Item>

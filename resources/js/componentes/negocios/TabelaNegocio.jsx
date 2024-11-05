@@ -135,30 +135,34 @@ export default function TabelaNegocio(props)
                     style: 'currency'
                 }).format(negocio.valor ?? 0)}/>
                 <Divider/>
-                <h2>Contatos</h2>
-                <List
-                    itemLayout={'horizontal'}
-                    dataSource={negocio.contatos}
-                    renderItem={(item) => (
-                        <List.Item>
-                            <List.Item.Meta
-                                title={item.nome}
-                                description={
-                                    <>
-                                        <DescricaoItem titulo={'CPF'} conteudo={item.cpf}/>
-                                        <DescricaoItem titulo={'E-MAIL'} conteudo={item.email}/>
-                                        {item.telefone?.map((tel, index) => (
-                                            <>
-                                                <DescricaoItem titulo={'Telefone ' + (index + 1)}
-                                                               conteudo={`${tel.DDI}(${tel.DDD?.trim()})${tel.numero?.trim()}`}/>
-                                            </>
-                                        ))}
-                                    </>
-                                }
-                            />
-                        </List.Item>
-                    )}
-                />
+                {(negocio.contatos)?(
+                    <>
+                        <h2>Contatos</h2>
+                    <List
+                        itemLayout={'horizontal'}
+                        dataSource={negocio.contatos}
+                        renderItem={(item) => (
+                            <List.Item>
+                                <List.Item.Meta
+                                    title={item.nome}
+                                    description={
+                                        <>
+                                            <DescricaoItem titulo={'CPF'} conteudo={item.cpf}/>
+                                            <DescricaoItem titulo={'E-MAIL'} conteudo={item.email}/>
+                                            {item.telefone?.map((tel, index) => (
+                                                <>
+                                                    <DescricaoItem titulo={'Telefone ' + (index + 1)}
+                                                                   conteudo={`${tel.DDI}(${tel.DDD?.trim()})${tel.numero?.trim()}`}/>
+                                                </>
+                                            ))}
+                                        </>
+                                    }
+                                />
+                            </List.Item>
+                        )}
+                    />
+                    </>
+                ):(<></>)}
 
                 <h2>Contatos Pessoa Jurídica</h2>
                 <List
