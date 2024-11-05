@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {DatePicker, Form, Input, InputNumber, Select} from "antd";
+import {Checkbox, DatePicker, Form, Input, InputNumber, Select, Switch} from "antd";
 import {MaskedInput} from "antd-mask-input";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -11,9 +11,11 @@ const FormsPessoaFisica = (props) => {
     const [naturalidadeUF, setNaturalidadeUF] = useState('');
     const [natualidadeDisponivel, setNaturalidadeDisponivel] = useState(true);
     const [naturalidade, setNaturalidade] = useState([]);
+    const [estrangeiro, setEstrangeiro] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
+        setEstrangeiro(props.cliente?.estrangeiro??false);
         const getEstados = async () => {
             let estados = [];
             const response = await axios.get('/api/estados')
@@ -73,6 +75,7 @@ const FormsPessoaFisica = (props) => {
             <Form
                 layout={'vertical'}
                 form={props.form}
+                preserve={false}
             >
                 <Form.Item
                     label={'Nome Completo'}
@@ -198,101 +201,114 @@ const FormsPessoaFisica = (props) => {
                 </Form.Item>
 
                 <Form.Item
-                    label={'Naturalidade Estado'}
-                    name={'naturalidade_uf'}
-                    initialValue={props.cliente?.naturalidade_uf}
-                    rules={[
-                        {required:true, message:'Estado é obrigatório'}
-                    ]}
+                    label={"Estrangeiro"}
+                    name={'estrangeiro'}
+                    initialValue={props.cliente?.estrangeiro}
                 >
-                    <Select
-                        placeholder={'Selecione o Estado'}
-                        options={naturalidadeUF}
-                        showSearch
-                        optionFilterProp={'label'}
-                        onSelect={(e)=>{
-                            getCidades(e);
-                        }}
-                    />
+                    <Switch onChange={() => setEstrangeiro(!estrangeiro)} checked={estrangeiro}/>
                 </Form.Item>
 
-                <Form.Item
-                label={'Naturalidade'}
-                name={'naturalidade'}
-                initialValue={props.cliente?.naturalidade}
-                rules={[
-                    {required:true, message:'Naturalidade é obrigatório'}
-                ]}
-                >
-                    <Select
-                        placeholder={'Selecione Estado primeiro'}
-                        options={naturalidade}
-                        disabled={natualidadeDisponivel}
-                        showSearch
-                        optionFilterProp={'label'}
-                    />
-                </Form.Item>
+                {(!estrangeiro)?
+                    (<div>
+                        <Form.Item
+                            label={'Naturalidade Estado'}
+                            name={'naturalidade_uf'}
+                            initialValue={props.cliente?.naturalidade_uf}
+                            rules={[
+                                {required:true, message:'Estado é obrigatório'}
+                            ]}
+                        >
+                            <Select
+                                placeholder={'Selecione o Estado'}
+                                options={naturalidadeUF}
+                                showSearch
+                                optionFilterProp={'label'}
+                                onSelect={(e)=>{
+                                    getCidades(e);
+                                }}
+                            />
+                        </Form.Item>
 
-                <Form.Item
-                    label={'Registro Geral'}
-                    style={{backgroundColor: '#fbfbfb', padding:25, borderRadius:20}}
-                >
-                    <Form.Item
-                        label={'Número'}
-                        name={'rg_numero'}
-                        initialValue={props.cliente?.rg.numero}
-                        rules={[
-                            {required:true, message:'Número é obrigatório'}
-                        ]}
-                    >
-                        <InputNumber style={{width:'300px'}} min={1}/>
-                    </Form.Item>
+                        <Form.Item
+                            label={'Naturalidade'}
+                            name={'naturalidade'}
+                            initialValue={props.cliente?.naturalidade}
+                            rules={[
+                                {required:true, message:'Naturalidade é obrigatório'}
+                            ]}
+                        >
+                            <Select
+                                placeholder={'Selecione Estado primeiro'}
+                                options={naturalidade}
+                                disabled={natualidadeDisponivel}
+                                showSearch
+                                optionFilterProp={'label'}
+                            />
+                        </Form.Item>
 
-                    <Form.Item
-                        label={'Emissor (SSP/DETRAN/etc)'}
-                        name={'rg_emissor'}
-                        initialValue={props.cliente?.rg.emissor}
-                        rules={[
-                            {required:true, message:'Emissor é obrigatório'}
-                        ]}
-                    >
-                        <Input/>
-                    </Form.Item>
+                        <Form.Item
+                            label={'Registro Geral'}
+                            style={{backgroundColor: '#fbfbfb', padding:25, borderRadius:20}}
+                        >
+                            <Form.Item
+                                label={'Número'}
+                                name={'rg_numero'}
+                                initialValue={props.cliente?.rg?.numero}
+                                rules={[
+                                    {required:true, message:'Número é obrigatório'}
+                                ]}
+                            >
+                                <InputNumber style={{width:'300px'}} min={1}/>
+                            </Form.Item>
 
-                    <Form.Item
-                        label={'Data de emissão'}
-                        name={'rg_data_emissor'}
-                        initialValue={props.cliente?.rg.data_emissao?dayjs(props.cliente.rg.data_emissao, 'YYYY-MM-DD'):''}
-                        rules={[
-                            {required:true, message:'Data de emissão é obrigatório'}
-                        ]}
-                    >
-                        <DatePicker
-                            placeholder={'Data de emissão'}
-                            format={'DD/MM/YYYY'}
-                            maxDate={dayjs()}
-                        />
-                    </Form.Item>
+                            <Form.Item
+                                label={'Emissor (SSP/DETRAN/etc)'}
+                                name={'rg_emissor'}
+                                initialValue={props.cliente?.rg?.emissor}
+                                rules={[
+                                    {required:true, message:'Emissor é obrigatório'}
+                                ]}
+                            >
+                                <Input/>
+                            </Form.Item>
 
-                    <Form.Item
-                        label={'Estado'}
-                        name={'rg_estado'}
-                        initialValue={props.cliente?.rg.estado}
-                        rules={[
-                            {required:true, message:'Estado é obrigatório'}
-                        ]}
-                    >
-                        <Select
-                            placeholder={'Selecione o Estado'}
-                            options={naturalidadeUF}
-                            showSearch
-                            optionFilterProp={'label'}
-                            onSelect={(e)=>{
-                                getCidades(e);
-                            }}
-                        />
-                    </Form.Item>
-                </Form.Item>
+                            <Form.Item
+                                label={'Data de emissão'}
+                                name={'rg_data_emissor'}
+                                initialValue={props.cliente?.rg?.data_emissao?dayjs(props.cliente.rg.data_emissao, 'YYYY-MM-DD'):null}
+                                rules={[
+                                    {required:true, message:'Data de emissão é obrigatório'}
+                                ]}
+                            >
+                                <DatePicker
+                                    placeholder={'Data de emissão'}
+                                    format={'DD/MM/YYYY'}
+
+                                    maxDate={dayjs()}
+                                />
+                            </Form.Item>
+
+                            <Form.Item
+                                label={'Estado'}
+                                name={'rg_estado'}
+                                initialValue={props.cliente?.rg?.estado}
+                                rules={[
+                                    {required:true, message:'Estado é obrigatório'}
+                                ]}
+                            >
+                                <Select
+                                    placeholder={'Selecione o Estado'}
+                                    options={naturalidadeUF}
+                                    showSearch
+                                    optionFilterProp={'label'}
+                                    onSelect={(e)=>{
+                                        getCidades(e);
+                                    }}
+                                />
+                            </Form.Item>
+                        </Form.Item>
+                    </div>):(null)
+                }
             </Form>
         </>
     )

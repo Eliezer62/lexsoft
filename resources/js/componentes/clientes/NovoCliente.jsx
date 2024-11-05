@@ -79,11 +79,15 @@ const NovoCliente = (props) => {
                         cliente.naturalidade_uf = form.getFieldValue('naturalidade_uf');
                         cliente.profissao = form.getFieldValue('profissao');
                         cliente.data_nascimento = dayjs(form.getFieldValue('data_nascimento')).format('YYYY-MM-DD');
-                        //RG
-                        cliente.numero = form.getFieldValue('rg_numero');
-                        cliente.data_emissao = dayjs(form.getFieldValue('rg_data_emissao')).format('YYYY-MM-DD');
-                        cliente.emissor = form.getFieldValue('rg_emissor');
-                        cliente.estado = form.getFieldValue('rg_estado');
+
+                        cliente.estrangeiro = form.getFieldValue('estrangeiro')??false;
+                        if(!cliente.estrangeiro)
+                        {
+                            cliente.numero = form.getFieldValue('rg_numero');
+                            cliente.data_emissao = dayjs(form.getFieldValue('rg_data_emissao')).format('YYYY-MM-DD');
+                            cliente.emissor = form.getFieldValue('rg_emissor');
+                            cliente.estado = form.getFieldValue('rg_estado');
+                        }
 
                         cliente.telefones = formTel.getFieldValue('telefones');
                         cliente.enderecos = formEnd.getFieldValue('enderecos');

@@ -54,6 +54,6 @@
 }
 @media (max-width: 990px) {
     .layout{
-        margin-left: 0;
+        margin-left: 50px;
     }
 }

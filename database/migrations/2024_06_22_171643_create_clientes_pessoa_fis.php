@@ -19,21 +19,23 @@ return new class extends Migration
             $table->string('nome_social', 60)->nullable();
             $table->char('cpf', 11)
                 ->unique('uc_cliente_cpf');
-            $table->integer('rg');
+            $table->integer('rg')->nullable();
             $table->string('email')->nullable();
             $table->smallInteger('sexo');
             $table->smallInteger('estado_civil');
             $table->string('nome_pai', 60)->nullable();
             $table->string('nome_mae', 60)->nullable();
-            $table->integer('naturalidade');
-            $table->char('naturalidade_uf', 2);
+            $table->integer('naturalidade')->nullable();
+            $table->char('naturalidade_uf', 2)->nullable();
+            $table->boolean('estrangeiro')->default(false);
             $table->string('profissao', 60);
             $table->date('data_nascimento');
 
             //constraints
             $table->foreign('rg', 'fk_p_fis_rg')
                 ->references('id')
-                ->on('rgs');
+                ->on('rgs')
+                ->onDelete('SET NULL');
 
             $table->foreign('sexo', 'fk_p_fis_sexo')
                 ->references('id')
@@ -63,6 +65,12 @@ return new class extends Migration
         });
         DB::statement('ALTER TABLE clientes_pessoa_fis ADD COLUMN xid public.xid DEFAULT xid()');
         DB::statement('ALTER TABLE clientes_pessoa_fis ADD CONSTRAINT uc_cliente_xid UNIQUE (xid)');
+        DB::statement('ALTER TABLE clientes_pessoa_fis
+                        ADD CONSTRAINT check_cf_estrangeiro
+                        CHECK (
+                            (estrangeiro IS TRUE AND (naturalidade IS NULL AND naturalidade_uf IS NULL)) OR estrangeiro IS FALSE
+                        )
+        ');
     }
 
     /**

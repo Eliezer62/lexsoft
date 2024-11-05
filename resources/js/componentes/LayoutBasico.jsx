@@ -8,12 +8,17 @@ import { GoLaw } from "react-icons/go";
 import {IoChatbubbles, IoChatbubblesOutline} from "react-icons/io5";
 import { GrGroup, GrDocumentStore } from "react-icons/gr";
 import { BiTask } from "react-icons/bi";
-import { LiaUserCogSolid } from "react-icons/lia";
+import {LiaFileContractSolid, LiaUserCogSolid} from "react-icons/lia";
 import Auth from "@/seguranca/Auth.jsx";
 import {IoIosLogOut} from "react-icons/io";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import Middleware from '../seguranca/Middleware';
+import {MdDeveloperBoard} from "react-icons/md";
+import {
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+} from '@ant-design/icons';
 
 const { Content, Sider } = Layout;
 
@@ -39,9 +44,20 @@ const items = [
         icon: <BiTask/>
     },
     {
-        label: 'Clientes',
-        key:'clientes',
-        icon: <GrGroup/>
+        label: "CRM",
+        icon: <MdDeveloperBoard />,
+        children: [
+            {
+                label: 'Clientes',
+                key:'clientes',
+                icon: <GrGroup/>
+            },
+            {
+                label: 'Negócios',
+                key:'negocios',
+                icon: <LiaFileContractSolid />
+            },
+        ]
     },
     {
         label: 'Documentos',
@@ -62,6 +78,7 @@ const LayoutBasico = (props) => {
     const navigate = useNavigate();
     const {token} = useToken();
     const [noturno, setNoturno] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
 
 
     useEffect(() => {
@@ -92,28 +109,32 @@ const LayoutBasico = (props) => {
                 <Layout>
                     <Layout style={{
                         height: '100vh',
+                        zIndex: 1,
                         position: 'fixed',
-                        zIndex: 1
                     }}>
+
                         <Sider
                             width={200}
                             breakpoint="lg"
-                            collapsedWidth="0"
+                            collapsedWidth={50}
                             style={{
                                 background: noturno ? token.darkColorBgBase:'#EFEFEF',
                                 borderRight: '5px solid '+(noturno ? '#0000':'#E4E4E4'),
-                                fontFamily: 'Roboto'
+                                fontFamily: 'Roboto',
                             }}
+                            onCollapse={() => setCollapsed(!collapsed)}
                         >
                             <Flex
                                 style={{
                                     height: '20%',
                                     padding: '10px',
+                                    overflow:'hidden',
+                                    flexWrap:'wrap-reverse'
                                 }}
                                 justify={'center'} align={'center'}
                             >
-                                <img src={img} alt="logo" width={75} height={75} />
-                                <p className={'logo-nome'} style={{color: (noturno)?'#fff':'#000'}}>LEXSOFT</p>
+                                <img src={img} alt="logo" width={(!collapsed)?75:50} height={(!collapsed)?75:50} />
+                                {(!collapsed)?(<p className={'logo-nome'} style={{color: (noturno)?'#fff':'#000'}}>LEXSOFT</p>):(<></>)}
                             </Flex>
                             <Menu
                                 mode="inline"
@@ -132,12 +153,13 @@ const LayoutBasico = (props) => {
                                     padding: 5,
                                     width: '100%',
                                     background: noturno ? token.darkColorBgBase:token.colorBgBase,
+                                    flexWrap:'wrap'
                                 }}
                                 align={'center'}
                                 justify={'center'}
                             >
                                 <Avatar size={28} icon={<UserOutlined/>}  className='d-inline' onClick={()=>location.href='/perfil'} style={{cursor:'pointer'}}/>
-                                <p style={{padding:'5px', color:'#505050', fontStyle: '0.5rem', cursor:'pointer'}} onClick={()=>location.href='/perfil'}>{user?.nome.split(' ')[0]}</p>
+                                {(!collapsed)?(<p style={{padding:'5px', color:'#505050', fontStyle: '0.5rem', cursor:'pointer'}} onClick={()=>location.href='/perfil'}>{user?.nome.split(' ')[0]}</p>):(<></>)}
                                 <Button type={'link'} title={'Sair'} onClick={()=>{
                                     axios.post('/api/auth/logout');
                                     navigate('/login', {state:{anterior:location.pathname}});

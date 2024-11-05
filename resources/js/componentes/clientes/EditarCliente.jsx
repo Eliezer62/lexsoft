@@ -40,16 +40,21 @@ const EditarCliente = (props) => {
                 if(form.getFieldValue('nome_mae')!==undefined)
                     cliente.nome_mae = form.getFieldValue('nome_mae');
 
-                cliente.naturalidade = form.getFieldValue('naturalidade');
-                cliente.naturalidade_uf = form.getFieldValue('naturalidade_uf');
                 cliente.profissao = form.getFieldValue('profissao');
                 cliente.data_nascimento = dayjs(form.getFieldValue('data_nascimento')).format('YYYY-MM-DD');
+                cliente.estrangeiro = form.getFieldValue('estrangeiro');
 
-                cliente.rg = {};
-                cliente.rg.numero = form.getFieldValue('rg_numero');
-                cliente.rg.data_emissao = dayjs(form.getFieldValue('rg_data_emissao')).format('YYYY-MM-DD');
-                cliente.rg.emissor = form.getFieldValue('rg_emissor');
-                cliente.rg.estado = form.getFieldValue('rg_estado');
+                if(!cliente.estrangeiro) {
+                    cliente.naturalidade = form.getFieldValue('naturalidade');
+                    cliente.naturalidade_uf = form.getFieldValue('naturalidade_uf');
+                    cliente.rg = {};
+                    cliente.rg.numero = form.getFieldValue('rg_numero');
+                    cliente.rg.data_emissao = dayjs(form.getFieldValue('rg_data_emissao')).format('YYYY-MM-DD');
+                    cliente.rg.emissor = form.getFieldValue('rg_emissor');
+                    cliente.rg.estado = form.getFieldValue('rg_estado');
+                }
+                else
+                    cliente.rg = null;
 
                 cliente.novos_telefones = formTel.getFieldValue('telefones');
                 cliente.novos_enderecos = formEnd.getFieldValue('enderecos');
@@ -60,6 +65,7 @@ const EditarCliente = (props) => {
                     }).then((response)=>{
                         setLoading(false);
                         if(response.status===200){
+                            form.resetFields();
                             props.handleCancel();
                             props.sucessoMsg('Sucesso em atualizar o cliente');
                         }
@@ -90,6 +96,7 @@ const EditarCliente = (props) => {
                 }).then((response)=>{
                     setLoading(false);
                     if(response.status===200){
+                        form.resetFields();
                         props.handleCancel();
                         props.sucessoMsg('Sucesso em atualizar o cliente');
                     }
@@ -144,7 +151,10 @@ const EditarCliente = (props) => {
             open={props.open}
             title={'Editar Cliente'}
             onOk={enviarCliente}
-            onCancel={props.handleCancel}
+            onCancel={() => {
+                form.resetFields();
+                props.handleCancel();
+            }}
             destroyOnClose={true}
             confirmLoading={loading}
             loading={props.loadingModal}
@@ -161,7 +171,7 @@ const EditarCliente = (props) => {
                     <List.Item
                         actions={[
                             <Popconfirm
-                                title={'Remover o telefone'}
+                                title={`Remover o telefone ${item.ddi}(${item.ddd}) ${item.numero}`}
                                 description={'Tem certeja que deseja remover o telefone?'}
                                 onConfirm={()=>{
                                     axios.delete('/api/telefones/'+item.xid)
@@ -260,7 +270,7 @@ const EditarCliente = (props) => {
                       <List.Item
                         actions={[
                             <Popconfirm
-                                title={'Remover o endereço'}
+                                title={`Remover o endereço ${item.logradouro}`}
                                 description={"Tem certeza que deseja remover o endereço?"}
                                 onConfirm={()=>{
                                     axios.delete('/api/enderecos/'+item.xid)

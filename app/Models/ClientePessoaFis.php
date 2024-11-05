@@ -40,7 +40,8 @@ class ClientePessoaFis extends Model
         'naturalidade',
         'naturalidade_uf',
         'profissao',
-        'data_nascimento'
+        'data_nascimento',
+        'estrangeiro'
     ];
 
     protected $hidden = [
@@ -111,7 +112,7 @@ class ClientePessoaFis extends Model
     {
         parent::boot();
         static::deleted(function ($model) {
-            $model->rg()->first()->delete();
+            $model->rg()?->first()->delete();
         });
     }
 }
