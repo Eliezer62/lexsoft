@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
 import dayjs from "dayjs";
-import {Button, message, Popconfirm} from "antd";
+import {Button, FloatButton, message, Popconfirm} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import NovoAtendimento from "@/componentes/atendimento/NovoAtendimento.jsx";
@@ -10,6 +10,7 @@ import axios from "axios";
 import ViewAtendimento from "@/componentes/atendimento/ViewAtendimento.jsx";
 import EditAtendimento from "@/componentes/atendimento/EditAtendimento.jsx";
 import {useNavigate} from "react-router-dom";
+import {QuestionCircleOutlined} from "@ant-design/icons";
 
 const Atendimentos = () => {
     const [loadingTable, setLoadingTable] = useState(true);
@@ -166,6 +167,7 @@ const Atendimentos = () => {
                 mensagemErro={mensagemErro}
                 atendimento={atendimento}
             />
+            <FloatButton icon={<QuestionCircleOutlined />} type="primary" style={{ insetInlineEnd: 24 }} onClick={()=>window.open("/help/Atendimentos.html", "_blank")} />
         </LayoutBasico>
     );
 }

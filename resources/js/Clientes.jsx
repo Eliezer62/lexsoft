@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
-import {Button, Col, Drawer, Form, message, Popconfirm, Row} from "antd";
+import {Button, Col, Drawer, FloatButton, Form, message, Popconfirm, Row} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import axios from "axios";
@@ -10,6 +10,7 @@ import CamposPessoaJur from "@/componentes/clientes/CamposPessoaJur.jsx";
 import NovoCliente from "@/componentes/clientes/NovoCliente.jsx";
 import EditarCliente from "@/componentes/clientes/EditarCliente.jsx";
 import {useNavigate} from "react-router-dom";
+import {QuestionCircleOutlined} from "@ant-design/icons";
 
 const Clientes = () => {
     const [pesquisa, setPesquisa] = useState('');
@@ -197,6 +198,7 @@ const Clientes = () => {
               erro2Msg={(msg) => (messageApi.error(msg))}
               setCliente={setCliente}
           />
+          <FloatButton icon={<QuestionCircleOutlined />} type="primary" style={{ insetInlineEnd: 24 }} onClick={()=>window.open("/help/Clientes.html", "_blank")} />
       </LayoutBasico>
     );
 }

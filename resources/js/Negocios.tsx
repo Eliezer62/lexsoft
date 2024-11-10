@@ -3,12 +3,14 @@ import {DndContext, useDraggable, useDroppable} from '@dnd-kit/core';
 import {CSS} from '@dnd-kit/utilities';
 import {useEffect, useReducer, useState} from "react";
 import Board from './componentes/negocios/Board';
-import {Button, Flex, message, Modal, Segmented, Table} from "antd";
+import {Button, Flex, FloatButton, message, Modal, Segmented, Table} from "antd";
 import {AppstoreOutlined, BarsOutlined} from "@ant-design/icons";
 import NovoNegocio from "./componentes/negocios/NovoNegocio";
 import TabelaNegocio from './componentes/negocios/TabelaNegocio';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import {QuestionCircleOutlined} from "@ant-design/icons";
+
 function Draggable(props) {
     const {attributes, listeners, setNodeRef, transform} = useDraggable({
         id: props.id,
@@ -171,6 +173,7 @@ export default function Negocios()
                     />
 
                 </>)}
+            <FloatButton icon={<QuestionCircleOutlined />} type="primary" style={{ insetInlineEnd: 24 }} onClick={()=>window.open("/help/Negocios.html", "_blank")} />
         </LayoutBasico>
     );
 }
