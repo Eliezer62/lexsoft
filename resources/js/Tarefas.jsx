@@ -2,9 +2,10 @@ import React, {useEffect, useState} from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaTarefas from "@/componentes/tarefas/TabelaTarefas.jsx";
 import NovaTarefas from "@/componentes/tarefas/NovaTarefas.jsx";
-import {message} from 'antd';
+import {FloatButton, message} from 'antd';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import {QuestionCircleOutlined} from "@ant-design/icons";
 
 
 const Tarefas = () => {
@@ -72,6 +73,7 @@ const Tarefas = () => {
                 mensagemSucesso={mensagemSucesso}
                 mensagemErro={mensagemErro}
             />
+            <FloatButton icon={<QuestionCircleOutlined />} type="primary" style={{ insetInlineEnd: 24 }} onClick={()=>window.open("/help/Tarefas.html", "_blank")} />
         </LayoutBasico>
     );
 }

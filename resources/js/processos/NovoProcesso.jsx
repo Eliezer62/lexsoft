@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
-import {Breadcrumb, Button, Flex, Form, message} from "antd";
+import {Breadcrumb, Button, Flex, FloatButton, Form, message} from "antd";
 import '../../css/processos.css';
-import {HomeOutlined} from '@ant-design/icons';
+import {HomeOutlined, QuestionCircleOutlined} from '@ant-design/icons';
 import FormProcesso from "@/componentes/processos/FormProcesso.jsx";
 import dayjs from "dayjs";
 import axios from "axios";
@@ -74,6 +74,7 @@ export default function NovoProcesso() {
             >
                 <Button type={'primary'} size={'large'} loading={loading} onClick={enviarProcesso}>Enviar</Button>
             </Flex>
+            <FloatButton icon={<QuestionCircleOutlined />} type="primary" style={{ insetInlineEnd: 24 }} onClick={()=>window.open("/help/CadastroeEdicaodeProcesso.html", "_blank")} />
         </LayoutBasico>
     );
 }
