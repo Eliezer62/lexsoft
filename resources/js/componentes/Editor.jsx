@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {CKEditor} from "ckeditor4-react";
+import {FloatButton} from "antd";
+import {QuestionCircleOutlined} from "@ant-design/icons";
 
 export default function Editor(props)
 {
@@ -27,6 +29,7 @@ export default function Editor(props)
                       onChange={(event) => props.change(event.editor.getData())}
                       onInstanceReady={(editor) => setEdit(editor)}
             />
+            <FloatButton icon={<QuestionCircleOutlined />} type="primary" style={{ insetInlineEnd: 24 }} onClick={()=>window.open("/help/Editor.html", "_blank")} />
         </>
     )
 }

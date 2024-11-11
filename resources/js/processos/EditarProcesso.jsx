@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
-import {Breadcrumb, Button, Flex, Form, message, Skeleton} from "antd";
+import {Breadcrumb, Button, Flex, FloatButton, Form, message, Skeleton} from "antd";
 import FormProcesso from "@/componentes/processos/FormProcesso.jsx";
 import axios from "axios";
-import {HomeOutlined} from "@ant-design/icons";
+import {HomeOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
 import {useNavigate} from "react-router-dom";
 
@@ -109,6 +109,7 @@ export default function EditarProcesso()
                     <Button type={'primary'} style={{margin:'5px'}} onClick={enviarProcesso} loading={loading}>Salvar</Button>
                 </Flex>
             </Skeleton>
+            <FloatButton icon={<QuestionCircleOutlined />} type="primary" style={{ insetInlineEnd: 24 }} onClick={()=>window.open("/help/CadastroeEdicaodeProcesso.html", "_blank")} />
         </LayoutBasico>
     )
 }

@@ -11,9 +11,9 @@ import {
     Modal,
     message,
     Table,
-    Popconfirm,
+    Popconfirm, FloatButton,
 } from "antd";
-import {HomeOutlined} from "@ant-design/icons";
+import {HomeOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import dayjs from "dayjs";
 import axios from "axios";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
@@ -255,6 +255,7 @@ export default function MovimentarProcesso()
                           processo={xid}
                           evento={evento.xid}
             />
+            <FloatButton icon={<QuestionCircleOutlined />} type="primary" style={{ insetInlineEnd: 24 }} onClick={()=>window.open("/help/MovimentarProcesso.html", "_blank")} />
         </LayoutBasico>
     )
 }

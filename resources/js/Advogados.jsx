@@ -3,11 +3,13 @@ import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
 import {GrEdit, GrFormClose, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
-import { Button, Form, message, Modal, Popconfirm } from "antd";
+import {Button, FloatButton, Form, message, Modal, Popconfirm} from "antd";
 import NovoAdvogado from './componentes/advogados/NovoAdvogado';
 import EditarAdvogado from "@/componentes/advogados/EditarAdvogado.jsx";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import { QuestionCircleOutlined } from '@ant-design/icons';
+
 
 const Advogados = () => {
     const [time, setTime] = useState(Date.now());
@@ -188,6 +190,7 @@ const Advogados = () => {
               setAdvogado={setAdvogado}
               form={form}
           />
+          <FloatButton icon={<QuestionCircleOutlined />} type="primary" style={{ insetInlineEnd: 24 }} onClick={()=>window.open("/help/Advogados.html", "_blank")} />
       </LayoutBasico>
     );
 }

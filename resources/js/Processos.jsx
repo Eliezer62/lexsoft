@@ -2,13 +2,14 @@ import React, {useEffect, useState} from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import TabelaBase from "@/componentes/TabelaBase.jsx";
 import axios from "axios";
-import {Button, Dropdown, message, Popconfirm, Space} from "antd";
+import {Button, Dropdown, FloatButton, message, Popconfirm, Space} from "antd";
 import {GrEdit, GrView} from "react-icons/gr";
 import {IoIosRemoveCircleOutline} from "react-icons/io";
 import {MdDriveFileMoveOutline} from "react-icons/md";
 import VisualizarProcesso from "@/processos/VisualizarProcesso.jsx";
 import DOMPurify from "dompurify";
 import {useNavigate} from "react-router-dom";
+import {QuestionCircleOutlined} from "@ant-design/icons";
 
 function DownOutlined() {
     return null;
@@ -174,6 +175,7 @@ export default function Processos() {
             onClose={()=>setVisualizarProcesso(false)}
             processo={processo}
           />
+          <FloatButton icon={<QuestionCircleOutlined />} type="primary" style={{ insetInlineEnd: 24 }} onClick={()=>window.open("/help/Processos.html", "_blank")} />
       </LayoutBasico>
     );
 }

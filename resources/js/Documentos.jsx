@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import LayoutBasico from "@/componentes/LayoutBasico.jsx";
 import Dragger from "antd/es/upload/Dragger.js";
-import { InboxOutlined } from '@ant-design/icons';
-import {Button, Flex, Form, Input, message, Modal, Select} from "antd";
+import {InboxOutlined, QuestionCircleOutlined} from '@ant-design/icons';
+import {Button, Flex, FloatButton, Form, Input, message, Modal, Select} from "antd";
 import axios from "axios";
 import BuscarDocumentos from "@/componentes/documentos/BuscarDocumentos.jsx";
 import {useNavigate} from "react-router-dom";
@@ -118,6 +118,7 @@ const Documentos = () => {
               </Dragger>
           </Flex>
           <BuscarDocumentos open={openSearch} fechar={()=>setOpenSearch(false)}/>
+          <FloatButton icon={<QuestionCircleOutlined />} type="primary" style={{ insetInlineEnd: 24 }} onClick={()=>window.open("/help/Documentos.html", "_blank")} />
       </LayoutBasico>
     );
 }
